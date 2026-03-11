@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from 'react'
 
 const NUM_PARTICLES = 60
+const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
 
 export default function ParticleField() {
   const canvasRef = useRef(null)
 
   useEffect(() => {
+    if (isTouch) return; // skip canvas RAF loop entirely on mobile
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')

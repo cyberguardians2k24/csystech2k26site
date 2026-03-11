@@ -40,10 +40,10 @@ export default function EnergyReveal() {
   const y = useTransform(scrollYProgress, [0.4, 1], [40, 0]);
 
   return (
-    <section ref={containerRef} className="section-shell relative py-36 md:py-40 bg-wakanda-dark overflow-hidden flex items-center justify-center min-h-screen">
+    <section ref={containerRef} className="section-shell relative py-20 md:py-36 lg:py-40 bg-wakanda-dark overflow-hidden flex items-center justify-center md:min-h-screen">
       <div className="absolute inset-0 mesh-fade opacity-20 pointer-events-none" />
-      <div className="absolute left-[8%] top-16 w-72 h-72 rounded-full bg-vibranium/10 blur-[120px] float-orb pointer-events-none" />
-      <div className="absolute right-[10%] bottom-12 w-72 h-72 rounded-full bg-holo-cyan/8 blur-[120px] float-orb pointer-events-none" style={{ animationDelay: '2s' }} />
+      <div className="absolute left-[8%] top-16 w-72 h-72 rounded-full bg-vibranium/10 blur-[120px] pointer-events-none hidden md:block" />
+      <div className="absolute right-[10%] bottom-12 w-72 h-72 rounded-full bg-holo-cyan/8 blur-[120px] pointer-events-none hidden md:block" />
 
       {/* SVG Energy Web */}
       <div className="absolute inset-0 z-0 pointer-events-none">

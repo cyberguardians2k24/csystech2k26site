@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useSpring } from 'framer-motion';
 
+const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+
 export default function CustomCursor() {
+  // Never render on touch/mobile — springs still fire on every frame even when hidden
+  if (isTouch) return null;
   const dotRef = useRef(null);
   const ringRef = useRef(null);
   const auraRef = useRef(null);

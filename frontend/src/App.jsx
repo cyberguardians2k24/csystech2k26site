@@ -3,6 +3,8 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import Lenis from 'lenis';
 
+const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+
 // Eagerly load lightweight / above-fold components
 import Navbar from './components/Navbar';
 import CountdownBanner from './components/CountdownBanner';
@@ -265,7 +267,7 @@ export default function App() {
   }, [isHome, loading, location]);
 
   useEffect(() => {
-    if (!isHome || loading) return;
+    if (!isHome || loading || isTouch) return; // skip claw/pulse on mobile
 
     const sectionIds = ['hero', 'events', 'speakers', 'schedule', 'sponsors', 'faq', 'register'];
     const observer = new IntersectionObserver(
@@ -300,9 +302,10 @@ export default function App() {
 
   return (
     <div className="bg-wakanda-dark min-h-screen text-slate-50 font-body overflow-x-hidden relative">
-      <ClawTransition trigger={clawTrigger} color="#7b2cff" />
-      <SectionPulseOverlay pulseKey={pulseKey} />
-      <RouteTransitionOverlay transitionKey={routeTransitionKey} />
+      {!isTouch && <ClawTransition trigger={clawTrigger} color="#7b2cff" />}
+      {!isTouch && <SectionPulseOverlay pulseKey={pulseKey} />}
+      {!isTouch && <RouteTransitionOverlay transitionKey={routeTransitionKey} />}
+      {!isTouch && (
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute -top-24 left-[8%] w-[28rem] h-[28rem] rounded-full bg-vibranium/10 blur-[150px] float-orb" />
         <div className="absolute top-[22%] right-[5%] w-[24rem] h-[24rem] rounded-full bg-holo-cyan/7 blur-[150px] float-orb" style={{ animationDelay: '1.2s' }} />
@@ -319,6 +322,7 @@ export default function App() {
           className="absolute bottom-[16%] left-1/2 h-[1px] w-[74vw] max-w-[70rem] -translate-x-1/2 bg-[linear-gradient(90deg,transparent,rgba(123,44,255,0.48),rgba(103,232,249,0.26),transparent)] blur-[0.5px]"
         />
       </div>
+      )}
       <Navbar />
       {/* Custom Cursor */}
       <CustomCursor />

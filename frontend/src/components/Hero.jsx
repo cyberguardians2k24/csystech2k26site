@@ -3,6 +3,8 @@ import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'fra
 import { useNavigate } from 'react-router-dom';
 import heroVideo from '../../Assets/hero/cystek cdo 2 selected.mp4';
 
+const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+
 /* ── letter array for stagger animation ── */
 const TITLE_CHARS = 'CYSTECH 2K26'.split('');
 
@@ -57,12 +59,12 @@ export default function Hero() {
     return () => clearInterval(id);
   }, [videoReady]);
 
-  /* ── scroll-parallax ── */
+  /* ── scroll-parallax (skip on mobile — useSpring runs a RAF loop) ── */
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const rawY    = useTransform(scrollYProgress, [0, 1], ['0%', '-20%']);
-  const rawOp   = useTransform(scrollYProgress, [0, 0.52], [1, 0]);
-  const rawSc   = useTransform(scrollYProgress, [0, 0.52], [1, 0.94]);
-  const yText   = useSpring(rawY,  { stiffness: 55, damping: 18 });
+  const rawY  = useTransform(scrollYProgress, [0, 1], ['0%', isTouch ? '0%' : '-20%']);
+  const rawOp = useTransform(scrollYProgress, [0, 0.52], [1, isTouch ? 1 : 0]);
+  const rawSc = useTransform(scrollYProgress, [0, 0.52], [1, isTouch ? 1 : 0.94]);
+  const yText = useSpring(rawY, { stiffness: 55, damping: 18 });
 
   return (
     <section ref={heroRef} className="relative h-screen bg-black overflow-hidden">
@@ -100,25 +102,29 @@ export default function Hero() {
         <div className="absolute bottom-0 left-0 right-0 h-48
           bg-gradient-to-t from-wakanda-dark via-wakanda-dark/75 to-transparent pointer-events-none" />
 
-        {/* ─── Floating orbs ─────────────────────────── */}
-        <FloatOrb top="14%" left="6%"  size={300} delay={0.5}
-          color="radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%)" />
-        <FloatOrb top="18%" right="8%" size={220} delay={2.2}
-          color="radial-gradient(circle, rgba(203,213,225,0.15), transparent 70%)" />
-        <FloatOrb bottom="20%" right="20%" size={170} delay={4.0}
-          color="radial-gradient(circle, rgba(255,255,255,0.10), transparent 70%)" />
+        {/* ─── Floating orbs (desktop only) ────────── */}
+        {!isTouch && <>
+          <FloatOrb top="14%" left="6%"  size={300} delay={0.5}
+            color="radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%)" />
+          <FloatOrb top="18%" right="8%" size={220} delay={2.2}
+            color="radial-gradient(circle, rgba(203,213,225,0.15), transparent 70%)" />
+          <FloatOrb bottom="20%" right="20%" size={170} delay={4.0}
+            color="radial-gradient(circle, rgba(255,255,255,0.10), transparent 70%)" />
+        </>}
 
-        {/* ─── Pulse rings ───────────────────────────── */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          {[0, 1.0, 2.0].map((delay, i) => (
-            <motion.div key={i}
-              className="absolute rounded-full border border-white/14"
-              initial={{ width: 160, height: 160, opacity: 0.55 }}
-              animate={{ width: [160, 640], height: [160, 640], opacity: [0.5, 0] }}
-              transition={{ duration: 4.5, delay, repeat: Infinity, ease: 'easeOut' }}
-            />
-          ))}
-        </div>
+        {/* ─── Pulse rings (desktop only) ────────────── */}
+        {!isTouch && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            {[0, 1.0, 2.0].map((delay, i) => (
+              <motion.div key={i}
+                className="absolute rounded-full border border-white/14"
+                initial={{ width: 160, height: 160, opacity: 0.55 }}
+                animate={{ width: [160, 640], height: [160, 640], opacity: [0.5, 0] }}
+                transition={{ duration: 4.5, delay, repeat: Infinity, ease: 'easeOut' }}
+              />
+            ))}
+          </div>
+        )}
 
         {/* ─── HUD corners ───────────────────────────── */}
         {['tl','tr','bl','br'].map(p => <Corner key={p} pos={p} />)}
