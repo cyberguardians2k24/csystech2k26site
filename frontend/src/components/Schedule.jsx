@@ -139,7 +139,7 @@ export default function Schedule() {
                       <span className={`inline-block mb-2 font-mono text-[9px] tracking-[0.2em] uppercase border px-2 py-0.5 rounded-full ${TAG_COLORS[item.tag] ?? 'text-white/30 border-white/10'}`}>
                         {item.tag}
                       </span>
-                      <div className="text-4xl md:text-5xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-white/30 to-white/10 group-hover:from-[#9D00FF] group-hover:to-[#67e8f9] transition-all duration-500 mb-2">
+                      <div className="text-3xl md:text-5xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-white/30 to-white/10 group-hover:from-[#9D00FF] group-hover:to-[#67e8f9] transition-all duration-500 mb-2">
                         {item.time}
                       </div>
                       <h4 className="text-xl font-bold font-heading tracking-tight mb-2 text-white/90 group-hover:text-white">

@@ -139,7 +139,7 @@ export default function NonTechnicalEvents() {
           <span className="inline-block text-[10px] font-mono tracking-[0.3em] text-vibranium uppercase mb-4 border border-vibranium/20 px-4 py-1.5 rounded-full bg-vibranium/5">
             CYSTECH 2K26
           </span>
-          <h1 className="text-5xl md:text-7xl font-heading font-black tracking-tight leading-none mb-4">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-heading font-black tracking-tight leading-none mb-4">
             <span className="bg-gradient-to-r from-vibranium via-vibranium-light to-vibranium bg-clip-text text-transparent">
               Non-Technical
             </span>

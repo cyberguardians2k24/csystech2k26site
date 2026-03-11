@@ -108,6 +108,17 @@ export default function Navbar() {
             <span className="font-mono text-[9px] tracking-[0.28em] uppercase text-[#a5f3fc] whitespace-nowrap">{currentPageLabel}</span>
           </button>
 
+          {/* Mobile-only brand */}
+          <button
+            onClick={() => handleNavClick('#hero')}
+            className="md:hidden flex items-center gap-2"
+          >
+            <div className="w-7 h-7 rounded-full bg-vibranium/20 border border-vibranium/40 flex items-center justify-center shadow-vibranium-glow">
+              <span className="font-heading font-black text-white text-xs">C</span>
+            </div>
+            <span className="font-heading font-black text-white text-sm tracking-widest">CYSTECH</span>
+          </button>
+
           <div className="hidden lg:flex items-center gap-1 rounded-full border border-[#c084fc]/14 bg-[#090311]/70 px-1.5 py-1 mx-auto shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
             {NAV_LINKS.map((link, i) => (
               <motion.div

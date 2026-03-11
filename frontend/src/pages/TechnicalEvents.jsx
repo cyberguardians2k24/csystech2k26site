@@ -149,7 +149,7 @@ export default function TechnicalEvents() {
           <span className="inline-block text-[10px] font-mono tracking-[0.3em] text-holo-cyan uppercase mb-4 border border-holo-cyan/20 px-4 py-1.5 rounded-full bg-holo-cyan/5">
             CYSTECH 2K26
           </span>
-          <h1 className="text-5xl md:text-7xl font-heading font-black tracking-tight leading-none mb-4">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-heading font-black tracking-tight leading-none mb-4">
             <span className="bg-gradient-to-r from-vibranium via-holo-cyan to-vibranium-light bg-clip-text text-transparent">
               Technical
             </span>

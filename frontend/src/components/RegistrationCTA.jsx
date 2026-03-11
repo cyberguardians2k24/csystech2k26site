@@ -123,7 +123,7 @@ export default function RegistrationCTA() {
               whileInView={{ scale: 1, opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="mt-6 text-5xl md:text-[5rem] font-black font-heading tracking-tighter text-slate-50 uppercase leading-[0.9]"
+              className="mt-6 text-4xl sm:text-5xl md:text-[5rem] font-black font-heading tracking-tighter text-slate-50 uppercase leading-[0.9]"
             >
               Secure <br />
               <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #67e8f9 0%, #9D00FF 54%, #7b2cff 100%)' }}>

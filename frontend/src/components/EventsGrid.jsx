@@ -37,10 +37,10 @@ function EventCard({ ev, i }) {
       viewport={{ once: true, margin: '-40px' }}
       transition={{ delay: i * 0.07, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ y: -10 }}
-      style={{ rotateX: rx, rotateY: ry, transformStyle: 'preserve-3d' }}
+      style={{ rotateX: rx, rotateY: ry }}
       onMouseMove={handleMove}
       onMouseLeave={resetMove}
-      className={`group panel-sheen relative flex flex-col justify-between p-7 md:p-8 rounded-[2rem] border border-white/8 bg-[#09020f]/72 backdrop-blur-2xl overflow-hidden cursor-pointer ${ev.span}`}
+      className={`group panel-sheen relative flex flex-col justify-between p-5 sm:p-7 md:p-8 rounded-[2rem] border border-white/8 bg-[#09020f]/72 backdrop-blur-2xl overflow-hidden cursor-pointer ${ev.span}`}
       onClick={() => setExpanded((v) => !v)}
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_15%,rgba(123,44,255,0.18),transparent_24%),radial-gradient(circle_at_85%_85%,rgba(212,175,55,0.12),transparent_26%)] opacity-70 pointer-events-none" />
@@ -51,7 +51,7 @@ function EventCard({ ev, i }) {
         <div className="absolute top-0 left-[-25%] h-full w-[22%] bg-[linear-gradient(90deg,transparent,rgba(212,175,55,0.22),transparent)] skew-x-[-22deg] animate-[sheen-drift_2.8s_linear_infinite]" />
       </motion.div>
 
-      <div className="relative z-10 flex items-start justify-between gap-4" style={{ transform: 'translateZ(42px)' }}>
+      <div className="relative z-10 flex items-start justify-between gap-4">
         <div className="space-y-3">
           <div className="flex flex-wrap gap-2">
             <span className="px-3 py-1 rounded-full border border-[#7b2cff]/30 bg-[#7b2cff]/10 font-mono text-[10px] tracking-[0.22em] uppercase text-[#d8b4fe]">
@@ -64,7 +64,7 @@ function EventCard({ ev, i }) {
 
           <div>
             <p className="font-mono text-[10px] tracking-[0.28em] uppercase text-white/30">Featured Protocol</p>
-            <h4 className="mt-2 text-3xl md:text-[2.1rem] font-black font-heading tracking-tight text-white">
+            <h4 className="mt-2 text-2xl sm:text-3xl md:text-[2.1rem] font-black font-heading tracking-tight text-white">
               {ev.title}
             </h4>
             <p className="mt-2 text-sm font-mono text-[#9D00FF]/80 uppercase tracking-[0.18em]">{ev.tagline}</p>
@@ -80,7 +80,7 @@ function EventCard({ ev, i }) {
         </div>
       </div>
 
-      <div className="relative z-10 mt-7 flex-1" style={{ transform: 'translateZ(34px)' }}>
+      <div className="relative z-10 mt-7 flex-1">
         <p className="text-sm md:text-[15px] text-white/60 leading-relaxed max-w-lg">{ev.desc}</p>
 
         <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -98,7 +98,7 @@ function EventCard({ ev, i }) {
         </div>
       </div>
 
-      <div className="relative z-10 mt-6 flex items-center justify-between gap-4" style={{ transform: 'translateZ(38px)' }}>
+      <div className="relative z-10 mt-6 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-xs font-mono tracking-[0.22em] uppercase text-[#a5f3fc]">
           <span className="w-2 h-2 rounded-full bg-[#67e8f9] animate-pulse" />
           Engage Protocol
@@ -117,7 +117,7 @@ function EventCard({ ev, i }) {
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             className="relative z-10 overflow-hidden"
           >
-            <div className="mt-6 border-t border-[#9D00FF]/14 pt-5" style={{ transform: 'translateZ(22px)' }}>
+            <div className="mt-6 border-t border-[#9D00FF]/14 pt-5">
               <div className="grid gap-5 md:grid-cols-[1.5fr_0.9fr]">
                 <div>
                   <p className="font-mono text-[10px] tracking-[0.28em] uppercase text-[#d8b4fe] mb-3">Rules / Storyline</p>
@@ -176,7 +176,7 @@ export default function EventsGrid() {
                 <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-[#d8b4fe]">Featured Event Systems</span>
               </div>
 
-              <h3 className="text-4xl md:text-7xl font-black font-heading tracking-tighter uppercase leading-[0.95]">
+              <h3 className="text-3xl sm:text-4xl md:text-7xl font-black font-heading tracking-tighter uppercase leading-[0.95]">
                 Holographic <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(90deg, #7b2cff 0%, #9D00FF 46%, #67e8f9 100%)' }}>Event Arena</span>
               </h3>
               <p className="mt-5 max-w-2xl text-white/45 font-body text-base md:text-lg leading-relaxed">
@@ -184,15 +184,15 @@ export default function EventsGrid() {
               </p>
             </div>
 
-            <div className="grid grid-cols-3 gap-3 w-full md:w-auto">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full md:w-auto">
               {[
                 { label: 'Programs', value: EVENT_STATS.totalCount, tone: 'text-[#9D00FF]' },
                 { label: 'Prize Pool', value: EVENT_STATS.totalPrizePoolLabel, tone: 'text-[#a5f3fc]' },
                 { label: 'Tracks', value: '2', tone: 'text-[#d8b4fe]' },
               ].map((item) => (
-                <div key={item.label} className="panel-sheen min-w-[110px] rounded-[1.4rem] border border-white/8 bg-white/[0.03] px-4 py-4 text-center">
-                  <p className="font-mono text-[9px] tracking-[0.24em] uppercase text-white/30">{item.label}</p>
-                  <p className={`mt-2 text-2xl md:text-3xl font-heading font-black ${item.tone}`}>{item.value}</p>
+                <div key={item.label} className="panel-sheen rounded-[1.4rem] border border-white/8 bg-white/[0.03] px-2 sm:px-4 py-3 sm:py-4 text-center">
+                  <p className="font-mono text-[8px] sm:text-[9px] tracking-[0.24em] uppercase text-white/30">{item.label}</p>
+                  <p className={`mt-1 sm:mt-2 text-lg sm:text-2xl md:text-3xl font-heading font-black ${item.tone}`}>{item.value}</p>
                 </div>
               ))}
             </div>

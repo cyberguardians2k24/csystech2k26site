@@ -25,21 +25,21 @@ function TimeBlock({ value, label }) {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.25, ease: 'easeOut' }}
                 whileHover={{ y: -4, scale: 1.03 }}
-                className="panel-sheen holographic-panel min-w-[78px] md:min-w-[112px] text-center px-4 py-4 md:py-5 border-vibranium/30 shadow-vibranium-glow rounded-[1.75rem]"
+                className="panel-sheen holographic-panel min-w-[58px] sm:min-w-[78px] md:min-w-[112px] text-center px-2 sm:px-4 py-3 sm:py-4 md:py-5 border-vibranium/30 shadow-vibranium-glow rounded-[1.75rem]"
             >
                 <div className="absolute inset-0 mesh-fade opacity-35 pointer-events-none" />
-                <span className="relative font-heading font-black text-3xl md:text-5xl bp-vibranium-text text-glow-vibranium tabular-nums">
+                <span className="relative font-heading font-black text-2xl sm:text-3xl md:text-5xl bp-vibranium-text text-glow-vibranium tabular-nums">
                     {display}
                 </span>
             </motion.div>
-            <span className="mt-2 font-mono text-[10px] md:text-xs tracking-[0.25em] text-vibranium/45 uppercase">{label}</span>
+            <span className="mt-1.5 font-mono text-[9px] sm:text-[10px] md:text-xs tracking-[0.25em] text-vibranium/45 uppercase">{label}</span>
         </div>
     );
 }
 
 function Separator() {
     return (
-        <span className="font-heading font-black text-3xl md:text-4xl text-vibranium text-glow-vibranium self-start mt-3 md:mt-4 select-none animate-pulse">
+        <span className="font-heading font-black text-lg sm:text-3xl md:text-4xl text-vibranium text-glow-vibranium self-start mt-2 sm:mt-3 md:mt-4 select-none animate-pulse">
             :
         </span>
     );
@@ -76,7 +76,7 @@ export default function CountdownBanner() {
                         <div className="h-px w-8 bg-vibranium" />
                     </div>
 
-                    <div className="flex items-start gap-3 md:gap-5">
+                    <div className="flex items-start gap-1.5 sm:gap-3 md:gap-5">
                         <TimeBlock value={time.days} label="Days" />
                         <Separator />
                         <TimeBlock value={time.hours} label="Hours" />

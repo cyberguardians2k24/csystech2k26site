@@ -523,7 +523,7 @@ export default function App() {
                       </button>
                     </div>
                 {/* 4-column grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-10 mb-8 md:mb-12">
 
                   {/* Brand */}
                   <div className="col-span-2 md:col-span-1 space-y-4">
