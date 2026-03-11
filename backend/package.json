@@ -6,7 +6,7 @@
     "build": "node node_modules/prisma/build/index.js generate && node node_modules/prisma/build/index.js migrate deploy && node node_modules/@nestjs/cli/bin/nest.js build",
     "start": "node node_modules/@nestjs/cli/bin/nest.js start",
     "start:dev": "node node_modules/@nestjs/cli/bin/nest.js start --watch",
-    "start:prod": "node node_modules/prisma/build/index.js migrate deploy && node dist/main",
+    "start:prod": "node node_modules/prisma/build/index.js migrate deploy && node scripts/create-admin.js && node dist/main",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio"
