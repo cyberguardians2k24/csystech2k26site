@@ -195,10 +195,10 @@ function RouteScene({ children, routeKey }) {
   return (
     <motion.div
       key={routeKey}
-      initial={{ opacity: 0, y: 36, scale: 0.985, filter: 'blur(10px)' }}
-      animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-      exit={{ opacity: 0, y: -20, scale: 1.01, filter: 'blur(8px)' }}
-      transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ opacity: 0, y: 24, scale: 0.99 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -12, scale: 1.005 }}
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </motion.div>
@@ -216,12 +216,14 @@ export default function App() {
   const lastPathRef = useRef(location.pathname);
 
   useEffect(() => {
+    // Skip Lenis on touch/mobile — native scroll is far smoother and faster
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+
     const lenis = new Lenis({
       duration: 1.15,
       lerp: 0.09,
       smoothWheel: true,
       wheelMultiplier: 0.9,
-      touchMultiplier: 1,
     });
 
     let rafId;

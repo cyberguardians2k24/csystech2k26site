@@ -176,9 +176,9 @@ export default function Hero() {
                   : (
                     <motion.span
                       key={i}
-                      initial={{ opacity: 0, y: 48, rotateX: -60, filter: 'blur(10px)' }}
+                      initial={{ opacity: 0, y: 48, rotateX: -60 }}
                       animate={videoReady
-                        ? { opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)' }
+                        ? { opacity: 1, y: 0, rotateX: 0 }
                         : {}}
                       transition={{ duration: 0.72, delay: 0.44 + i * 0.056, ease: [0.16, 1, 0.3, 1] }}
                       whileHover={{ scale: 1.10, textShadow: '0 0 60px rgba(255,255,255,0.95)' }}

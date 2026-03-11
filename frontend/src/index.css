@@ -620,3 +620,61 @@ select:focus {
 .stagger-children > *:nth-child(4) { animation-delay: 0.20s; }
 .stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
 .stagger-children > *:nth-child(6) { animation-delay: 0.30s; }
+
+/* ─── Mobile Scroll Performance ─────────────────────────────────────────── */
+/* On touch/mobile devices, disable GPU-heavy effects that cause scroll jank  */
+@media (pointer: coarse) {
+
+  /* 1. Kill backdrop-filter blur — the #1 scroll jank culprit on mobile */
+  .holographic-panel,
+  .glass-panel,
+  .panel-sheen,
+  .nav-command-shell {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Tailwind backdrop-blur utilities used throughout components */
+  [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* 2. Stop continuous CSS animations that repaint every frame */
+  .float-orb {
+    animation: none !important;
+  }
+
+  /* 3. Remove sheen-drift sweep animation from all panels */
+  .panel-sheen::after {
+    display: none !important;
+  }
+
+  /* 4. Stop spinning rings (event cards) */
+  .slow-spin {
+    animation: none !important;
+  }
+
+  /* 5. Stop vibranium text shimmer sweep (saves background-position repaints) */
+  .bp-vibranium-text {
+    background-position: 0% center !important;
+    animation: none !important;
+  }
+
+  /* 6. Stop vibranium-sweep, holo-flicker-soft, vibranium-glow-pulse */
+  .holo-flicker-soft,
+  .vibranium-glow-pulse {
+    animation: none !important;
+  }
+
+  /* 7. Enable momentum scrolling on iOS */
+  body {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+  }
+
+  /* 8. Promote fixed background to its own GPU composite layer */
+  .fixed {
+    will-change: auto;
+  }
+}
