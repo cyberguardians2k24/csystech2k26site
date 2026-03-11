@@ -14,6 +14,7 @@ import SectionDivider from './components/SectionDivider';
 
 // Hero is above-the-fold — eager import so it renders during the loading screen
 import Hero from './components/Hero';
+import CircuitBoard from './components/CircuitBoard';
 
 // Lazy-load below-fold sections only
 const EnergyReveal = lazy(() => import('./components/EnergyReveal'));
@@ -302,6 +303,7 @@ export default function App() {
 
   return (
     <div className="bg-wakanda-dark min-h-screen text-slate-50 font-body overflow-x-hidden relative">
+      <CircuitBoard />
       {!isTouch && <ClawTransition trigger={clawTrigger} color="#7b2cff" />}
       {!isTouch && <SectionPulseOverlay pulseKey={pulseKey} />}
       {!isTouch && <RouteTransitionOverlay transitionKey={routeTransitionKey} />}
