@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Admin ──────────────────────────────────────────────────────────────────
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      AdminRole @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+}
+
+// ─── Participant ─────────────────────────────────────────────────────────────
+model Participant {
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  phone         String
+  college       String
+  teamName      String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  registrations Registration[]
+}
+
+// ─── Event ───────────────────────────────────────────────────────────────────
+model Event {
+  id            Int            @id @default(autoincrement())
+  name          String
+  slug          String         @unique
+  description   String
+  category      EventCategory
+  maxTeamSize   Int            @default(1)
+  prizeAmount   String?
+  venue         String?
+  startTime     DateTime?
+  endTime       DateTime?
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  registrations Registration[]
+}
+
+enum EventCategory {
+  TECHNICAL
+  CODING
+  KNOWLEDGE
+  SKILL
+  KEYNOTE
+}
+
+// ─── Registration ────────────────────────────────────────────────────────────
+model Registration {
+  id            Int                @id @default(autoincrement())
+  participantId Int
+  eventId       Int
+  status        RegistrationStatus @default(PENDING)
+  paymentStatus PaymentStatus      @default(UNPAID)
+  paymentRef    String?
+  paymentScreenshot String?        @db.Text
+  amount        Float              @default(0)
+  notes         String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  event         Event       @relation(fields: [eventId],       references: [id], onDelete: Cascade)
+
+  @@unique([participantId, eventId])
+}
+
+enum RegistrationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  WAITLISTED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PENDING
+  PAID
+  REFUNDED
+}
