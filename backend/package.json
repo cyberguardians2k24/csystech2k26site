@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "nest build",
-    "start": "set PRISMA_CLIENT_ENGINE_TYPE=library&& nest start",
-    "start:dev": "set PRISMA_CLIENT_ENGINE_TYPE=library&& nest start --watch",
-    "start:prod": "set PRISMA_CLIENT_ENGINE_TYPE=library&& node dist/main",
+    "build": "node node_modules/@nestjs/cli/bin/nest.js build",
+    "start": "node node_modules/@nestjs/cli/bin/nest.js start",
+    "start:dev": "node node_modules/@nestjs/cli/bin/nest.js start --watch",
+    "start:prod": "node dist/main",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio"
