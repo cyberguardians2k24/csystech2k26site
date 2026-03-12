@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EVENT_STATS, NON_TECHNICAL_EVENTS } from '../data/events';
+import { SYMPOSIUM_INFO } from '../data/symposium';
 
 // ── Re-usable EventCard ────────────────────────────────────────────────────
 function EventCard({ event, index }) {
@@ -137,7 +138,7 @@ export default function NonTechnicalEvents() {
           transition={{ duration: 0.7 }}
         >
           <span className="inline-block text-[10px] font-mono tracking-[0.3em] text-vibranium uppercase mb-4 border border-vibranium/20 px-4 py-1.5 rounded-full bg-vibranium/5">
-            CYSTECH 2K26
+            {SYMPOSIUM_INFO.eventName}
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-heading font-black tracking-tight leading-none mb-4">
             <span className="bg-gradient-to-r from-vibranium via-vibranium-light to-vibranium bg-clip-text text-transparent">
@@ -147,7 +148,7 @@ export default function NonTechnicalEvents() {
             Events
           </h1>
           <p className="text-white/50 text-lg max-w-xl mx-auto">
-            From Kabbadi and E-Sports to Connections and short filmmaking, this track is built for energy, showmanship, and crowd moments.
+            Arena (Free Fire), Arena (BGMI), Kabbadi, Link Logic, and Short Film make up the non-technical track for {SYMPOSIUM_INFO.eventName}.
           </p>
         </motion.div>
 
@@ -160,9 +161,9 @@ export default function NonTechnicalEvents() {
         >
           {[
             { value: String(EVENT_STATS.nonTechnicalCount), label: 'Events' },
-            { value: EVENT_STATS.nonTechnicalPrizePoolLabel, label: 'Total Prize Pool' },
-            { value: '2', label: 'Days' },
-            { value: '420+', label: 'Expected Participants' },
+            { value: SYMPOSIUM_INFO.dateDisplay, label: 'Date' },
+            { value: SYMPOSIUM_INFO.venue, label: 'Venue' },
+            { value: SYMPOSIUM_INFO.theme, label: 'Theme' },
           ].map(({ value, label }) => (
             <div key={label} className="text-center">
               <p className="text-3xl font-heading font-black text-white">{value}</p>

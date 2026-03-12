@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const FAQS = [
   {
-    q: "Who can participate in CYSTECH 2026?",
+    q: "Who can participate in CYSTECH 2K26?",
     a: "Any undergraduate or postgraduate student from a recognized college or university can participate. There are no branch restrictions — all disciplines are welcome!"
   },
   {
@@ -16,11 +16,11 @@ const FAQS = [
   },
   {
     q: "Do I need to bring my own laptop?",
-    a: "Yes for Debugging, Vulnerab-Web Check, and Fun Coding. For Paper Presentation, Technical Quiz, Connections, Kabbadi, and most stage events, organizers will guide the required setup."
+    a: "Yes for Bug Bash, Payload Paradise, and Design Duel. Paper Presentation participants must also bring their own device for presenting the poster."
   },
   {
     q: "Can I participate as a team?",
-    a: "Yes. Team sizes vary by event: Kabbadi is team-based, Technical Quiz and Connections use pairs, while Debugging, Vulnerab-Web Check, and Fun Coding allow solo entries."
+    a: "Yes. Team sizes vary by event: Paper Presentation allows 2 to 3 members, Bug Bash allows solo or duo participation, Payload Paradise allows teams of 3 to 4, Design Duel needs exactly 2 members, and Link Logic needs 4 members."
   },
   {
     q: "Will accommodation be provided?",
@@ -32,19 +32,19 @@ const FAQS = [
   },
   {
     q: "What is the prize distribution process?",
-    a: "Prizes will be distributed on Day 2 during the Valedictory Ceremony. Winners must be present in-person to claim their awards."
+    a: "Prizes and certificates will be distributed from 3:00 PM to 3:30 PM. Participants should come to the EEE auditorium to collect them."
   },
   {
     q: "Is there a dress code for participants?",
     a: "There is no strict dress code. Smart casual or college attire is recommended. Participants representing their college are encouraged to wear their ID cards at all times during the event."
   },
   {
-    q: "Can participants attend as observers without competing?",
-    a: "Yes! You can attend CYSTECH 2026 as an observer. Simply register and leave the event selection empty. Observer passes grant access to all keynotes, showcases, and the Valedictory Ceremony."
+    q: "Can participants attend if they are not competing in every event?",
+    a: "Yes. Participants can register for the event slots they prefer, but parallel events happen at the same time, so only one event can be attended in each parallel slot."
   },
   {
     q: "Will there be food and refreshments?",
-    a: "Yes. Complimentary refreshments will be provided during break slots on both days. Lunch will be available at the campus canteen at participant-friendly rates."
+    a: "Yes. Refreshments are provided around 11:00 AM to 11:15 AM, and lunch is scheduled from 12:15 PM to 1:00 PM."
   },
 ];
 

@@ -63,6 +63,21 @@ export default function Navbar() {
     setActiveLink(location.pathname)
   }, [location.pathname])
 
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (!mobileOpen) return undefined
+
+    const { overflow } = document.body.style
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = overflow
+    }
+  }, [mobileOpen])
+
   const currentPageLabel = useMemo(() => {
     if (location.pathname.startsWith('/register/')) return 'Event Registration'
     return PAGE_LABELS[location.pathname] ?? 'CYSTECH 2K26'
@@ -97,9 +112,9 @@ export default function Navbar() {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pt-4"
+        className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4"
       >
-        <div className={`nav-command-shell mx-auto max-w-5xl rounded-[1.2rem] px-3 py-2 flex items-center justify-between gap-3 transition-all duration-700 ${scrolled ? 'bg-wakanda-darker/92 shadow-[0_20px_80px_rgba(0,0,0,0.45)] border border-vibranium/16 backdrop-blur-2xl' : 'bg-[#06020d]/74 border border-[#c084fc]/10 backdrop-blur-xl'}`}>
+        <div className={`nav-command-shell mx-auto max-w-5xl rounded-[1.2rem] px-3 py-2.5 sm:py-2 flex items-center justify-between gap-2 sm:gap-3 transition-all duration-700 ${scrolled ? 'bg-wakanda-darker/92 shadow-[0_20px_80px_rgba(0,0,0,0.45)] border border-vibranium/16 backdrop-blur-2xl' : 'bg-[#06020d]/74 border border-[#c084fc]/10 backdrop-blur-xl'}`}>
           <button
             onClick={() => handleNavClick('#hero')}
             className="hidden md:flex items-center gap-2 rounded-full border border-[#67e8f9]/14 bg-[#071019]/38 px-3 py-1.5"
@@ -111,12 +126,15 @@ export default function Navbar() {
           {/* Mobile-only brand */}
           <button
             onClick={() => handleNavClick('#hero')}
-            className="md:hidden flex items-center gap-2"
+            className="md:hidden flex min-w-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1.5"
           >
-            <div className="w-7 h-7 rounded-full bg-vibranium/20 border border-vibranium/40 flex items-center justify-center shadow-vibranium-glow">
+            <div className="w-8 h-8 rounded-full bg-vibranium/20 border border-vibranium/40 flex items-center justify-center shadow-vibranium-glow shrink-0">
               <span className="font-heading font-black text-white text-xs">C</span>
             </div>
-            <span className="font-heading font-black text-white text-sm tracking-widest">CYSTECH</span>
+            <div className="min-w-0 text-left">
+              <div className="font-heading font-black text-white text-sm tracking-[0.22em] leading-none">CYSTECH</div>
+              <div className="font-mono text-[8px] tracking-[0.22em] uppercase text-white/45 truncate">{currentPageLabel}</div>
+            </div>
           </button>
 
           <div className="hidden lg:flex items-center gap-1 rounded-full border border-[#c084fc]/14 bg-[#090311]/70 px-1.5 py-1 mx-auto shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
@@ -146,85 +164,122 @@ export default function Navbar() {
             </button>
           </div>
 
-          <motion.button
-            whileTap={{ scale: 0.92 }}
-            className="lg:hidden flex flex-col gap-1.5 p-2.5 rounded-full border border-[#c084fc]/18 bg-[#08020f]/74 backdrop-blur-xl relative z-50 group shrink-0"
-            onClick={() => setMobileOpen((value) => !value)}
-            aria-label="Toggle menu"
-          >
-            {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                className={`block h-[3px] bg-vibranium-light rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(157,0,255,0.8)] ${mobileOpen
-                  ? i === 0 ? 'w-7 rotate-45 translate-y-[7px]' : i === 1 ? 'opacity-0 w-0' : 'w-7 -rotate-45 -translate-y-[7px]'
-                  : i === 1 ? 'w-5 ml-auto' : 'w-7'
-                }`}
-              />
-            ))}
-          </motion.button>
+          <div className="md:hidden flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => handleNavClick('#register')}
+              className="px-3 py-2 rounded-full border border-[#a855f7]/28 bg-[linear-gradient(135deg,rgba(168,85,247,0.72),rgba(14,165,233,0.22))] text-white font-heading font-bold text-[10px] tracking-[0.18em] uppercase shadow-[0_0_22px_rgba(168,85,247,0.18)]"
+            >
+              Register
+            </button>
+
+            <motion.button
+              whileTap={{ scale: 0.92 }}
+              className="lg:hidden flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full border border-[#c084fc]/18 bg-[#08020f]/74 backdrop-blur-xl relative z-50 group shrink-0"
+              onClick={() => setMobileOpen((value) => !value)}
+              aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
+            >
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  className={`block h-[2px] bg-vibranium-light rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(157,0,255,0.8)] ${mobileOpen
+                    ? i === 0 ? 'w-5 rotate-45 translate-y-[7px]' : i === 1 ? 'opacity-0 w-0' : 'w-5 -rotate-45 -translate-y-[7px]'
+                    : i === 1 ? 'w-3 ml-auto' : 'w-5'
+                  }`}
+                />
+              ))}
+            </motion.button>
+          </div>
         </div>
       </motion.nav>
 
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: '-100%', height: 0 }}
-            animate={{ opacity: 1, y: 0, height: '100vh' }}
-            exit={{ opacity: 0, y: '-100%', height: 0 }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-40 bg-wakanda-darker/98 backdrop-blur-3xl pt-24 px-6 flex flex-col gap-2 border-b-2 border-vibranium/50"
-          >
-            <div className="absolute inset-0 bg-holo-grid opacity-10 pointer-events-none" />
-
-            <div className="flex flex-col gap-6 relative z-10">
-              <div className="mb-2 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4">
-                <p className="font-mono text-[10px] tracking-[0.28em] uppercase text-[#9D00FF]/70">Current Page</p>
-                <p className="mt-2 text-white font-heading text-lg font-black">{currentPageLabel}</p>
-              </div>
-
-              {NAV_LINKS.map((link, i) => (
-                <motion.button
-                  key={link.href}
-                  initial={{ opacity: 0, x: -40 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -40 }}
-                  transition={{ duration: 0.35, delay: i * 0.06 }}
-                  onClick={() => handleNavClick(link.href)}
-                  className="group relative text-left py-4 border-b border-vibranium-dark/20 overflow-hidden"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-vibranium-dark/30 to-transparent -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
-
-                  <div className="relative flex items-center justify-between">
-                    <span className={`font-orbitron text-[1.35rem] font-bold tracking-[0.18em] transition-colors duration-300 ${activeLink === link.href || location.pathname === link.href ? 'text-vibranium-light' : 'text-white/90 group-hover:text-vibranium-light'}`}>
-                      {link.label}
-                    </span>
-                    <motion.div
-                      className="w-8 h-px bg-vibranium-light opacity-0 group-hover:opacity-100 transition-opacity"
-                      initial={{ scaleX: 0 }}
-                      whileHover={{ scaleX: 1 }}
-                    />
-                  </div>
-                </motion.button>
-              ))}
-
-              <motion.button
-                initial={{ opacity: 0, x: -40 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.35, delay: NAV_LINKS.length * 0.06 }}
-                onClick={() => handleNavClick('#register')}
-                className="panel-sheen mt-4 py-4 rounded-2xl border border-[#a855f7]/35 bg-[linear-gradient(135deg,rgba(168,85,247,0.72),rgba(14,165,233,0.26))] text-white font-orbitron text-sm tracking-[0.22em] uppercase font-bold shadow-[0_0_30px_rgba(168,85,247,0.22)]"
-              >
-                Register Now
-              </motion.button>
-            </div>
+          <>
+            <motion.button
+              type="button"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-40 bg-[#020104]/72 backdrop-blur-md"
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close mobile menu"
+            />
 
             <motion.div
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ delay: 0.45, duration: 0.7 }}
-              className="mt-auto mb-12 h-1 w-full bg-gradient-to-r from-vibranium-dark via-vibranium to-vibranium-light shadow-vibranium-glow"
-            />
-          </motion.div>
+              initial={{ opacity: 0, y: -16, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -12, scale: 0.98 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed left-3 right-3 top-[4.8rem] z-50 rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(10,4,18,0.98),rgba(5,2,10,0.98))] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.55)] backdrop-blur-3xl md:hidden"
+            >
+              <div className="absolute inset-0 rounded-[1.75rem] bg-[radial-gradient(circle_at_top,rgba(168,85,247,0.16),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,0.10),transparent_36%)] pointer-events-none" />
+
+              <div className="relative z-10 flex flex-col gap-4">
+                <div className="flex items-start justify-between gap-3 rounded-[1.35rem] border border-white/8 bg-white/[0.03] px-4 py-3.5">
+                  <div>
+                    <p className="font-mono text-[9px] tracking-[0.28em] uppercase text-[#9D00FF]/75">Current Page</p>
+                    <p className="mt-2 text-white font-heading text-base font-black tracking-[0.08em]">{currentPageLabel}</p>
+                  </div>
+                  <button
+                    onClick={() => setMobileOpen(false)}
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/75"
+                    aria-label="Close menu"
+                  >
+                    <span className="text-lg leading-none">+</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5">
+                  {NAV_LINKS.map((link, i) => {
+                    const active = activeLink === link.href || location.pathname === link.href
+
+                    return (
+                      <motion.button
+                        key={link.href}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 12 }}
+                        transition={{ duration: 0.25, delay: i * 0.04 }}
+                        onClick={() => handleNavClick(link.href)}
+                        className={`rounded-[1.2rem] border px-4 py-3.5 text-left transition-all duration-300 ${active ? 'border-[#a855f7]/45 bg-[linear-gradient(135deg,rgba(168,85,247,0.18),rgba(14,165,233,0.10))] shadow-[0_0_24px_rgba(168,85,247,0.12)]' : 'border-white/8 bg-white/[0.03] hover:border-white/14 hover:bg-white/[0.05]'}`}
+                      >
+                        <div className="font-heading text-sm font-black uppercase tracking-[0.16em] text-white/92">{link.label}</div>
+                        <div className="mt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/35">
+                          {active ? 'Active route' : 'Open section'}
+                        </div>
+                      </motion.button>
+                    )
+                  })}
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5">
+                  <motion.button
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, delay: 0.22 }}
+                    onClick={() => handleNavClick('#register')}
+                    className="panel-sheen rounded-[1.2rem] border border-[#a855f7]/35 bg-[linear-gradient(135deg,rgba(168,85,247,0.78),rgba(14,165,233,0.22))] px-4 py-4 text-left shadow-[0_0_30px_rgba(168,85,247,0.18)]"
+                  >
+                    <div className="font-heading text-sm font-black uppercase tracking-[0.16em] text-white">Register</div>
+                    <div className="mt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/65">Go to access form</div>
+                  </motion.button>
+
+                  <motion.button
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, delay: 0.26 }}
+                    onClick={() => handleNavClick('#events')}
+                    className="rounded-[1.2rem] border border-[#22d3ee]/16 bg-[linear-gradient(135deg,rgba(34,211,238,0.12),rgba(255,255,255,0.03))] px-4 py-4 text-left"
+                  >
+                    <div className="font-heading text-sm font-black uppercase tracking-[0.16em] text-white">Events</div>
+                    <div className="mt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/55">Browse highlights</div>
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

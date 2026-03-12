@@ -131,7 +131,7 @@ export default function RegistrationCTA() {
               </span>
             </motion.h2>
             <p className="mt-4 text-white/50 font-mono text-sm max-w-md mx-auto tracking-wide leading-relaxed">
-              March 15–16, 2026 · Limited slots · Fill in your details below.
+              April 8, 2026 · Limited slots · Fill in your details below.
             </p>
           </div>
 
@@ -257,7 +257,7 @@ export default function RegistrationCTA() {
                 <div>
                   <h3 className="text-3xl font-black font-heading text-white mb-2">Access Granted</h3>
                   <p className="text-white/50 font-mono text-sm">Confirmation has been sent to <span className="text-[#67e8f9]">{form.email}</span>.</p>
-                  <p className="text-white/30 font-mono text-xs mt-2 tracking-widest">Your event shortlist is locked in for CYSTECH 2026.</p>
+                  <p className="text-white/30 font-mono text-xs mt-2 tracking-widest">Your event shortlist is locked in for CYSTECH 2K26.</p>
                 </div>
               </motion.div>
             )}

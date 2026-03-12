@@ -35,7 +35,7 @@ export default function Footer() {
               Where vibranium meets vision.
             </p>
             <div className="font-mono text-vibranium-600 text-xs tracking-widest">
-              MARCH 2026
+              APRIL 2026
             </div>
           </div>
 
@@ -66,7 +66,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="font-mono text-white/25 text-xs tracking-widest text-center">
-            © 2026 CYSTECH — DEPT OF COMPUTER SCIENCE · ALL RIGHTS RESERVED
+            © 2026 CYSTECH — SYMPOSIUM TEAM · ALL RIGHTS RESERVED
           </p>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse-slow" />

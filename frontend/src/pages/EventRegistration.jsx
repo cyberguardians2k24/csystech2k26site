@@ -399,7 +399,7 @@ export default function EventRegistration() {
                   <div className="mb-6">
                     <h2 className="text-2xl font-black font-heading tracking-tight text-white">Register for</h2>
                     <p className="text-vibranium font-heading font-black text-xl leading-tight">{event.title}</p>
-                    <p className="text-white/30 font-mono text-[10px] tracking-widest mt-1 uppercase">March 15–16, 2026 · Payment verification required</p>
+                    <p className="text-white/30 font-mono text-[10px] tracking-widest mt-1 uppercase">April 8, 2026 · Payment verification required</p>
                   </div>
 
                   <div className="rounded-[1.6rem] border border-vibranium/20 bg-[linear-gradient(180deg,rgba(157,0,255,0.08),rgba(255,255,255,0.02))] p-5">

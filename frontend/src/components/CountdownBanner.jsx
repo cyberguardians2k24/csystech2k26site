@@ -1,8 +1,9 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { EVENT_STATS } from '../data/events';
+import { SYMPOSIUM_INFO } from '../data/symposium';
 
-const EVENT_DATE = new Date('2026-03-15T09:00:00');
+const EVENT_DATE = new Date(SYMPOSIUM_INFO.eventDateISO);
 
 function getTimeLeft() {
     const diff = EVENT_DATE - new Date();
@@ -47,6 +48,7 @@ function Separator() {
 
 export default function CountdownBanner() {
     const [time, setTime] = useState(getTimeLeft());
+    const isPastEvent = EVENT_DATE <= new Date();
 
     useEffect(() => {
         const id = setInterval(() => setTime(getTimeLeft()), 1000);
@@ -71,7 +73,7 @@ export default function CountdownBanner() {
                     <div className="panel-sheen inline-flex items-center gap-3 px-5 py-2 rounded-full border border-vibranium/20 bg-wakanda-dark/70 backdrop-blur-xl">
                         <div className="h-px w-8 bg-vibranium" />
                         <p className="font-mono text-xs tracking-[0.3em] text-vibranium-light uppercase text-glow-vibranium">
-                            Event Commences In
+                            {isPastEvent ? 'Event Archive' : 'Event Commences In'}
                         </p>
                         <div className="h-px w-8 bg-vibranium" />
                     </div>
@@ -89,8 +91,8 @@ export default function CountdownBanner() {
                     {/* Date/venue info row */}
                                         <div className="flex flex-wrap justify-center gap-3 mt-3">
                         {[
-                            { icon: '📅', text: 'March 15–16, 2026' },
-                            { icon: '📍', text: 'Main Campus Arena' },
+                            { icon: '📅', text: SYMPOSIUM_INFO.dateDisplay },
+                            { icon: '📍', text: `${SYMPOSIUM_INFO.campus} · ${SYMPOSIUM_INFO.venue}` },
                             { icon: '🏆', text: `${EVENT_STATS.totalPrizePoolLabel} Prizes`, gold: true },
                             { icon: '🎯', text: `${EVENT_STATS.totalCount} Events` },
                         ].map(({ icon, text, gold }) => (

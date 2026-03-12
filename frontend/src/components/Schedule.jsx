@@ -1,30 +1,8 @@
 ﻿import React, { useRef, useState } from 'react';
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion';
+import { EVENT_DAY_SCHEDULE, SYMPOSIUM_INFO } from '../data/symposium';
 
-const SCHEDULE = {
-  "Day 1": [
-    { time: "08:30", name: "Registration & Check-In", desc: "Badge collection, team reporting, and participant briefing at the main lobby.", tag: "LOGISTICS" },
-    { time: "09:15", name: "Inaugural Launch", desc: "Opening ceremony and arena launch for CYSTECH 2K26.", tag: "KEYNOTE" },
-    { time: "10:30", name: "Paper Presentation", desc: "Research papers presented and evaluated by faculty and guest jury.", tag: "COMPETITION" },
-    { time: "12:00", name: "Connections", desc: "Round-based clue linking and pattern discovery contest begins.", tag: "COMPETITION" },
-    { time: "13:00", name: "Lunch Break", desc: "Networking lunch across sponsor and showcase zones.", tag: "BREAK" },
-    { time: "01:30", name: "Debugging", desc: "Timed code-fix challenge across multiple programming languages.", tag: "COMPETITION" },
-    { time: "03:30", name: "Technical Quiz", desc: "Prelims and finals in a high-voltage rapid-fire knowledge battle.", tag: "COMPETITION" },
-    { time: "04:00", name: "E-Sports Brackets", desc: "Qualifier matches and knockouts start inside the gaming zone.", tag: "COMPETITION" },
-    { time: "06:00", name: "Campus Spotlight", desc: "Open lounge, networking, and creator corner experiences.", tag: "SOCIAL" },
-  ],
-  "Day 2": [
-    { time: "09:00", name: "Kabbadi League Matches", desc: "Ground heats and knockout progression begin at the sports arena.", tag: "COMPETITION" },
-    { time: "10:00", name: "Vulnerab-Web Check", desc: "Participants audit staged web apps for exploitable issues.", tag: "COMPETITION" },
-    { time: "10:00", name: "Short Film Contest", desc: "Theme reveal, shoot window, and editing sprint begin.", tag: "COMPETITION" },
-    { time: "12:30", name: "Lunch Break", desc: "Judging prep, networking, and recharge session.", tag: "BREAK" },
-    { time: "02:00", name: "Fun Coding", desc: "Logic rounds, code puzzles, and debug races in the programming lab.", tag: "COMPETITION" },
-    { time: "03:30", name: "Kabbadi Finals", desc: "Title clash for the non-technical sports championship.", tag: "COMPETITION" },
-    { time: "04:00", name: "E-Sports Grand Finals", desc: "Final streamed matches with live commentary and prize announcements.", tag: "COMPETITION" },
-    { time: "05:30", name: "Winners Showcase", desc: "Short film screening and top poster walkthrough with jury notes.", tag: "SOCIAL" },
-    { time: "06:00", name: "Valedictory & Awards", desc: "Champion reveal, prize distribution, and closing address.", tag: "CEREMONY" },
-  ]
-};
+const SCHEDULE = EVENT_DAY_SCHEDULE;
 
 const TAG_COLORS = {
   KEYNOTE: "text-holo-cyan border-holo-cyan/30 bg-holo-cyan/5",
@@ -38,7 +16,7 @@ const TAG_COLORS = {
 
 export default function Schedule() {
   const containerRef = useRef(null);
-  const [activeDay, setActiveDay] = useState('Day 1');
+  const [activeDay, setActiveDay] = useState(Object.keys(SCHEDULE)[0]);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start end", "end start"] });
   const lineProgress = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   const days = Object.keys(SCHEDULE);
@@ -69,17 +47,17 @@ export default function Schedule() {
           <div className="panel-sheen rounded-[1.8rem] border border-white/8 bg-[#09020f]/72 px-8 py-4 flex flex-wrap gap-6 items-center justify-center text-sm mb-10 backdrop-blur-xl">
             <div className="flex items-center gap-2 text-white/50 font-mono text-xs tracking-widest">
               <span className="text-[#67e8f9]">📍</span>
-              <span>Auditorium & Labs, Main Campus</span>
+              <span>{SYMPOSIUM_INFO.venue}</span>
             </div>
             <div className="w-px h-4 bg-[#7b2cff]/20 hidden sm:block" />
             <div className="flex items-center gap-2 text-white/50 font-mono text-xs tracking-widest">
               <span className="text-[#9D00FF]">📅</span>
-              <span>March 15–16, 2026</span>
+              <span>{SYMPOSIUM_INFO.dateDisplay}</span>
             </div>
             <div className="w-px h-4 bg-[#7b2cff]/20 hidden sm:block" />
             <div className="flex items-center gap-2 text-white/50 font-mono text-xs tracking-widest">
               <span className="text-[#d8b4fe]">⏱</span>
-              <span>09:00 AM onwards</span>
+              <span>{SYMPOSIUM_INFO.time}</span>
             </div>
           </div>
 

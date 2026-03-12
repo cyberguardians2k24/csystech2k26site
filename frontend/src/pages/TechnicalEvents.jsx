@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EVENT_STATS, TECHNICAL_EVENTS } from '../data/events';
+import { SYMPOSIUM_INFO } from '../data/symposium';
 
 // ── Re-usable EventCard (same style as EventsGrid) ─────────────────────────
 function EventCard({ event, index }) {
@@ -147,7 +148,7 @@ export default function TechnicalEvents() {
           transition={{ duration: 0.7 }}
         >
           <span className="inline-block text-[10px] font-mono tracking-[0.3em] text-holo-cyan uppercase mb-4 border border-holo-cyan/20 px-4 py-1.5 rounded-full bg-holo-cyan/5">
-            CYSTECH 2K26
+            {SYMPOSIUM_INFO.eventName}
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-heading font-black tracking-tight leading-none mb-4">
             <span className="bg-gradient-to-r from-vibranium via-holo-cyan to-vibranium-light bg-clip-text text-transparent">
@@ -157,7 +158,7 @@ export default function TechnicalEvents() {
             Events
           </h1>
           <p className="text-white/50 text-lg max-w-xl mx-auto">
-            Posters, bug hunting, secure web testing, fast coding, and quiz warfare — five sharp technical arenas built for serious competitors.
+            Poster Presentation, Bug Bash, Neuro Byte, Payload Paradise, and Design Duel form the technical track for {SYMPOSIUM_INFO.eventName}.
           </p>
         </motion.div>
 
@@ -170,9 +171,9 @@ export default function TechnicalEvents() {
         >
           {[
             { value: String(EVENT_STATS.technicalCount), label: 'Events' },
-            { value: EVENT_STATS.technicalPrizePoolLabel, label: 'Total Prize Pool' },
-            { value: '2', label: 'Days' },
-            { value: '350+', label: 'Expected Participants' },
+            { value: SYMPOSIUM_INFO.dateDisplay, label: 'Date' },
+            { value: SYMPOSIUM_INFO.venue, label: 'Venue' },
+            { value: SYMPOSIUM_INFO.theme, label: 'Theme' },
           ].map(({ value, label }) => (
             <div key={label} className="text-center">
               <p className="text-3xl font-heading font-black text-white">{value}</p>
