@@ -188,6 +188,28 @@ h6 {
   box-shadow: 0 0 20px rgba(157,0,255,0.12);
 }
 
+/* ─── Hero shimmer text (GlitchTitle) ──────────────────────────────────── */
+.hero-shimmer-text {
+  background: linear-gradient(
+    110deg,
+    #ffffff 0%,
+    #c4b5fd 30%,
+    #9D00FF 50%,
+    #c4b5fd 70%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer-sweep 3.5s linear infinite;
+}
+
+@keyframes shimmer-sweep {
+  from { background-position: 200% center; }
+  to   { background-position: -200% center; }
+}
+
 /* ─── Hero letter animation ─────────────────────────────────────────────── */
 .hero-letter {
   display: inline-block;

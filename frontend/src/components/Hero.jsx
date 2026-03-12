@@ -1,330 +1,463 @@
-import React, { useState, useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef, useCallback, lazy, Suspense, useEffect } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import heroVideo from '../../Assets/hero/cystek cdo 2 selected.mp4';
+const HeroParticles = lazy(() => import('./HeroParticles'));
 
 const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
 
-/* ── letter array for stagger animation ── */
-const TITLE_CHARS = 'CYSTECH 2K26'.split('');
+const GLYPH_TONES = {
+  vibranium: {
+    backgroundImage: 'linear-gradient(135deg, #f5f3ff 0%, #c4b5fd 25%, #9D00FF 58%, #5b21b6 100%)',
+    textShadow: '0 0 18px rgba(157,0,255,0.38)',
+  },
+  cyan: {
+    backgroundImage: 'linear-gradient(135deg, #ecfeff 0%, #a5f3fc 35%, #00f0ff 68%, #0891b2 100%)',
+    textShadow: '0 0 18px rgba(0,240,255,0.34)',
+  },
+  silver: {
+    backgroundImage: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 35%, #cbd5e1 65%, #94a3b8 100%)',
+    textShadow: '0 0 16px rgba(255,255,255,0.24)',
+  },
+};
 
 const STATS = [
-  { value: '50+',  label: 'Events'       },
-  { value: '1K+',  label: 'Participants' },
-  { value: '25+',  label: 'Speakers'     },
-  { value: '12+',  label: 'Sponsors'     },
+  { value: '50+', label: 'Events', glyph: '⬢', tone: 'vibranium' },
+  { value: '1K+', label: 'Participants', glyph: '✦', tone: 'cyan' },
+  { value: '25+', label: 'Speakers', glyph: '◈', tone: 'silver' },
+  { value: '12+', label: 'Sponsors', glyph: '❖', tone: 'vibranium' },
 ];
 
-/* ── HUD corner bracket ── */
-function Corner({ pos }) {
-  const classes = {
-    tl: 'top-5 left-5   border-t-2 border-l-2',
-    tr: 'top-5 right-5  border-t-2 border-r-2',
-    bl: 'bottom-5 left-5  border-b-2 border-l-2',
-    br: 'bottom-5 right-5 border-b-2 border-r-2',
-  }[pos];
+// floating emoji orbs
+const FLOAT_EMOJIS = [
+  { glyph: '✦', tone: 'cyan', x: '8%',  y: '18%', delay: 0,   dur: 7.2, size: 'text-2xl sm:text-3xl', glow: 'rgba(0,240,255,0.35)', driftX: 18, driftY: 20, rotate: 18, blur: '0px' },
+  { glyph: '⬢', tone: 'vibranium', x: '88%', y: '22%', delay: 0.6, dur: 6.8, size: 'text-2xl sm:text-3xl', glow: 'rgba(157,0,255,0.28)', driftX: -22, driftY: 16, rotate: -16, blur: '0px' },
+  { glyph: '◈', tone: 'silver', x: '5%',  y: '65%', delay: 1.1, dur: 7.5, size: 'text-xl sm:text-2xl', glow: 'rgba(203,213,225,0.30)', driftX: 14, driftY: -18, rotate: 14, blur: '1px' },
+  { glyph: '❖', tone: 'cyan', x: '92%', y: '70%', delay: 0.3, dur: 6.6, size: 'text-2xl sm:text-3xl', glow: 'rgba(0,240,255,0.24)', driftX: -20, driftY: -22, rotate: 15, blur: '0px' },
+  { glyph: '✧', tone: 'silver', x: '50%', y: '8%',  delay: 0.8, dur: 5.8, size: 'text-xl sm:text-2xl', glow: 'rgba(255,255,255,0.28)', driftX: 0, driftY: 18, rotate: 10, blur: '0px' },
+  { glyph: '◬', tone: 'vibranium', x: '18%', y: '88%', delay: 1.4, dur: 7.1, size: 'text-xl sm:text-2xl', glow: 'rgba(157,0,255,0.24)', driftX: 20, driftY: -14, rotate: -18, blur: '0px' },
+  { glyph: '▣', tone: 'cyan', x: '80%', y: '85%', delay: 0.5, dur: 7.4, size: 'text-xl sm:text-2xl', glow: 'rgba(0,240,255,0.24)', driftX: -18, driftY: -12, rotate: -12, blur: '0px' },
+  { glyph: '⬡', tone: 'vibranium', x: '72%', y: '12%', delay: 1.7, dur: 8.1, size: 'text-xl sm:text-2xl', glow: 'rgba(157,0,255,0.26)', driftX: -24, driftY: 18, rotate: 12, blur: '1px' },
+  { glyph: '◉', tone: 'silver', x: '24%', y: '12%', delay: 1.2, dur: 7.9, size: 'text-xl sm:text-2xl', glow: 'rgba(196,181,253,0.30)', driftX: 16, driftY: 24, rotate: -14, blur: '0px' },
+];
+
+const HERO_BURST_EMOJIS = [
+  { glyph: '✦', tone: 'cyan', x: -160, y: -90, delay: 0.05, rotate: -24 },
+  { glyph: '✧', tone: 'silver', x: -90, y: -122, delay: 0.14, rotate: 12 },
+  { glyph: '⬢', tone: 'vibranium', x: 150, y: -82, delay: 0.18, rotate: 26 },
+  { glyph: '❖', tone: 'vibranium', x: 182, y: 24, delay: 0.28, rotate: -18 },
+  { glyph: '◈', tone: 'silver', x: 86, y: 122, delay: 0.36, rotate: 16 },
+  { glyph: '◬', tone: 'cyan', x: -136, y: 92, delay: 0.24, rotate: -12 },
+];
+
+// Staggered children wrapper
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.10, delayChildren: 0.25 } } };
+const fadeBlurUp = {
+  hidden: { opacity: 0, y: 40, filter: 'blur(12px)', scale: 0.95 },
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1, transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] } },
+};
+
+function GlitchTitle({ ready }) {
+  const [glitch, setGlitch] = useState(false);
+  useEffect(() => {
+    if (!ready) return;
+    const fire = () => {
+      setGlitch(true);
+      setTimeout(() => setGlitch(false), 180);
+    };
+    fire();
+    const id = setInterval(fire, 3800);
+    return () => clearInterval(id);
+  }, [ready]);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 0.6, scale: 1 }}
-      transition={{ duration: 0.7, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
-      className={`absolute w-7 h-7 border-white/40 rounded-[2px] pointer-events-none ${classes}`}
-    />
+    <div className="relative overflow-hidden">
+      <motion.h1
+        initial={{ y: '105%', opacity: 0 }}
+        animate={ready ? { y: 0, opacity: 1 } : {}}
+        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+        className="text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-none tracking-tight hero-shimmer-text select-none"
+      >
+        CYSTECH 2K26
+      </motion.h1>
+      {/* glitch layers */}
+      <AnimatePresence>
+        {glitch && (
+          <>
+            <motion.h1
+              key="g1"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 0.7, 0] }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.12 }}
+              className="absolute inset-0 text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-none tracking-tight pointer-events-none select-none"
+              style={{ color: '#00f0ff', left: '3px', top: '-2px', clipPath: 'inset(0 0 60% 0)' }}
+            >
+              CYSTECH 2K26
+            </motion.h1>
+            <motion.h1
+              key="g2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 0.6, 0] }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.10, delay: 0.04 }}
+              className="absolute inset-0 text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-none tracking-tight pointer-events-none select-none"
+              style={{ color: '#FF00AA', left: '-3px', top: '2px', clipPath: 'inset(60% 0 0 0)' }}
+            >
+              CYSTECH 2K26
+            </motion.h1>
+          </>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
-/* ── floating glow orb ── */
-function FloatOrb({ top, left, right, bottom, size, color, delay }) {
+function VibraniumGlyph({ glyph, tone = 'vibranium', className = '', style }) {
+  const toneStyle = GLYPH_TONES[tone] ?? GLYPH_TONES.vibranium;
+
+  return (
+    <span
+      className={`inline-block select-none bg-clip-text text-transparent ${className}`}
+      style={{
+        ...toneStyle,
+        WebkitBackgroundClip: 'text',
+        backgroundClip: 'text',
+        ...style,
+      }}
+    >
+      {glyph}
+    </span>
+  );
+}
+
+function FloatingEmoji({ item, index }) {
   return (
     <motion.div
-      className="absolute rounded-full blur-3xl pointer-events-none"
-      style={{ width: size, height: size, top, left, right, bottom, background: color }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: [0, 0.42, 0.18, 0.42, 0], y: [0, -34, -14, -36, 0] }}
-      transition={{ duration: 10, delay, repeat: Infinity, ease: 'easeInOut' }}
-    />
+      className="absolute z-[3] pointer-events-none select-none"
+      style={{ left: item.x, top: item.y }}
+      initial={{ opacity: 0, scale: 0.4, rotate: item.rotate * -0.3 }}
+      animate={{
+        opacity: [0, 0.95, 0.72, 0.95],
+        x: [0, item.driftX, item.driftX * -0.45, 0],
+        y: [0, item.driftY * -1, item.driftY, 0],
+        rotate: [item.rotate * -0.4, item.rotate, item.rotate * -0.7, 0],
+        scale: [0.85, 1.16, 0.96, 1.06],
+      }}
+      transition={{
+        duration: item.dur,
+        repeat: Infinity,
+        delay: item.delay + index * 0.04,
+        ease: 'easeInOut',
+      }}
+    >
+      <motion.div
+        className="relative flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/6 backdrop-blur-md sm:h-16 sm:w-16"
+        animate={{
+          boxShadow: [
+            `0 0 0 rgba(255,255,255,0), 0 0 16px ${item.glow}`,
+            `0 0 24px ${item.glow}, 0 0 44px ${item.glow}`,
+            `0 0 12px ${item.glow}, 0 0 28px ${item.glow}`,
+          ],
+          borderColor: ['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.24)', 'rgba(255,255,255,0.12)'],
+        }}
+        transition={{ duration: item.dur * 0.6, repeat: Infinity, ease: 'easeInOut', delay: item.delay }}
+      >
+        <div
+          className="absolute inset-[6px] rounded-full"
+          style={{ background: `radial-gradient(circle, ${item.glow}, transparent 72%)` }}
+        />
+        <motion.span
+          className={`${item.size} relative z-10 block`}
+          style={{ filter: `blur(${item.blur})` }}
+          animate={{ y: [0, -4, 0, 3, 0], scale: [1, 1.08, 1, 0.98, 1] }}
+          transition={{ duration: item.dur * 0.5, repeat: Infinity, ease: 'easeInOut', delay: item.delay * 0.8 }}
+        >
+          <VibraniumGlyph glyph={item.glyph} tone={item.tone} className="block" />
+        </motion.span>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function EmojiBurst({ ready }) {
+  return (
+    <div className="pointer-events-none absolute left-1/2 top-1/2 z-[3] hidden -translate-x-1/2 -translate-y-1/2 md:block">
+      {HERO_BURST_EMOJIS.map((item) => (
+        <motion.span
+          key={`${item.glyph}-${item.x}-${item.y}`}
+          className="absolute left-0 top-0 text-2xl"
+          initial={{ opacity: 0, x: 0, y: 0, scale: 0.2, rotate: 0 }}
+          animate={ready ? {
+            opacity: [0, 1, 0.85, 0],
+            x: [0, item.x * 0.3, item.x],
+            y: [0, item.y * 0.3, item.y],
+            scale: [0.2, 1.15, 0.92],
+            rotate: [0, item.rotate, item.rotate * 1.3],
+          } : {}}
+          transition={{ duration: 1.55, delay: 0.65 + item.delay, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <VibraniumGlyph glyph={item.glyph} tone={item.tone} className="text-2xl sm:text-3xl" />
+        </motion.span>
+      ))}
+    </div>
   );
 }
 
 export default function Hero() {
   const [videoReady, setVideoReady] = useState(false);
+  const [spotlight, setSpotlight] = useState({ x: 0, y: 0 });
+  const [btnHovered, setBtnHovered] = useState(false);
   const navigate = useNavigate();
-  const heroRef  = useRef(null);
+  const heroRef = useRef(null);
 
-  /* ── data-strip ticker ── */
-  const [tick, setTick] = React.useState(0);
-  React.useEffect(() => {
-    if (!videoReady) return;
-    const id = setInterval(() => setTick(t => (t + 1) % 100), 120);
-    return () => clearInterval(id);
-  }, [videoReady]);
+  const handleMouseMove = useCallback((e) => {
+    const rect = heroRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setSpotlight({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }, []);
 
-  /* ── scroll-parallax (skip on mobile — useSpring runs a RAF loop) ── */
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const rawY  = useTransform(scrollYProgress, [0, 1], ['0%', isTouch ? '0%' : '-20%']);
-  const rawOp = useTransform(scrollYProgress, [0, 0.52], [1, isTouch ? 1 : 0]);
-  const rawSc = useTransform(scrollYProgress, [0, 0.52], [1, isTouch ? 1 : 0.94]);
-  const yText = useSpring(rawY, { stiffness: 55, damping: 18 });
+  const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.18]);
+  const videoOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
   return (
-    <section ref={heroRef} className="relative h-screen bg-black overflow-hidden">
+    <section ref={heroRef} className="relative h-screen bg-black overflow-hidden" onMouseMove={!isTouch ? handleMouseMove : undefined}>
       <div className="sticky top-0 h-screen overflow-hidden">
 
-        {/* ─── Video ─────────────────────────────────── */}
-        <motion.video
-          src={heroVideo}
-          autoPlay loop muted playsInline preload="auto"
-          onLoadedData={() => setVideoReady(true)}
-          initial={{ opacity: 0, scale: 1.07 }}
-          animate={{ opacity: videoReady ? 1 : 0, scale: videoReady ? 1 : 1.045 }}
-          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        {/* Three.js floating particles */}
+        {!isTouch && (
+          <Suspense fallback={null}>
+            <HeroParticles />
+          </Suspense>
+        )}
 
-        {/* spinner */}
+        {/* Video with parallax zoom */}
+        <motion.div style={{ scale: videoScale, opacity: videoOpacity }} className="absolute inset-0">
+          <video
+            src={heroVideo}
+            autoPlay loop muted playsInline preload="auto"
+            onLoadedData={() => setVideoReady(true)}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${videoReady ? 'opacity-100' : 'opacity-0'}`}
+          />
+        </motion.div>
+
+        {/* Loading spinner */}
         <AnimatePresence>
           {!videoReady && (
-            <motion.div exit={{ opacity: 0 }}
+            <motion.div exit={{ opacity: 0 }} transition={{ duration: 0.4 }}
               className="absolute inset-0 flex items-center justify-center bg-black z-50">
-              <div className="w-14 h-14 rounded-full border border-white/15 border-t-white animate-spin" />
+              <div className="w-10 h-10 rounded-full border-2 border-white/10 border-t-white/80 animate-spin" />
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* ─── Gradient overlays ─────────────────────── */}
-        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,0,5,0.65)_0%,rgba(0,0,0,0.15)_28%,rgba(0,0,0,0.15)_60%,rgba(3,0,5,0.90)_100%)] pointer-events-none" />
-        <div className="absolute inset-0 pointer-events-none
-          bg-[radial-gradient(ellipse_90%_55%_at_50%_55%,rgba(255,255,255,0.06),transparent_55%),
-              radial-gradient(circle_at_18%_16%,rgba(226,232,240,0.10),transparent_30%),
-              radial-gradient(circle_at_82%_82%,rgba(255,255,255,0.05),transparent_30%)]" />
-        <div className="absolute inset-0 scanlines opacity-[0.07] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 right-0 h-48
-          bg-gradient-to-t from-wakanda-dark via-wakanda-dark/75 to-transparent pointer-events-none" />
+        {/* Floating emoji orbs */}
+        {videoReady && !isTouch && FLOAT_EMOJIS.map((item, index) => (
+          <FloatingEmoji key={`${item.glyph}-${item.x}-${item.y}`} item={item} index={index} />
+        ))}
 
-        {/* ─── Floating orbs (desktop only) ────────── */}
-        {!isTouch && <>
-          <FloatOrb top="14%" left="6%"  size={300} delay={0.5}
-            color="radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%)" />
-          <FloatOrb top="18%" right="8%" size={220} delay={2.2}
-            color="radial-gradient(circle, rgba(203,213,225,0.15), transparent 70%)" />
-          <FloatOrb bottom="20%" right="20%" size={170} delay={4.0}
-            color="radial-gradient(circle, rgba(255,255,255,0.10), transparent 70%)" />
-        </>}
-
-        {/* ─── Pulse rings (desktop only) ────────────── */}
+        {/* Mouse-tracking spotlight */}
         {!isTouch && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            {[0, 1.0, 2.0].map((delay, i) => (
-              <motion.div key={i}
-                className="absolute rounded-full border border-white/14"
-                initial={{ width: 160, height: 160, opacity: 0.55 }}
-                animate={{ width: [160, 640], height: [160, 640], opacity: [0.5, 0] }}
-                transition={{ duration: 4.5, delay, repeat: Infinity, ease: 'easeOut' }}
-              />
-            ))}
-          </div>
+          <div
+            className="absolute inset-0 pointer-events-none z-[1]"
+            style={{
+              background: spotlight.x
+                ? `radial-gradient(800px circle at ${spotlight.x}px ${spotlight.y}px, rgba(157,0,255,0.14), transparent 55%)`
+                : 'none',
+              transition: 'background 60ms linear',
+            }}
+          />
         )}
 
-        {/* ─── HUD corners ───────────────────────────── */}
-        {['tl','tr','bl','br'].map(p => <Corner key={p} pos={p} />)}
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-[#030005]/95 pointer-events-none" />
 
-        {/* ─── HUD data strip – top ──────────────────── */}
+        {/* Content */}
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: videoReady ? 0.5 : 0, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.3 }}
-          className="absolute top-[4.6rem] left-0 right-0 flex justify-between px-9 sm:px-14 pointer-events-none"
+          style={{ y: contentY }}
+          variants={stagger}
+          initial="hidden"
+          animate={videoReady ? 'visible' : 'hidden'}
+          className="absolute inset-0 z-[4] flex flex-col items-center justify-center px-6 text-center"
         >
-          <span className="font-mono text-[9px] tracking-[0.28em] text-white/50 uppercase">
-            SYS::ONLINE // PKT::{tick.toString().padStart(2,'0')}%
-          </span>
-          <span className="font-mono text-[9px] tracking-[0.28em] text-white/45 uppercase">
-            CYSTECH 2K26 // SYMPOSIUM
-          </span>
-        </motion.div>
+          <EmojiBurst ready={videoReady} />
 
-        {/* ─── Parallax text block ───────────────────── */}
-        <motion.div
-          style={{ y: yText, opacity: rawOp, scale: rawSc }}
-          className="absolute inset-0 z-[2] flex flex-col items-center justify-center px-6 text-center"
-        >
-          {/* status badge */}
+          {/* Badge */}
           <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: videoReady ? 1 : 0, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.34 }}
-            className="mb-6 rounded-full border border-white/18 bg-white/6 px-5 py-2 backdrop-blur-2xl"
+            variants={fadeBlurUp}
+            whileHover={{ scale: 1.07, boxShadow: '0 0 20px rgba(157,0,255,0.4)' }}
+            className="mb-6 rounded-full border border-[#9D00FF]/50 bg-[#9D00FF]/10 px-5 py-2 cursor-default"
           >
             <div className="flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-white animate-pulse shadow-[0_0_12px_rgba(255,255,255,0.9)]" />
-              <span className="font-mono text-[9.5px] tracking-[0.38em] uppercase text-white/90">
-                Symposium Experience Online
+              <motion.span
+                className="w-2 h-2 rounded-full bg-[#00f0ff]"
+                animate={{ scale: [1, 1.6, 1], opacity: [1, 0.4, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity }}
+              />
+              <VibraniumGlyph glyph="◈" tone="vibranium" className="text-sm" />
+              <span className="font-mono text-[11px] tracking-[0.25em] uppercase text-white/90 font-bold">
+                Registration Open
               </span>
-              <span className="font-mono text-[9px] tracking-[0.18em] text-white/40">// 2026</span>
+              <span className="font-mono text-[9px] text-[#9D00FF]/80 font-bold">2026</span>
             </div>
           </motion.div>
 
-          {/* ── Letter-by-letter animated title ── */}
-          <div className="relative">
-            {/* ambient glow halo behind title */}
-            <div className="absolute inset-0 -m-12 rounded-full
-              bg-[radial-gradient(ellipse_85%_55%,rgba(255,255,255,0.14),rgba(203,213,225,0.08)_50%,transparent_72%)]
-              blur-3xl pointer-events-none" />
-
-            <h1 className="relative flex flex-wrap justify-center leading-none font-black uppercase select-none"
-              style={{ perspective: '800px' }}
-              aria-label="CYSTECH 2K26"
-            >
-              {TITLE_CHARS.map((char, i) => (
-                char === ' '
-                  ? <span key={i} className="w-[0.3em]" />
-                  : (
-                    <motion.span
-                      key={i}
-                      initial={{ opacity: 0, y: 48, rotateX: -60 }}
-                      animate={videoReady
-                        ? { opacity: 1, y: 0, rotateX: 0 }
-                        : {}}
-                      transition={{ duration: 0.72, delay: 0.44 + i * 0.056, ease: [0.16, 1, 0.3, 1] }}
-                      whileHover={{ scale: 1.10, textShadow: '0 0 60px rgba(255,255,255,0.95)' }}
-                      className="inline-block text-[13vw] sm:text-[10.5vw] md:text-[7.2vw] lg:text-[6vw] hero-letter"
-                      style={{
-                        backgroundImage: 'linear-gradient(160deg, #ffffff 0%, #f8fafc 18%, #e2e8f0 38%, #ffffff 55%, #cbd5e1 72%, #ffffff 100%)',
-                        WebkitBackgroundClip: 'text',
-                        backgroundClip: 'text',
-                        color: 'transparent',
-                        textShadow: '0 0 48px rgba(255,255,255,0.30), 0 0 90px rgba(226,232,240,0.18)',
-                      }}
-                    >
-                      {char}
-                    </motion.span>
-                  )
-              ))}
-            </h1>
-          </div>
-
-          {/* tagline */}
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: videoReady ? 1 : 0, y: 0 }}
-            transition={{ duration: 0.9, delay: 1.26 }}
-            className="mt-3 font-mono text-[10px] sm:text-[11px] tracking-[0.34em] uppercase text-white/65"
-          >
-            Future.&nbsp;&nbsp;Power.&nbsp;&nbsp;Innovation.&nbsp;&nbsp;One&nbsp;Stage.
-          </motion.p>
-
-          {/* animated divider */}
-          <motion.div
-            initial={{ scaleX: 0, opacity: 0 }}
-            animate={{ scaleX: videoReady ? 1 : 0, opacity: videoReady ? 1 : 0 }}
-            transition={{ duration: 1.1, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-5 w-52 h-px origin-center
-              bg-gradient-to-r from-transparent via-white/45 to-transparent"
-          />
-
-          {/* sub description */}
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: videoReady ? 1 : 0, y: 0 }}
-            transition={{ duration: 0.9, delay: 1.52 }}
-            className="mt-5 max-w-xl text-sm md:text-base text-white/50 leading-relaxed"
-          >
-            Enter the official digital gateway of CYSTECH 2K26 — where elite events,
-            cinematic energy, and next-level technology converge.
-          </motion.p>
-
-          {/* ── CTA buttons ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: videoReady ? 1 : 0, y: 0 }}
-            transition={{ duration: 0.9, delay: 1.68 }}
-            className="mt-8 flex flex-wrap items-center justify-center gap-4"
-          >
-            {/* Primary */}
-            <button
-              onClick={() => navigate('/register')}
-              className="group relative overflow-hidden rounded-full px-9 py-3
-                font-mono text-[10.5px] tracking-[0.26em] uppercase font-bold text-black
-                transition-all duration-300 hover:scale-105
-                hover:shadow-[0_0_36px_rgba(255,255,255,0.55)]"
-              style={{ background: 'linear-gradient(90deg,#ffffff 0%,#cbd5e1 100%)' }}
-            >
-              <span className="relative z-10">Register Now</span>
-              {/* shimmer sweep */}
-              <span className="absolute inset-0 bg-white/25 -translate-x-full group-hover:translate-x-full
-                transition-transform duration-500 skew-x-12 pointer-events-none" />
-            </button>
-
-            {/* Ghost */}
-            <button
-              onClick={() => navigate('/events/technical')}
-              className="rounded-full px-9 py-3 font-mono text-[10.5px] tracking-[0.26em]
-                uppercase text-white/85 border border-white/30 bg-white/6
-                backdrop-blur-sm transition-all duration-300 hover:scale-105
-                hover:bg-white/12 hover:border-white/60
-                hover:shadow-[0_0_24px_rgba(255,255,255,0.18)]"
-            >
-              Explore Events
-            </button>
+          {/* Glitch Title */}
+          <motion.div variants={fadeBlurUp}>
+            <GlitchTitle ready={videoReady} />
           </motion.div>
 
-          {/* ── Stats row ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: videoReady ? 1 : 0, y: 0 }}
-            transition={{ duration: 0.9, delay: 1.88 }}
-            className="mt-10 flex flex-wrap items-center justify-center gap-5 sm:gap-10"
-          >
+          {/* Tagline */}
+          <motion.div variants={fadeBlurUp} className="mt-3 flex flex-wrap items-center justify-center gap-2">
+            {[
+              { label: 'Innovation' },
+              { glyph: '✦', tone: 'cyan' },
+              { label: 'Technology' },
+              { glyph: '⬢', tone: 'vibranium' },
+              { label: 'One Stage', accent: true },
+            ].map((item, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 12 }}
+                animate={videoReady ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.9 + i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className={`font-mono uppercase tracking-[0.2em] text-[11px] ${
+                  item.glyph ? 'text-lg' :
+                  item.accent ? 'text-[#9D00FF] font-black' : 'text-white/60'
+                }`}
+              >
+                {item.glyph ? <VibraniumGlyph glyph={item.glyph} tone={item.tone} className="text-lg" /> : item.label}
+              </motion.span>
+            ))}
+          </motion.div>
+
+          {/* CTA buttons */}
+          <motion.div variants={fadeBlurUp} className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <motion.button
+              whileHover={{
+                scale: 1.1,
+                boxShadow: '0 0 40px rgba(157,0,255,0.8), 0 0 80px rgba(157,0,255,0.3)',
+              }}
+              whileTap={{ scale: 0.93 }}
+              onHoverStart={() => setBtnHovered(true)}
+              onHoverEnd={() => setBtnHovered(false)}
+              onClick={() => document.querySelector('#register')?.scrollIntoView({ behavior: 'smooth' })}
+              className="relative rounded-full px-10 py-3.5 font-mono text-[11px] tracking-[0.25em] uppercase font-black overflow-hidden bg-[#9D00FF] text-white shadow-[0_0_28px_rgba(157,0,255,0.5)]"
+            >
+              <AnimatePresence>
+                {btnHovered && (
+                  <motion.span
+                    key="ripple"
+                    className="absolute inset-0 bg-white/20 rounded-full"
+                    initial={{ scale: 0, opacity: 1 }}
+                    animate={{ scale: 2.5, opacity: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                  />
+                )}
+              </AnimatePresence>
+              <motion.span
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent"
+                animate={{ x: ['-100%', '200%'] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+              />
+              <span className="relative z-10 flex items-center gap-2">
+                <VibraniumGlyph glyph="⬢" tone="silver" className="text-sm" />
+                <span>Register Now</span>
+              </span>
+            </motion.button>
+            <motion.button
+              whileHover={{
+                scale: 1.08,
+                borderColor: 'rgba(0,240,255,0.6)',
+                boxShadow: '0 0 24px rgba(0,240,255,0.2)',
+                color: '#00f0ff',
+              }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/technical')}
+              className="rounded-full px-10 py-3.5 font-mono text-[11px] tracking-[0.25em] uppercase text-white/80 border border-white/25 bg-white/5 font-bold transition-colors duration-200"
+            >
+              <span className="flex items-center gap-2">
+                <VibraniumGlyph glyph="✦" tone="cyan" className="text-sm" />
+                <span>Explore Events</span>
+              </span>
+            </motion.button>
+          </motion.div>
+
+          {/* Stats — bouncy pop-in */}
+          <motion.div variants={fadeBlurUp} className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-8">
             {STATS.map((s, i) => (
               <React.Fragment key={s.label}>
-                {i > 0 && (
-                  <span className="hidden sm:block w-px h-8 bg-white/15" />
-                )}
-                <div className="text-center">
-                  <div className="font-heading text-2xl sm:text-3xl font-black text-transparent bg-clip-text"
-                    style={{ backgroundImage: 'linear-gradient(135deg, #ffffff, #94a3b8)' }}>
+                {i > 0 && <span className="hidden sm:block w-px h-8 bg-white/10" />}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.5, y: 20 }}
+                  animate={videoReady ? { opacity: 1, scale: 1, y: 0 } : {}}
+                  transition={{ delay: 1.0 + i * 0.1, duration: 0.6, type: 'spring', stiffness: 300, damping: 18 }}
+                  whileHover={{ scale: 1.15, y: -4 }}
+                  className="text-center cursor-default"
+                >
+                  <div className="mb-0.5">
+                    <VibraniumGlyph glyph={s.glyph} tone={s.tone} className="text-lg" />
+                  </div>
+                  <div className="font-heading text-2xl sm:text-3xl font-black text-white">
                     {s.value}
                   </div>
-                  <div className="font-mono text-[8.5px] tracking-[0.26em] uppercase text-white/40 mt-0.5">
+                  <div className="font-mono text-[8.5px] tracking-[0.2em] uppercase text-white/40 mt-0.5">
                     {s.label}
                   </div>
-                </div>
+                </motion.div>
               </React.Fragment>
             ))}
           </motion.div>
         </motion.div>
 
-        {/* ─── Scroll indicator ──────────────────────── */}
+        {/* Bottom "REGISTRATION OPEN" floating pill */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: videoReady ? 1 : 0 }}
-          transition={{ duration: 0.7, delay: 2.2 }}
-          className="absolute bottom-9 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 pointer-events-none"
+          initial={{ opacity: 0, y: 30 }}
+          animate={videoReady ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 1.8, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute bottom-8 right-8 z-[5] hidden md:flex items-center gap-3 px-5 py-2.5 rounded-full border border-[#9D00FF]/50 bg-[#030005]/80 backdrop-blur-md"
         >
-          <span className="font-mono text-[8px] tracking-[0.42em] uppercase text-white/30">Scroll</span>
           <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-5 h-8 rounded-full border border-white/18 flex items-start justify-center pt-1.5"
+            className="w-2 h-2 rounded-full bg-[#00f0ff]"
+            animate={{ scale: [1, 1.8, 1], opacity: [1, 0.3, 1] }}
+            transition={{ duration: 1.2, repeat: Infinity }}
+          />
+          <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/60">Registration Open</span>
+          <motion.button
+            whileHover={{ scale: 1.08, boxShadow: '0 0 20px rgba(157,0,255,0.6)' }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => document.querySelector('#register')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-4 py-1.5 rounded-full bg-[#9D00FF] text-white font-mono text-[9px] tracking-[0.15em] uppercase font-black"
           >
-            <div className="w-1 h-2 rounded-full bg-white/70" />
-          </motion.div>
+            Register Now
+          </motion.button>
         </motion.div>
 
-        {/* ─── HUD data strip – bottom ───────────────── */}
+        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: videoReady ? 0.42 : 0 }}
-          transition={{ duration: 0.8, delay: 1.8 }}
-          className="absolute bottom-[4.6rem] left-0 right-0 flex justify-between px-9 sm:px-14 pointer-events-none"
+          animate={videoReady ? { opacity: 1 } : {}}
+          transition={{ delay: 1.6, duration: 0.8 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[5] flex flex-col items-center gap-2 pointer-events-none"
         >
-          <span className="font-mono text-[8px] tracking-[0.22em] text-white/40 uppercase">
-            VENUE :: TBA / MAR 2026
-          </span>
-          <span className="font-mono text-[8px] tracking-[0.22em] text-white/35 uppercase">
-            V2.6.0 // BUILD::STABLE
-          </span>
+          <motion.span
+            className="font-mono text-[8px] tracking-[0.3em] uppercase text-white/30"
+            animate={{ opacity: [0.3, 0.8, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            Scroll
+          </motion.span>
+          <div className="w-5 h-8 rounded-full border border-white/20 flex items-start justify-center pt-1.5">
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+              className="w-1 h-2 rounded-full bg-[#9D00FF]"
+            />
+          </div>
         </motion.div>
 
       </div>
