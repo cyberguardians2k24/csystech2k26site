@@ -14,6 +14,12 @@ export class RegistrationEmailService {
     participantName: string;
     participantEmail: string;
     eventName: string;
+    college?: string;
+    phone?: string;
+    teamName?: string;
+    venue?: string;
+    eventDate?: string;
+    paymentRef?: string;
   }) {
     if (!params.participantEmail) {
       this.logger.warn('Registration email skipped because participant email is missing.');
@@ -26,40 +32,125 @@ export class RegistrationEmailService {
     }
 
     const from = this.config.get<string>('SMTP_FROM') || this.config.get<string>('SMTP_USER');
-    const symposiumName = this.config.get<string>('SYMPOSIUM_NAME') || 'CYSTECH 2K26';
-    const safeName = params.participantName || 'Participant';
-    const safeEvent = params.eventName || 'your selected event';
+    const sym = this.config.get<string>('SYMPOSIUM_NAME') || 'CYSTECH 2K26';
+    const name = params.participantName || 'Participant';
+    const evt  = params.eventName || 'your selected event';
+    const date = params.eventDate || 'April 8, 2026';
+    const venue = params.venue || 'Dhanalakshmi College of Engineering';
 
     const textBody = [
-      `Hi ${safeName},`,
+      `Hi ${name},`,
       '',
-      `Thank you for registering for ${safeEvent} at ${symposiumName}!`,
+      `Thank you for registering for "${evt}" at ${sym}!`,
       '',
-      'Your registration has been received and is currently pending admin review.',
-      'You will receive another email once your payment is verified and your spot is confirmed.',
+      '--- Your Registration Details ---',
+      `Name    : ${name}`,
+      `Email   : ${params.participantEmail}`,
+      params.college  ? `College : ${params.college}`  : '',
+      params.phone    ? `Phone   : ${params.phone}`    : '',
+      params.teamName ? `Team    : ${params.teamName}` : '',
       '',
-      'Regards,',
-      `${symposiumName} Team`,
-    ].join('\n');
+      '--- Event Details ---',
+      `Event   : ${evt}`,
+      `Date    : ${date}`,
+      `Venue   : ${venue}`,
+      params.paymentRef ? `Payment Ref: ${params.paymentRef}` : '',
+      '',
+      '--- What Happens Next ---',
+      '1. Registration Received  - Your details and payment screenshot are saved.',
+      '2. Payment Under Review   - Admin verifies your payment (usually within 24 hrs).',
+      '3. Confirmation Email     - Once approved, you will receive a confirmation.',
+      '',
+      'Keep this email for your records.',
+      '',
+      `Regards,`,
+      `${sym} Team`,
+    ].filter(l => l !== undefined).join('\n');
 
-    const htmlBody = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827; max-width: 560px; margin: 0 auto;">
-        <h2 style="margin: 0 0 12px; color: #0f172a;">Registration Received &#9203;</h2>
-        <p style="margin: 0 0 12px;">Hi ${this.escapeHtml(safeName)},</p>
-        <p style="margin: 0 0 12px;">Thank you for registering for <strong>${this.escapeHtml(safeEvent)}</strong> at <strong>${this.escapeHtml(symposiumName)}</strong>!</p>
-        <div style="margin: 0 0 12px; padding: 12px; background: #fffbeb; border: 1px solid #fbbf24; border-radius: 8px;">
-          <p style="margin: 0 0 6px;"><strong>Status:</strong> Pending Admin Review</p>
-          <p style="margin: 0;">Your payment screenshot has been received. An admin will verify it shortly.</p>
+    const row = (label: string, value: string) =>
+      `<tr><td style="padding:6px 10px;color:#6b7280;font-size:13px;white-space:nowrap">${label}</td><td style="padding:6px 10px;color:#111827;font-size:13px;font-weight:600">${this.escapeHtml(value)}</td></tr>`;
+
+    const htmlBody = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"/></head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,sans-serif">
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr><td align="center" style="padding:32px 16px">
+    <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)">
+
+      <!-- Header -->
+      <tr><td style="background:linear-gradient(135deg,#6B00BE 0%,#9D00FF 100%);padding:28px 32px">
+        <p style="margin:0;color:rgba(255,255,255,0.7);font-size:11px;letter-spacing:3px;text-transform:uppercase">${this.escapeHtml(sym)}</p>
+        <h1 style="margin:6px 0 0;color:#ffffff;font-size:24px;font-weight:800">Registration Received &#9203;</h1>
+      </td></tr>
+
+      <!-- Body -->
+      <tr><td style="padding:28px 32px">
+        <p style="margin:0 0 20px;font-size:15px;color:#374151">Hi <strong>${this.escapeHtml(name)}</strong>,</p>
+        <p style="margin:0 0 24px;font-size:15px;color:#374151">Thank you for registering for <strong style="color:#7c3aed">${this.escapeHtml(evt)}</strong>! Your payment screenshot has been received and is pending admin review.</p>
+
+        <!-- Participant details -->
+        <p style="margin:0 0 8px;font-size:11px;color:#9D00FF;font-weight:700;letter-spacing:2px;text-transform:uppercase">Your Details</p>
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:20px">
+          <tbody>
+            ${row('Name', name)}
+            ${row('Email', params.participantEmail)}
+            ${params.college ? row('College', params.college) : ''}
+            ${params.phone ? row('Phone', params.phone) : ''}
+            ${params.teamName ? row('Team', params.teamName) : ''}
+          </tbody>
+        </table>
+
+        <!-- Event details -->
+        <p style="margin:0 0 8px;font-size:11px;color:#9D00FF;font-weight:700;letter-spacing:2px;text-transform:uppercase">Event Details</p>
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:20px">
+          <tbody>
+            ${row('Event', evt)}
+            ${row('Date', date)}
+            ${row('Venue', venue)}
+            ${params.paymentRef ? row('Payment Ref', params.paymentRef) : ''}
+          </tbody>
+        </table>
+
+        <!-- Status banner -->
+        <div style="background:#fffbeb;border:1px solid #fbbf24;border-radius:8px;padding:14px 18px;margin-bottom:24px">
+          <p style="margin:0;font-size:13px;font-weight:700;color:#92400e">&#9203; Status: Pending Admin Approval</p>
+          <p style="margin:6px 0 0;font-size:13px;color:#92400e">An admin will review your payment screenshot and confirm your spot — usually within 24 hours.</p>
         </div>
-        <p style="margin: 0 0 12px;">You will receive another email once your registration is confirmed.</p>
-        <p style="margin: 0;">Regards,<br/>${this.escapeHtml(symposiumName)} Team</p>
-      </div>
-    `;
+
+        <!-- Steps -->
+        <p style="margin:0 0 12px;font-size:11px;color:#9D00FF;font-weight:700;letter-spacing:2px;text-transform:uppercase">What Happens Next</p>
+        <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px">
+          <tr>
+            <td valign="top" style="width:36px"><div style="width:28px;height:28px;border-radius:50%;background:#dcfce7;color:#166534;font-size:12px;font-weight:700;text-align:center;line-height:28px">&#10003;</div></td>
+            <td style="padding:4px 0 4px 8px"><p style="margin:0;font-size:13px;font-weight:700;color:#166534">Registration Received</p><p style="margin:2px 0 0;font-size:12px;color:#6b7280">Your details and payment screenshot are saved.</p></td>
+          </tr>
+          <tr>
+            <td valign="top" style="width:36px"><div style="width:28px;height:28px;border-radius:50%;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;text-align:center;line-height:28px">02</div></td>
+            <td style="padding:4px 0 4px 8px"><p style="margin:0;font-size:13px;font-weight:700;color:#92400e">Payment Under Review</p><p style="margin:2px 0 0;font-size:12px;color:#6b7280">Admin verifies your payment proof (usually within 24 hrs).</p></td>
+          </tr>
+          <tr>
+            <td valign="top" style="width:36px"><div style="width:28px;height:28px;border-radius:50%;background:#f3f4f6;color:#9ca3af;font-size:12px;font-weight:700;text-align:center;line-height:28px">03</div></td>
+            <td style="padding:4px 0 4px 8px"><p style="margin:0;font-size:13px;font-weight:700;color:#6b7280">Confirmation Email Sent</p><p style="margin:2px 0 0;font-size:12px;color:#6b7280">Once approved, a confirmation email will be sent to you.</p></td>
+          </tr>
+        </table>
+
+        <p style="margin:0;font-size:14px;color:#374151">Keep this email for your records.<br/>Regards,<br/><strong>${this.escapeHtml(sym)} Team</strong></p>
+      </td></tr>
+
+      <!-- Footer -->
+      <tr><td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:16px 32px;text-align:center">
+        <p style="margin:0;font-size:11px;color:#9ca3af">&copy; ${new Date().getFullYear()} ${this.escapeHtml(sym)} &middot; Dept. of Computer Science &middot; Sri Eshwar College of Engineering</p>
+      </td></tr>
+
+    </table>
+  </td></tr>
+</table>
+</body></html>`;
 
     await transporter.sendMail({
       from,
       to: params.participantEmail,
-      subject: `${symposiumName}: Registration Received for ${safeEvent}`,
+      subject: `[${sym}] Registration Received — ${evt}`,
       text: textBody,
       html: htmlBody,
     });
@@ -69,6 +160,11 @@ export class RegistrationEmailService {
     participantName: string;
     participantEmail: string;
     eventName: string;
+    college?: string;
+    phone?: string;
+    teamName?: string;
+    venue?: string;
+    eventDate?: string;
   }) {
     if (!params.participantEmail) {
       this.logger.warn('Approval email skipped because participant email is missing.');
@@ -81,42 +177,101 @@ export class RegistrationEmailService {
     }
 
     const from = this.config.get<string>('SMTP_FROM') || this.config.get<string>('SMTP_USER');
-    const symposiumName = this.config.get<string>('SYMPOSIUM_NAME') || 'CYSTECH 2K26';
-    const safeParticipantName = params.participantName || 'Participant';
-    const safeEventName = params.eventName || 'your selected event';
+    const sym  = this.config.get<string>('SYMPOSIUM_NAME') || 'CYSTECH 2K26';
+    const name = params.participantName || 'Participant';
+    const evt  = params.eventName || 'your selected event';
+    const date = params.eventDate || 'April 8, 2026';
+    const venue = params.venue || 'Sri Eshwar College of Engineering';
 
     const textBody = [
-      `Hi ${safeParticipantName},`,
+      `Hi ${name},`,
       '',
-      'Your registration has been approved by the admin team.',
-      `Event: ${safeEventName}`,
-      `Symposium: ${symposiumName}`,
+      `Great news! Your registration for "${evt}" at ${sym} has been CONFIRMED!`,
       '',
-      'You are now a confirmed participant.',
-      'Please keep this email for your records.',
+      '--- Registration Details ---',
+      `Name    : ${name}`,
+      `Email   : ${params.participantEmail}`,
+      params.college  ? `College : ${params.college}`  : '',
+      params.phone    ? `Phone   : ${params.phone}`    : '',
+      params.teamName ? `Team    : ${params.teamName}` : '',
+      '',
+      '--- Event Details ---',
+      `Event   : ${evt}`,
+      `Date    : ${date}`,
+      `Venue   : ${venue}`,
+      '',
+      'Please arrive on time and carry this email as proof of registration.',
       '',
       `Regards,`,
-      `${symposiumName} Team`,
-    ].join('\n');
+      `${sym} Team`,
+    ].filter(l => l !== undefined).join('\n');
 
-    const htmlBody = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827; max-width: 560px; margin: 0 auto;">
-        <h2 style="margin: 0 0 12px; color: #0f172a;">Registration Confirmed</h2>
-        <p style="margin: 0 0 12px;">Hi ${this.escapeHtml(safeParticipantName)},</p>
-        <p style="margin: 0 0 12px;">Your registration has been approved by the admin team.</p>
-        <div style="margin: 0 0 12px; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
-          <p style="margin: 0 0 6px;"><strong>Event:</strong> ${this.escapeHtml(safeEventName)}</p>
-          <p style="margin: 0;"><strong>Symposium:</strong> ${this.escapeHtml(symposiumName)}</p>
+    const row = (label: string, value: string) =>
+      `<tr><td style="padding:6px 10px;color:#6b7280;font-size:13px;white-space:nowrap">${label}</td><td style="padding:6px 10px;color:#111827;font-size:13px;font-weight:600">${this.escapeHtml(value)}</td></tr>`;
+
+    const htmlBody = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"/></head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,sans-serif">
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr><td align="center" style="padding:32px 16px">
+    <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)">
+
+      <!-- Header -->
+      <tr><td style="background:linear-gradient(135deg,#065f46 0%,#059669 100%);padding:28px 32px">
+        <p style="margin:0;color:rgba(255,255,255,0.7);font-size:11px;letter-spacing:3px;text-transform:uppercase">${this.escapeHtml(sym)}</p>
+        <h1 style="margin:6px 0 0;color:#ffffff;font-size:24px;font-weight:800">&#10003; Registration Confirmed!</h1>
+      </td></tr>
+
+      <!-- Body -->
+      <tr><td style="padding:28px 32px">
+        <p style="margin:0 0 20px;font-size:15px;color:#374151">Hi <strong>${this.escapeHtml(name)}</strong>,</p>
+        <p style="margin:0 0 24px;font-size:15px;color:#374151">Your registration for <strong style="color:#059669">${this.escapeHtml(evt)}</strong> has been <strong style="color:#059669">approved</strong> by the admin team. You are now a confirmed participant!</p>
+
+        <!-- Participant details -->
+        <p style="margin:0 0 8px;font-size:11px;color:#059669;font-weight:700;letter-spacing:2px;text-transform:uppercase">Your Details</p>
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:20px">
+          <tbody>
+            ${row('Name', name)}
+            ${row('Email', params.participantEmail)}
+            ${params.college ? row('College', params.college) : ''}
+            ${params.phone ? row('Phone', params.phone) : ''}
+            ${params.teamName ? row('Team', params.teamName) : ''}
+          </tbody>
+        </table>
+
+        <!-- Event details -->
+        <p style="margin:0 0 8px;font-size:11px;color:#059669;font-weight:700;letter-spacing:2px;text-transform:uppercase">Event Details</p>
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:20px">
+          <tbody>
+            ${row('Event', evt)}
+            ${row('Date', date)}
+            ${row('Venue', venue)}
+          </tbody>
+        </table>
+
+        <!-- Confirmed banner -->
+        <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:8px;padding:14px 18px;margin-bottom:24px">
+          <p style="margin:0;font-size:13px;font-weight:700;color:#065f46">&#10003; You're In! Registration Confirmed</p>
+          <p style="margin:6px 0 0;font-size:13px;color:#065f46">Please arrive on time at the venue and carry this email as proof of registration.</p>
         </div>
-        <p style="margin: 0 0 12px;">You are now a confirmed participant.</p>
-        <p style="margin: 0;">Regards,<br/>${this.escapeHtml(symposiumName)} Team</p>
-      </div>
-    `;
+
+        <p style="margin:0;font-size:14px;color:#374151">See you at ${this.escapeHtml(sym)}!<br/>Regards,<br/><strong>${this.escapeHtml(sym)} Team</strong></p>
+      </td></tr>
+
+      <!-- Footer -->
+      <tr><td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:16px 32px;text-align:center">
+        <p style="margin:0;font-size:11px;color:#9ca3af">&copy; ${new Date().getFullYear()} ${this.escapeHtml(sym)} &middot; Dept. of Computer Science &middot; Sri Eshwar College of Engineering</p>
+      </td></tr>
+
+    </table>
+  </td></tr>
+</table>
+</body></html>`;
 
     await transporter.sendMail({
       from,
       to: params.participantEmail,
-      subject: `${symposiumName}: Registration Confirmed for ${safeEventName}`,
+      subject: `[${sym}] Registration Confirmed ✓ — ${evt}`,
       text: textBody,
       html: htmlBody,
     });

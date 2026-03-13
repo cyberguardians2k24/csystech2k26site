@@ -71,9 +71,15 @@ export class RegistrationsService {
     // 5. Send registration received email (non-blocking)
     try {
       await this.registrationEmailService.sendRegistrationReceivedEmail({
-        participantName: participant.name,
+        participantName:  participant.name,
         participantEmail: participant.email,
-        eventName: event.name,
+        eventName:        event.name,
+        college:          participant.college,
+        phone:            participant.phone,
+        teamName:         participant.teamName || undefined,
+        venue:            event.venue || undefined,
+        eventDate:        event.startTime ? event.startTime.toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }) : undefined,
+        paymentRef:       dto.paymentRef || undefined,
       });
     } catch (err) {
       const reason = err instanceof Error ? err.message : 'Unknown error';
@@ -152,9 +158,14 @@ export class RegistrationsService {
     if (!wasConfirmed && isNowConfirmed) {
       try {
         await this.registrationEmailService.sendApprovalEmail({
-          participantName: updatedRegistration.participant?.name || 'Participant',
+          participantName:  updatedRegistration.participant?.name || 'Participant',
           participantEmail: updatedRegistration.participant?.email || '',
-          eventName: updatedRegistration.event?.name || 'the selected event',
+          eventName:        updatedRegistration.event?.name || 'the selected event',
+          college:          updatedRegistration.participant?.college,
+          phone:            updatedRegistration.participant?.phone,
+          teamName:         updatedRegistration.participant?.teamName || undefined,
+          venue:            (updatedRegistration.event as any)?.venue || undefined,
+          eventDate:        (updatedRegistration.event as any)?.startTime ? new Date((updatedRegistration.event as any).startTime).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }) : undefined,
         });
       } catch (error) {
         // Do not block admin approval when email delivery fails.
@@ -191,9 +202,14 @@ export class RegistrationsService {
     if (!wasConfirmed && isNowConfirmed) {
       try {
         await this.registrationEmailService.sendApprovalEmail({
-          participantName: updatedRegistration.participant?.name || 'Participant',
+          participantName:  updatedRegistration.participant?.name || 'Participant',
           participantEmail: updatedRegistration.participant?.email || '',
-          eventName: updatedRegistration.event?.name || 'the selected event',
+          eventName:        updatedRegistration.event?.name || 'the selected event',
+          college:          updatedRegistration.participant?.college,
+          phone:            updatedRegistration.participant?.phone,
+          teamName:         updatedRegistration.participant?.teamName || undefined,
+          venue:            (updatedRegistration.event as any)?.venue || undefined,
+          eventDate:        (updatedRegistration.event as any)?.startTime ? new Date((updatedRegistration.event as any).startTime).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }) : undefined,
         });
       } catch (error) {
         // Do not block admin approval when email delivery fails.
