@@ -301,14 +301,90 @@ export class RegistrationEmailService {
       const reason = error instanceof Error ? error.message : 'Unknown network error';
       this.logger.warn(`Primary SMTP delivery failed (${reason}). Retrying via IPv4 TLS fallback.`);
 
-      const fallback = await this.createIpv4FallbackTransporter();
-      return fallback.sendMail(mail);
+      try {
+        const fallback = await this.createIpv4FallbackTransporter();
+        return await fallback.sendMail(mail);
+      } catch (fallbackError) {
+        const fallbackReason = fallbackError instanceof Error ? fallbackError.message : 'Unknown fallback error';
+
+        if (!this.hasResendConfig()) {
+          throw fallbackError;
+        }
+
+        this.logger.warn(`IPv4 TLS fallback failed (${fallbackReason}). Retrying via Resend HTTPS API.`);
+        return this.sendViaResend(mail);
+      }
     }
   }
 
   private isNetworkError(error: unknown) {
     const message = error instanceof Error ? error.message : String(error || '');
     return /ENETUNREACH|ETIMEDOUT|Connection timeout|EHOSTUNREACH|ECONNREFUSED/i.test(message);
+  }
+
+  private hasResendConfig() {
+    const apiKey = this.config.get<string>('RESEND_API_KEY');
+    return Boolean(apiKey && apiKey.trim());
+  }
+
+  private async sendViaResend(mail: nodemailer.SendMailOptions): Promise<SentMessageInfo> {
+    const apiKey = this.config.get<string>('RESEND_API_KEY');
+    const fromOverride = this.config.get<string>('RESEND_FROM');
+
+    if (!apiKey) {
+      throw new Error('RESEND_API_KEY is not configured');
+    }
+
+    const toRaw = mail.to;
+    const to = typeof toRaw === 'string' ? toRaw : '';
+    const subject = typeof mail.subject === 'string' ? mail.subject : 'CYSTECH Notification';
+    const text = typeof mail.text === 'string' ? mail.text : undefined;
+    const html = typeof mail.html === 'string' ? mail.html : undefined;
+    const from = fromOverride || (typeof mail.from === 'string' ? mail.from : this.config.get<string>('SMTP_FROM') || this.config.get<string>('SMTP_USER') || '');
+
+    if (!to) {
+      throw new Error('Resend fallback requires a string "to" email address');
+    }
+
+    if (!from) {
+      throw new Error('Resend fallback requires RESEND_FROM or SMTP_FROM');
+    }
+
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from,
+        to: [to],
+        subject,
+        text,
+        html,
+      }),
+    });
+
+    if (!response.ok) {
+      const details = await response.text().catch(() => 'Unknown Resend API error');
+      throw new Error(`Resend API failed (${response.status}): ${details}`);
+    }
+
+    const payload = await response.json().catch(() => ({} as any));
+    const resendId = typeof payload?.id === 'string' ? payload.id : 'resend-accepted';
+
+    this.logger.log(`Email sent via Resend fallback; id=${resendId}; to=${to}`);
+
+    return {
+      accepted: [to],
+      rejected: [],
+      envelopeTime: 0,
+      messageTime: 0,
+      messageSize: 0,
+      response: `resend:${resendId}`,
+      envelope: { from, to: [to] },
+      messageId: resendId,
+    } as SentMessageInfo;
   }
 
   private async createIpv4FallbackTransporter() {
