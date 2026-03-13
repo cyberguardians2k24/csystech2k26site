@@ -6,6 +6,7 @@ import { api } from '../lib/api';
 import paymentImage from '../../Assets/images/paymentimage.jpeg';
 
 function InputField({ label, id, type = 'text', placeholder, value, onChange, required }) {
+  const isEmail = type === 'email';
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/40">
@@ -18,7 +19,9 @@ function InputField({ label, id, type = 'text', placeholder, value, onChange, re
         value={value}
         onChange={onChange}
         required={required}
-        className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-vibranium/60 focus:bg-vibranium/5 focus:shadow-[0_0_16px_rgba(157,0,255,0.15)] transition-all duration-300"
+        autoCapitalize={isEmail ? 'none' : undefined}
+        spellCheck={isEmail ? false : undefined}
+        className={`w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-vibranium/60 focus:bg-vibranium/5 focus:shadow-[0_0_16px_rgba(157,0,255,0.15)] transition-all duration-300 ${isEmail ? 'font-sans normal-case lowercase tracking-normal' : 'font-body'}`}
       />
     </div>
   );
@@ -95,7 +98,10 @@ export default function EventRegistration() {
     );
   }
 
-  const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+  const set = (key) => (e) => {
+    const value = key === 'email' ? e.target.value.toLowerCase() : e.target.value;
+    setForm((f) => ({ ...f, [key]: value }));
+  };
 
   const handlePaymentUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -120,6 +126,11 @@ export default function EventRegistration() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    const normalizedEmail = form.email.trim().toLowerCase();
+    if (!normalizedEmail) {
+      setError('Please enter your email address.');
+      return;
+    }
     if (!paymentFile) {
       setError('Please upload your payment screenshot before submitting.');
       return;
@@ -129,7 +140,7 @@ export default function EventRegistration() {
       const signed = await api.createPaymentUploadUrl({
         fileName: paymentFile.name,
         contentType: paymentFile.type || 'application/octet-stream',
-        participantEmail: form.email,
+        participantEmail: normalizedEmail,
         event: event.title,
       });
 
@@ -147,7 +158,7 @@ export default function EventRegistration() {
 
       await api.register({
         name:     form.name,
-        email:    form.email,
+        email:    normalizedEmail,
         phone:    form.phone,
         college:  form.college,
         teamName: form.teamName || undefined,
@@ -381,7 +392,7 @@ export default function EventRegistration() {
 
                   {/* Registered email note */}
                   <p className="font-mono text-[10px] text-white/25 tracking-widest">
-                    Registration linked to <span className="text-vibranium/60">{form.email}</span>
+                    Registration linked to <span className="text-vibranium/60 font-sans normal-case lowercase tracking-normal">{form.email}</span>
                   </p>
 
                   {/* Action buttons */}
