@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import nodemailer, { Transporter } from 'nodemailer';
+import nodemailer, { SentMessageInfo, Transporter } from 'nodemailer';
 
 @Injectable()
 export class RegistrationEmailService {
@@ -147,13 +147,15 @@ export class RegistrationEmailService {
 </table>
 </body></html>`;
 
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from,
       to: params.participantEmail,
       subject: `[${sym}] Registration Received — ${evt}`,
       text: textBody,
       html: htmlBody,
     });
+
+    this.logDelivery('registration-received', params.participantEmail, info);
   }
 
   async sendApprovalEmail(params: {
@@ -268,13 +270,21 @@ export class RegistrationEmailService {
 </table>
 </body></html>`;
 
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from,
       to: params.participantEmail,
       subject: `[${sym}] Registration Confirmed ✓ — ${evt}`,
       text: textBody,
       html: htmlBody,
     });
+
+    this.logDelivery('registration-approved', params.participantEmail, info);
+  }
+
+  private logDelivery(kind: 'registration-received' | 'registration-approved', to: string, info: SentMessageInfo) {
+    const accepted = Array.isArray(info.accepted) ? info.accepted.join(', ') : '';
+    const rejected = Array.isArray(info.rejected) ? info.rejected.join(', ') : '';
+    this.logger.log(`Email sent [${kind}] to ${to}; messageId=${info.messageId}; accepted=[${accepted}] rejected=[${rejected}]`);
   }
 
   private escapeHtml(value: string) {
@@ -300,7 +310,7 @@ export class RegistrationEmailService {
     if (!host || !user || !pass) {
       if (!this.disabledLogged) {
         this.disabledLogged = true;
-        this.logger.warn('SMTP is not configured. Approval emails are disabled.');
+        this.logger.warn('SMTP is not configured. Registration and approval emails are disabled.');
       }
       return null;
     }
