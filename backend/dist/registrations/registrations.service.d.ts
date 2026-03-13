@@ -1,8 +1,13 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
+import { R2UploadService } from './r2-upload.service';
+import { RegistrationEmailService } from './registration-email.service';
 export declare class RegistrationsService {
     private prisma;
-    constructor(prisma: PrismaService);
+    private readonly r2UploadService;
+    private readonly registrationEmailService;
+    private readonly logger;
+    constructor(prisma: PrismaService, r2UploadService: R2UploadService, registrationEmailService: RegistrationEmailService);
     create(dto: CreateRegistrationDto): Promise<{
         success: boolean;
         message: string;
@@ -46,6 +51,17 @@ export declare class RegistrationsService {
             notes: string | null;
         };
     }>;
+    createPaymentUploadUrl(params: {
+        fileName: string;
+        contentType: string;
+        participantEmail: string;
+        event: string;
+    }): Promise<{
+        key: string;
+        uploadUrl: string;
+        storageUrl: string;
+    }>;
+    private normalizeUploadedPaymentUrl;
     findAll(page?: number, limit?: number): Promise<{
         data: ({
             event: {

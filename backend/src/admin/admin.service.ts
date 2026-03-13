@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, ConflictException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
+import { RegistrationStatus } from '@prisma/client';
 
 @Injectable()
 export class AdminService {
@@ -34,13 +35,16 @@ export class AdminService {
 
   async getDashboard() {
     const [
-      totalParticipants,
+      approvedParticipants,
       totalRegistrations,
       totalEvents,
       recentRegistrations,
       registrationsByEvent,
     ] = await Promise.all([
-      this.prisma.participant.count(),
+      this.prisma.registration.groupBy({
+        by: ['participantId'],
+        where: { status: RegistrationStatus.CONFIRMED },
+      }),
       this.prisma.registration.count(),
       this.prisma.event.count(),
       this.prisma.registration.findMany({
@@ -59,7 +63,7 @@ export class AdminService {
 
     return {
       stats: {
-        totalParticipants,
+        totalParticipants: approvedParticipants.length,
         totalRegistrations,
         totalEvents,
       },
@@ -81,27 +85,31 @@ export class AdminService {
   }
 
   async exportParticipants(eventQuery?: string) {
-    const where = eventQuery
-      ? {
-          registrations: {
-            some: {
-              event: {
-                is: {
-                  OR: [
-                    { slug: eventQuery },
-                    { name: { contains: eventQuery } },
-                  ],
+    const where = {
+      registrations: {
+        some: {
+          status: RegistrationStatus.CONFIRMED,
+          ...(eventQuery
+            ? {
+                event: {
+                  is: {
+                    OR: [
+                      { slug: eventQuery },
+                      { name: { contains: eventQuery } },
+                    ],
+                  },
                 },
-              },
-            },
-          },
-        }
-      : {};
+              }
+            : {}),
+        },
+      },
+    };
 
     return this.prisma.participant.findMany({
       where,
       include: {
         registrations: {
+          where: { status: RegistrationStatus.CONFIRMED },
           include: { event: { select: { name: true, slug: true } } },
         },
       },

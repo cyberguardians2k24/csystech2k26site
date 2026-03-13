@@ -14,6 +14,22 @@ export class RegistrationsController {
     return this.svc.create(dto);
   }
 
+  @Post('payment-upload-url')
+  @ApiOperation({ summary: 'Create signed URL for uploading payment proof to R2' })
+  createPaymentUploadUrl(
+    @Body('fileName') fileName: string,
+    @Body('contentType') contentType: string,
+    @Body('participantEmail') participantEmail: string,
+    @Body('event') event: string,
+  ) {
+    return this.svc.createPaymentUploadUrl({
+      fileName,
+      contentType,
+      participantEmail,
+      event,
+    });
+  }
+
   @Get()
   @ApiOperation({ summary: 'Get all registrations (paginated)' })
   @ApiQuery({ name: 'page',  required: false })

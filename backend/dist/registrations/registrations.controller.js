@@ -24,6 +24,14 @@ let RegistrationsController = class RegistrationsController {
     create(dto) {
         return this.svc.create(dto);
     }
+    createPaymentUploadUrl(fileName, contentType, participantEmail, event) {
+        return this.svc.createPaymentUploadUrl({
+            fileName,
+            contentType,
+            participantEmail,
+            event,
+        });
+    }
     findAll(page = '1', limit = '20') {
         return this.svc.findAll(+page, +limit);
     }
@@ -52,6 +60,17 @@ __decorate([
     __metadata("design:paramtypes", [create_registration_dto_1.CreateRegistrationDto]),
     __metadata("design:returntype", void 0)
 ], RegistrationsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Post)('payment-upload-url'),
+    (0, swagger_1.ApiOperation)({ summary: 'Create signed URL for uploading payment proof to R2' }),
+    __param(0, (0, common_1.Body)('fileName')),
+    __param(1, (0, common_1.Body)('contentType')),
+    __param(2, (0, common_1.Body)('participantEmail')),
+    __param(3, (0, common_1.Body)('event')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String, String]),
+    __metadata("design:returntype", void 0)
+], RegistrationsController.prototype, "createPaymentUploadUrl", null);
 __decorate([
     (0, common_1.Get)(),
     (0, swagger_1.ApiOperation)({ summary: 'Get all registrations (paginated)' }),

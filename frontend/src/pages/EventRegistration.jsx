@@ -68,15 +68,6 @@ function FileUploadField({ label, id, onChange, helper, preview, required }) {
   );
 }
 
-async function fileToDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
 export default function EventRegistration() {
   const { eventId } = useParams();
   const navigate = useNavigate();
@@ -90,6 +81,7 @@ export default function EventRegistration() {
   const [error, setError] = useState('');
   const [expandRules, setExpandRules] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState('');
+  const [paymentFile, setPaymentFile] = useState(null);
   const [paymentFileName, setPaymentFileName] = useState('');
   const [paymentRef, setPaymentRef] = useState('');
 
@@ -115,8 +107,9 @@ export default function EventRegistration() {
     }
 
     try {
-      const dataUrl = await fileToDataUrl(file);
-      setPaymentScreenshot(dataUrl);
+      const previewUrl = URL.createObjectURL(file);
+      setPaymentScreenshot(previewUrl);
+      setPaymentFile(file);
       setPaymentFileName(file.name);
       setError('');
     } catch {
@@ -127,12 +120,31 @@ export default function EventRegistration() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!paymentScreenshot) {
+    if (!paymentFile) {
       setError('Please upload your payment screenshot before submitting.');
       return;
     }
     setLoading(true);
     try {
+      const signed = await api.createPaymentUploadUrl({
+        fileName: paymentFile.name,
+        contentType: paymentFile.type || 'application/octet-stream',
+        participantEmail: form.email,
+        event: event.title,
+      });
+
+      const uploadRes = await fetch(signed.uploadUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': paymentFile.type || 'application/octet-stream',
+        },
+        body: paymentFile,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error('Failed to upload payment screenshot to storage.');
+      }
+
       await api.register({
         name:     form.name,
         email:    form.email,
@@ -141,7 +153,7 @@ export default function EventRegistration() {
         teamName: form.teamName || undefined,
         event:    event.title,
         notes:    [form.department, form.yearOfStudy ? `Year ${form.yearOfStudy}` : '', form.notes].filter(Boolean).join(' | ') || undefined,
-        paymentScreenshot,
+        paymentScreenshot: signed.storageUrl,
         paymentRef: paymentRef || undefined,
       });
       setSubmitted(true);

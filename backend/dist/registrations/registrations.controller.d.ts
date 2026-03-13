@@ -46,6 +46,11 @@ export declare class RegistrationsController {
             notes: string | null;
         };
     }>;
+    createPaymentUploadUrl(fileName: string, contentType: string, participantEmail: string, event: string): Promise<{
+        key: string;
+        uploadUrl: string;
+        storageUrl: string;
+    }>;
     findAll(page?: string, limit?: string): Promise<{
         data: ({
             event: {

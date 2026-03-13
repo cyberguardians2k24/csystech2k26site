@@ -8,17 +8,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var RegistrationsService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegistrationsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
-let RegistrationsService = class RegistrationsService {
-    constructor(prisma) {
+const r2_upload_service_1 = require("./r2-upload.service");
+const registration_email_service_1 = require("./registration-email.service");
+let RegistrationsService = RegistrationsService_1 = class RegistrationsService {
+    constructor(prisma, r2UploadService, registrationEmailService) {
         this.prisma = prisma;
+        this.r2UploadService = r2UploadService;
+        this.registrationEmailService = registrationEmailService;
+        this.logger = new common_1.Logger(RegistrationsService_1.name);
     }
     async create(dto) {
-        if (!dto.paymentScreenshot?.startsWith('data:image/')) {
+        if (!dto.paymentScreenshot) {
             throw new common_1.BadRequestException('Payment screenshot is required');
         }
         let participant = await this.prisma.participant.findUnique({ where: { email: dto.email } });
@@ -49,13 +55,14 @@ let RegistrationsService = class RegistrationsService {
         });
         if (existing)
             throw new common_1.ConflictException('Already registered for this event');
+        const normalizedScreenshot = this.normalizeUploadedPaymentUrl(dto.paymentScreenshot);
         const registration = await this.prisma.registration.create({
             data: {
                 participantId: participant.id,
                 eventId: event.id,
                 notes: dto.notes,
                 paymentRef: dto.paymentRef,
-                paymentScreenshot: dto.paymentScreenshot,
+                paymentScreenshot: normalizedScreenshot,
                 paymentStatus: 'PENDING',
                 status: 'PENDING',
             },
@@ -66,6 +73,23 @@ let RegistrationsService = class RegistrationsService {
             message: `Registration submitted for ${participant.name}. Payment verification is pending admin approval.`,
             registration,
         };
+    }
+    async createPaymentUploadUrl(params) {
+        if (!params.fileName || !params.contentType || !params.participantEmail || !params.event) {
+            throw new common_1.BadRequestException('fileName, contentType, participantEmail, and event are required');
+        }
+        return this.r2UploadService.createSignedPaymentUploadUrl({
+            fileName: params.fileName,
+            contentType: params.contentType,
+            participantEmail: params.participantEmail,
+            eventSlugOrName: params.event,
+        });
+    }
+    normalizeUploadedPaymentUrl(value) {
+        if (value.startsWith('http://') || value.startsWith('https://') || value.startsWith('r2://')) {
+            return value;
+        }
+        throw new common_1.BadRequestException('Invalid payment screenshot URL. Upload via signed URL from frontend first.');
     }
     async findAll(page = 1, limit = 20) {
         const skip = (page - 1) * limit;
@@ -105,7 +129,7 @@ let RegistrationsService = class RegistrationsService {
             : registration.status === client_1.RegistrationStatus.CONFIRMED
                 ? client_1.RegistrationStatus.PENDING
                 : registration.status;
-        return this.prisma.registration.update({
+        const updatedRegistration = await this.prisma.registration.update({
             where: { id },
             data: {
                 paymentStatus: nextPaymentStatus,
@@ -113,14 +137,32 @@ let RegistrationsService = class RegistrationsService {
             },
             include: { participant: true, event: true },
         });
+        const wasConfirmed = registration.status === client_1.RegistrationStatus.CONFIRMED;
+        const isNowConfirmed = updatedRegistration.status === client_1.RegistrationStatus.CONFIRMED;
+        if (!wasConfirmed && isNowConfirmed) {
+            try {
+                await this.registrationEmailService.sendApprovalEmail({
+                    participantName: updatedRegistration.participant?.name || 'Participant',
+                    participantEmail: updatedRegistration.participant?.email,
+                    eventName: updatedRegistration.event?.name || 'the selected event',
+                });
+            }
+            catch (error) {
+                this.logger.warn(`Failed to send approval email for registration ${id}`);
+            }
+        }
+        return updatedRegistration;
     }
     async remove(id) {
         await this.findOne(id);
         return this.prisma.registration.delete({ where: { id } });
     }
     async getStats() {
-        const [totalParticipants, totalRegistrations, byEvent, byStatus] = await Promise.all([
-            this.prisma.participant.count(),
+        const [approvedParticipants, totalRegistrations, byEvent, byStatus] = await Promise.all([
+            this.prisma.registration.groupBy({
+                by: ['participantId'],
+                where: { status: client_1.RegistrationStatus.CONFIRMED },
+            }),
             this.prisma.registration.count(),
             this.prisma.registration.groupBy({ by: ['eventId'], _count: true }),
             this.prisma.registration.groupBy({ by: ['status'], _count: true }),
@@ -128,7 +170,7 @@ let RegistrationsService = class RegistrationsService {
         const events = await this.prisma.event.findMany({ select: { id: true, name: true } });
         const eventMap = Object.fromEntries(events.map(e => [e.id, e.name]));
         return {
-            totalParticipants,
+            totalParticipants: approvedParticipants.length,
             totalRegistrations,
             byEvent: byEvent.map(r => ({ event: eventMap[r.eventId] || r.eventId, count: r._count })),
             byStatus,
@@ -136,8 +178,10 @@ let RegistrationsService = class RegistrationsService {
     }
 };
 exports.RegistrationsService = RegistrationsService;
-exports.RegistrationsService = RegistrationsService = __decorate([
+exports.RegistrationsService = RegistrationsService = RegistrationsService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        r2_upload_service_1.R2UploadService,
+        registration_email_service_1.RegistrationEmailService])
 ], RegistrationsService);
 //# sourceMappingURL=registrations.service.js.map

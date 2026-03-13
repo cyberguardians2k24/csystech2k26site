@@ -47,6 +47,7 @@ export const api = {
 
   // ── Registrations ──────────────────────────────────────────────────────
   register:          (dto)                => request('POST', '/registrations', dto),
+  createPaymentUploadUrl: (dto)           => request('POST', '/registrations/payment-upload-url', dto),
   getRegistrations:  (page = 1, limit = 50) => request('GET', `/registrations${qs({ page, limit })}`),
   updateRegistrationStatus: (id, status)  => request('PATCH', `/registrations/${id}/status`, { status }),
   updatePaymentStatus: (id, paymentStatus) => request('PATCH', `/registrations/${id}/payment`, { paymentStatus }),

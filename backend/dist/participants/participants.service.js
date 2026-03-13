@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParticipantsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const client_1 = require("@prisma/client");
 let ParticipantsService = class ParticipantsService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -26,33 +27,58 @@ let ParticipantsService = class ParticipantsService {
     }
     async findAll(page = 1, limit = 20) {
         const skip = (page - 1) * limit;
+        const approvedWhere = {
+            registrations: {
+                some: {
+                    status: client_1.RegistrationStatus.CONFIRMED,
+                },
+            },
+        };
         const [data, total] = await Promise.all([
             this.prisma.participant.findMany({
+                where: approvedWhere,
                 skip,
                 take: limit,
                 orderBy: { createdAt: 'desc' },
-                include: { registrations: { include: { event: true } } },
+                include: {
+                    registrations: {
+                        where: { status: client_1.RegistrationStatus.CONFIRMED },
+                        include: { event: true },
+                    },
+                },
             }),
-            this.prisma.participant.count(),
+            this.prisma.participant.count({ where: approvedWhere }),
         ]);
         return { data, total, page, limit, pages: Math.ceil(total / limit) };
     }
     async findOne(id) {
         const p = await this.prisma.participant.findUnique({
             where: { id },
-            include: { registrations: { include: { event: true } } },
+            include: {
+                registrations: {
+                    where: { status: client_1.RegistrationStatus.CONFIRMED },
+                    include: { event: true },
+                },
+            },
         });
-        if (!p)
+        if (!p || p.registrations.length === 0) {
             throw new common_1.NotFoundException('Participant not found');
+        }
         return p;
     }
     async findByEmail(email) {
         const p = await this.prisma.participant.findUnique({
             where: { email },
-            include: { registrations: { include: { event: true } } },
+            include: {
+                registrations: {
+                    where: { status: client_1.RegistrationStatus.CONFIRMED },
+                    include: { event: true },
+                },
+            },
         });
-        if (!p)
+        if (!p || p.registrations.length === 0) {
             throw new common_1.NotFoundException('Participant not found');
+        }
         return p;
     }
     async remove(id) {

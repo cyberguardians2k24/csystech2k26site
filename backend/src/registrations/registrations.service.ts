@@ -1,14 +1,22 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, BadRequestException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { PaymentStatus, RegistrationStatus } from '@prisma/client';
+import { R2UploadService } from './r2-upload.service';
+import { RegistrationEmailService } from './registration-email.service';
 
 @Injectable()
 export class RegistrationsService {
-  constructor(private prisma: PrismaService) {}
+  private readonly logger = new Logger(RegistrationsService.name);
+
+  constructor(
+    private prisma: PrismaService,
+    private readonly r2UploadService: R2UploadService,
+    private readonly registrationEmailService: RegistrationEmailService,
+  ) {}
 
   async create(dto: CreateRegistrationDto) {
-    if (!dto.paymentScreenshot?.startsWith('data:image/')) {
+    if (!dto.paymentScreenshot) {
       throw new BadRequestException('Payment screenshot is required');
     }
 
@@ -44,6 +52,8 @@ export class RegistrationsService {
     });
     if (existing) throw new ConflictException('Already registered for this event');
 
+    const normalizedScreenshot = this.normalizeUploadedPaymentUrl(dto.paymentScreenshot);
+
     // 4. Create registration
     const registration = await this.prisma.registration.create({
       data: {
@@ -51,7 +61,7 @@ export class RegistrationsService {
         eventId:       event.id,
         notes:         dto.notes,
         paymentRef:    dto.paymentRef,
-        paymentScreenshot: dto.paymentScreenshot,
+        paymentScreenshot: normalizedScreenshot,
         paymentStatus: 'PENDING',
         status:        'PENDING',
       },
@@ -63,6 +73,32 @@ export class RegistrationsService {
       message: `Registration submitted for ${participant.name}. Payment verification is pending admin approval.`,
       registration,
     };
+  }
+
+  async createPaymentUploadUrl(params: {
+    fileName: string;
+    contentType: string;
+    participantEmail: string;
+    event: string;
+  }) {
+    if (!params.fileName || !params.contentType || !params.participantEmail || !params.event) {
+      throw new BadRequestException('fileName, contentType, participantEmail, and event are required');
+    }
+
+    return this.r2UploadService.createSignedPaymentUploadUrl({
+      fileName: params.fileName,
+      contentType: params.contentType,
+      participantEmail: params.participantEmail,
+      eventSlugOrName: params.event,
+    });
+  }
+
+  private normalizeUploadedPaymentUrl(value: string) {
+    if (value.startsWith('http://') || value.startsWith('https://') || value.startsWith('r2://')) {
+      return value;
+    }
+
+    throw new BadRequestException('Invalid payment screenshot URL. Upload via signed URL from frontend first.');
   }
 
   async findAll(page = 1, limit = 20) {
@@ -107,7 +143,7 @@ export class RegistrationsService {
         ? RegistrationStatus.PENDING
         : registration.status;
 
-    return this.prisma.registration.update({
+    const updatedRegistration = await this.prisma.registration.update({
       where: { id },
       data: {
         paymentStatus: nextPaymentStatus,
@@ -115,6 +151,24 @@ export class RegistrationsService {
       },
       include: { participant: true, event: true },
     });
+
+    const wasConfirmed = registration.status === RegistrationStatus.CONFIRMED;
+    const isNowConfirmed = updatedRegistration.status === RegistrationStatus.CONFIRMED;
+
+    if (!wasConfirmed && isNowConfirmed) {
+      try {
+        await this.registrationEmailService.sendApprovalEmail({
+          participantName: updatedRegistration.participant?.name || 'Participant',
+          participantEmail: updatedRegistration.participant?.email,
+          eventName: updatedRegistration.event?.name || 'the selected event',
+        });
+      } catch (error) {
+        // Do not block admin approval when email delivery fails.
+        this.logger.warn(`Failed to send approval email for registration ${id}`);
+      }
+    }
+
+    return updatedRegistration;
   }
 
   async remove(id: number) {
@@ -123,8 +177,11 @@ export class RegistrationsService {
   }
 
   async getStats() {
-    const [totalParticipants, totalRegistrations, byEvent, byStatus] = await Promise.all([
-      this.prisma.participant.count(),
+    const [approvedParticipants, totalRegistrations, byEvent, byStatus] = await Promise.all([
+      this.prisma.registration.groupBy({
+        by: ['participantId'],
+        where: { status: RegistrationStatus.CONFIRMED },
+      }),
       this.prisma.registration.count(),
       this.prisma.registration.groupBy({ by: ['eventId'], _count: true }),
       this.prisma.registration.groupBy({ by: ['status'], _count: true }),
@@ -134,7 +191,7 @@ export class RegistrationsService {
     const eventMap = Object.fromEntries(events.map(e => [e.id, e.name]));
 
     return {
-      totalParticipants,
+      totalParticipants: approvedParticipants.length,
       totalRegistrations,
       byEvent: byEvent.map(r => ({ event: eventMap[r.eventId] || r.eventId, count: r._count })),
       byStatus,

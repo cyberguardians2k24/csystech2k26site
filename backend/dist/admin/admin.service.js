@@ -13,6 +13,7 @@ exports.AdminService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const bcrypt = require("bcryptjs");
+const client_1 = require("@prisma/client");
 let AdminService = class AdminService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -42,8 +43,11 @@ let AdminService = class AdminService {
         };
     }
     async getDashboard() {
-        const [totalParticipants, totalRegistrations, totalEvents, recentRegistrations, registrationsByEvent,] = await Promise.all([
-            this.prisma.participant.count(),
+        const [approvedParticipants, totalRegistrations, totalEvents, recentRegistrations, registrationsByEvent,] = await Promise.all([
+            this.prisma.registration.groupBy({
+                by: ['participantId'],
+                where: { status: client_1.RegistrationStatus.CONFIRMED },
+            }),
             this.prisma.registration.count(),
             this.prisma.event.count(),
             this.prisma.registration.findMany({
@@ -60,7 +64,7 @@ let AdminService = class AdminService {
         const eventMap = Object.fromEntries(events.map(e => [e.id, e]));
         return {
             stats: {
-                totalParticipants,
+                totalParticipants: approvedParticipants.length,
                 totalRegistrations,
                 totalEvents,
             },
@@ -81,26 +85,30 @@ let AdminService = class AdminService {
         };
     }
     async exportParticipants(eventQuery) {
-        const where = eventQuery
-            ? {
-                registrations: {
-                    some: {
-                        event: {
-                            is: {
-                                OR: [
-                                    { slug: eventQuery },
-                                    { name: { contains: eventQuery } },
-                                ],
+        const where = {
+            registrations: {
+                some: {
+                    status: client_1.RegistrationStatus.CONFIRMED,
+                    ...(eventQuery
+                        ? {
+                            event: {
+                                is: {
+                                    OR: [
+                                        { slug: eventQuery },
+                                        { name: { contains: eventQuery } },
+                                    ],
+                                },
                             },
-                        },
-                    },
+                        }
+                        : {}),
                 },
-            }
-            : {};
+            },
+        };
         return this.prisma.participant.findMany({
             where,
             include: {
                 registrations: {
+                    where: { status: client_1.RegistrationStatus.CONFIRMED },
                     include: { event: { select: { name: true, slug: true } } },
                 },
             },
