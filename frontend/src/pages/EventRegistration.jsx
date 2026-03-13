@@ -127,8 +127,13 @@ export default function EventRegistration() {
     e.preventDefault();
     setError('');
     const normalizedEmail = form.email.trim().toLowerCase();
+    const normalizedPaymentRef = paymentRef.trim();
     if (!normalizedEmail) {
       setError('Please enter your email address.');
+      return;
+    }
+    if (!normalizedPaymentRef) {
+      setError('Please enter your UTR / payment reference number.');
       return;
     }
     if (!paymentFile) {
@@ -165,7 +170,7 @@ export default function EventRegistration() {
         event:    event.title,
         notes:    [form.department, form.yearOfStudy ? `Year ${form.yearOfStudy}` : '', form.notes].filter(Boolean).join(' | ') || undefined,
         paymentScreenshot: signed.storageUrl,
-        paymentRef: paymentRef || undefined,
+        paymentRef: normalizedPaymentRef,
       });
       setSubmitted(true);
     } catch (err) {
@@ -447,11 +452,12 @@ export default function EventRegistration() {
                           <ul className="mt-3 space-y-2 text-sm leading-relaxed text-white/55">
                             <li>1. Scan the QR code and complete the payment.</li>
                             <li>2. Take a clear screenshot showing successful payment.</li>
-                            <li>3. Upload the screenshot below and submit the registration.</li>
+                            <li>3. Enter your UTR / payment reference number and upload the screenshot.</li>
                             <li>4. Admin will verify the payment before confirming your registration.</li>
+                            <li>5. While coming to the event, you must show your payment proof (screenshot/receipt).</li>
                           </ul>
                         </div>
-                        <InputField label="Payment Reference / UTR (optional)" id="reg-payment-ref" placeholder="Enter UTR / payment reference" value={paymentRef} onChange={(e) => setPaymentRef(e.target.value)} />
+                        <InputField label="Payment Reference / UTR" id="reg-payment-ref" placeholder="Enter UTR / payment reference" value={paymentRef} onChange={(e) => setPaymentRef(e.target.value)} required />
                       </div>
                     </div>
                   </div>

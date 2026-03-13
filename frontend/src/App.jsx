@@ -515,7 +515,7 @@ export default function App() {
                   <div className="container mx-auto px-6 max-w-6xl relative z-10 pt-14 pb-8">
                     <div className="panel-sheen mb-12 rounded-[2rem] border border-vibranium/20 bg-white/[0.02] backdrop-blur-xl px-6 py-7 md:px-8 md:py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                       <div>
-                        <p className="font-mono text-[10px] tracking-[0.35em] uppercase text-vibranium/70 mb-3">Sympho Transmission</p>
+                        <p className="font-mono text-[10px] tracking-[0.35em] uppercase text-vibranium/70 mb-3">Sympo Transmission</p>
                         <h3 className="text-2xl md:text-3xl font-heading font-black tracking-tight text-white leading-tight">
                           Ready to enter the most <span className="bp-vibranium-text">cinematic symposium</span> on campus?
                         </h3>

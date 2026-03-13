@@ -209,7 +209,7 @@ function PosterModal({ event, onClose }) {
     ctx.beginPath(); ctx.moveTo(0, 148); ctx.lineTo(W, 148); ctx.stroke();
 
     ctx.fillStyle = 'rgba(180,79,255,0.9)'; ctx.font = 'bold 13px \'Courier New\', monospace'; ctx.textAlign = 'center';
-    ctx.fillText('CYSTECH 2026  \u00b7  SYMPHO SYMPOSIUM', W / 2, 88);
+    ctx.fillText('CYSTECH 2026  \u00b7  SYMPO SYMPOSIUM', W / 2, 88);
     ctx.fillStyle = 'rgba(255,255,255,0.22)'; ctx.font = '11px \'Courier New\', monospace';
     ctx.fillText('DEPT. OF COMPUTER SCIENCE', W / 2, 118);
 
@@ -264,7 +264,7 @@ function PosterModal({ event, onClose }) {
     ctx.fillStyle = 'rgba(0,240,255,0.4)'; ctx.font = '11px \'Courier New\', monospace';
     ctx.fillText('Scan QR or visit the registration desk on event day', W / 2, H - 74);
     ctx.fillStyle = 'rgba(255,255,255,0.18)'; ctx.font = '10px \'Courier New\', monospace';
-    ctx.fillText('\u00a9 Sympho Organizing Committee \u00b7 All rights reserved', W / 2, H - 48);
+    ctx.fillText('\u00a9 Sympo Organizing Committee \u00b7 All rights reserved', W / 2, H - 48);
   }, [event]);
 
   const handleDownload = () => {

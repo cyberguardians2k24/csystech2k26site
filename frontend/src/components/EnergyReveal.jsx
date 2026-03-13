@@ -111,12 +111,12 @@ export default function EnergyReveal() {
 
         <div className="flex items-center gap-4 justify-center mb-6">
           <div className="h-px w-8 bg-vibranium" />
-          <p className="font-mono text-xs tracking-[0.25em] text-vibranium uppercase text-glow-vibranium">Sympho Pulse Matrix</p>
+          <p className="font-mono text-xs tracking-[0.25em] text-vibranium uppercase text-glow-vibranium">Sympo Pulse Matrix</p>
           <div className="h-px w-8 bg-vibranium" />
         </div>
 
         <h2 className="text-4xl md:text-6xl font-black font-heading tracking-tighter uppercase mb-6 text-white text-glow-vibranium">
-          A <span className="bp-vibranium-text">Sympho Experience</span>
+          A <span className="bp-vibranium-text">Sympo Experience</span>
         </h2>
         <p className="text-base md:text-xl text-white/60 font-mono tracking-wide leading-relaxed max-w-2xl mx-auto">
           Immersive visuals, electric competition, signature stage energy, and next-gen campus atmosphere — crafted to feel cinematic from the first scroll to the final registration tap.
