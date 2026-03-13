@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lookup } from 'node:dns';
+import { resolve4 } from 'node:dns/promises';
 import * as nodemailer from 'nodemailer';
 import { SentMessageInfo, Transporter } from 'nodemailer';
 
@@ -149,7 +150,7 @@ export class RegistrationEmailService {
 </table>
 </body></html>`;
 
-    const info = await transporter.sendMail({
+    const info = await this.sendMailWithNetworkFallback(transporter, {
       from,
       to: params.participantEmail,
       subject: `[${sym}] Registration Received — ${evt}`,
@@ -272,7 +273,7 @@ export class RegistrationEmailService {
 </table>
 </body></html>`;
 
-    const info = await transporter.sendMail({
+    const info = await this.sendMailWithNetworkFallback(transporter, {
       from,
       to: params.participantEmail,
       subject: `[${sym}] Registration Confirmed ✓ — ${evt}`,
@@ -287,6 +288,59 @@ export class RegistrationEmailService {
     const accepted = Array.isArray(info.accepted) ? info.accepted.join(', ') : '';
     const rejected = Array.isArray(info.rejected) ? info.rejected.join(', ') : '';
     this.logger.log(`Email sent [${kind}] to ${to}; messageId=${info.messageId}; accepted=[${accepted}] rejected=[${rejected}]`);
+  }
+
+  private async sendMailWithNetworkFallback(transporter: Transporter, mail: nodemailer.SendMailOptions) {
+    try {
+      return await transporter.sendMail(mail);
+    } catch (error) {
+      if (!this.isNetworkError(error)) {
+        throw error;
+      }
+
+      const reason = error instanceof Error ? error.message : 'Unknown network error';
+      this.logger.warn(`Primary SMTP delivery failed (${reason}). Retrying via IPv4 TLS fallback.`);
+
+      const fallback = await this.createIpv4FallbackTransporter();
+      return fallback.sendMail(mail);
+    }
+  }
+
+  private isNetworkError(error: unknown) {
+    const message = error instanceof Error ? error.message : String(error || '');
+    return /ENETUNREACH|ETIMEDOUT|Connection timeout|EHOSTUNREACH|ECONNREFUSED/i.test(message);
+  }
+
+  private async createIpv4FallbackTransporter() {
+    const host = this.config.get<string>('SMTP_HOST');
+    const user = this.config.get<string>('SMTP_USER');
+    const pass = this.config.get<string>('SMTP_PASS');
+
+    if (!host || !user || !pass) {
+      throw new Error('SMTP fallback unavailable: missing SMTP_HOST/SMTP_USER/SMTP_PASS');
+    }
+
+    const addresses = await resolve4(host);
+    if (!addresses.length) {
+      throw new Error(`SMTP fallback unavailable: no IPv4 address resolved for ${host}`);
+    }
+
+    return nodemailer.createTransport({
+      host: addresses[0],
+      port: 465,
+      secure: true,
+      auth: {
+        user,
+        pass,
+      },
+      tls: {
+        // Keep certificate validation against original SMTP hostname.
+        servername: host,
+      },
+      connectionTimeout: 20_000,
+      greetingTimeout: 20_000,
+      socketTimeout: 30_000,
+    });
   }
 
   private escapeHtml(value: string) {
