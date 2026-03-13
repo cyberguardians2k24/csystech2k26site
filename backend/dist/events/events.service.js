@@ -73,6 +73,14 @@ let EventsService = class EventsService {
                 prizeAmount: 'TBA',
             },
             {
+                name: 'Bug Bash',
+                slug: 'bug-bash',
+                description: 'Multi-round debugging event focused on speed and accuracy.',
+                category: 'CODING',
+                maxTeamSize: 2,
+                prizeAmount: 'TBA',
+            },
+            {
                 name: 'Neuro Byte',
                 slug: 'neuro-byte',
                 description: 'Cyber-tech quiz rounds with online and offline stages.',

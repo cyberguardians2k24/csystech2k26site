@@ -1,4 +1,4 @@
-﻿import React, { useMemo, useRef, useState } from 'react';
+﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { ALL_EVENTS, CATEGORY_META, EVENT_STATS, FEATURED_HOME_EVENTS } from '../data/events';
@@ -11,6 +11,7 @@ const FILTERS = [
 
 function EventCard({ ev, i }) {
   const [expanded, setExpanded] = useState(false);
+  const [isDesktopInteraction, setIsDesktopInteraction] = useState(false);
   const ref = useRef(null);
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -29,6 +30,18 @@ function EventCard({ ev, i }) {
     my.set(0);
   };
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(min-width: 768px) and (hover: hover) and (pointer: fine)');
+    const handleChange = () => setIsDesktopInteraction(mediaQuery.matches);
+
+    handleChange();
+    mediaQuery.addEventListener('change', handleChange);
+
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
   return (
     <motion.article
       ref={ref}
@@ -36,10 +49,10 @@ function EventCard({ ev, i }) {
       whileInView={{ opacity: 1, scale: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ delay: i * 0.07, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -10 }}
-      style={{ rotateX: rx, rotateY: ry }}
-      onMouseMove={handleMove}
-      onMouseLeave={resetMove}
+      whileHover={isDesktopInteraction ? { y: -10 } : undefined}
+      style={isDesktopInteraction ? { rotateX: rx, rotateY: ry } : undefined}
+      onMouseMove={isDesktopInteraction ? handleMove : undefined}
+      onMouseLeave={isDesktopInteraction ? resetMove : undefined}
       className={`group panel-sheen relative flex flex-col justify-between p-5 sm:p-7 md:p-8 rounded-[2rem] border border-white/8 bg-[#09020f]/72 backdrop-blur-2xl overflow-hidden cursor-pointer ${ev.span}`}
       onClick={() => setExpanded((v) => !v)}
     >
@@ -47,7 +60,11 @@ function EventCard({ ev, i }) {
       <div className={`absolute inset-0 bg-gradient-to-br ${ev.color} opacity-[0.08] group-hover:opacity-[0.16] transition-opacity duration-500 pointer-events-none`} />
       <div className="absolute inset-0 bg-holo-grid bg-grid-sm opacity-[0.04] group-hover:opacity-[0.12] transition-opacity pointer-events-none" />
       <div className="absolute inset-0 rounded-[2rem] border border-transparent group-hover:border-vibranium/30 transition-colors duration-500 pointer-events-none" />
-      <motion.div className="absolute inset-0 pointer-events-none" initial={{ opacity: 0 }} whileHover={{ opacity: 1 }}>
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        initial={{ opacity: 0 }}
+        whileHover={isDesktopInteraction ? { opacity: 1 } : undefined}
+      >
         <div className="absolute top-0 left-[-25%] h-full w-[22%] bg-[linear-gradient(90deg,transparent,rgba(212,175,55,0.22),transparent)] skew-x-[-22deg] animate-[sheen-drift_2.8s_linear_infinite]" />
       </motion.div>
 
@@ -141,7 +158,7 @@ function EventCard({ ev, i }) {
                 </div>
               </div>
 
-              <Link to={`/register/${ev.id}`} onClick={(e) => e.stopPropagation()} className="mt-5 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-[#9D00FF]/30 bg-[linear-gradient(135deg,rgba(212,175,55,0.20),rgba(123,44,255,0.18))] text-white font-heading font-bold tracking-[0.18em] uppercase text-xs shadow-[0_0_30px_rgba(212,175,55,0.16)] hover:scale-[1.02] transition-all duration-300">
+              <Link to={`/register/${ev.id}`} onClick={(e) => e.stopPropagation()} className="mt-5 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-[#9D00FF]/30 bg-[linear-gradient(135deg,rgba(212,175,55,0.20),rgba(123,44,255,0.18))] text-white font-heading font-bold tracking-[0.18em] uppercase text-xs shadow-[0_0_30px_rgba(212,175,55,0.16)] md:hover:scale-[1.02] transition-all duration-300">
                 Register Now
               </Link>
             </div>
@@ -226,7 +243,7 @@ export default function EventsGrid() {
         </div>
 
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.25 }} className="mt-14 grid md:grid-cols-2 gap-4">
-          <button onClick={() => navigate('/technical')} className="panel-sheen group rounded-[2rem] border border-[#7b2cff]/28 bg-[#090212]/72 px-6 py-6 text-left hover:-translate-y-1 transition-all duration-300">
+          <button onClick={() => navigate('/technical')} className="panel-sheen group rounded-[2rem] border border-[#7b2cff]/28 bg-[#090212]/72 px-6 py-6 text-left md:hover:-translate-y-1 transition-all duration-300">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="font-mono text-[10px] tracking-[0.26em] uppercase text-[#d8b4fe]">Technical Track</p>
@@ -237,7 +254,7 @@ export default function EventsGrid() {
             </div>
           </button>
 
-          <button onClick={() => navigate('/non-technical')} className="panel-sheen group rounded-[2rem] border border-[#9D00FF]/25 bg-[#0a0810]/74 px-6 py-6 text-left hover:-translate-y-1 transition-all duration-300">
+          <button onClick={() => navigate('/non-technical')} className="panel-sheen group rounded-[2rem] border border-[#9D00FF]/25 bg-[#0a0810]/74 px-6 py-6 text-left md:hover:-translate-y-1 transition-all duration-300">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="font-mono text-[10px] tracking-[0.26em] uppercase text-[#f5deb0]">Stage / Arena Track</p>
