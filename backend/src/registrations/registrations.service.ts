@@ -68,6 +68,18 @@ export class RegistrationsService {
       include: { participant: true, event: true },
     });
 
+    // 5. Send registration received email (non-blocking)
+    try {
+      await this.registrationEmailService.sendRegistrationReceivedEmail({
+        participantName: participant.name,
+        participantEmail: participant.email,
+        eventName: event.name,
+      });
+    } catch (err) {
+      const reason = err instanceof Error ? err.message : 'Unknown error';
+      this.logger.warn(`Failed to send registration email for ${participant.email}: ${reason}`);
+    }
+
     return {
       success: true,
       message: `Registration submitted for ${participant.name}. Payment verification is pending admin approval.`,
