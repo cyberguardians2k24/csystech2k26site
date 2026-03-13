@@ -125,12 +125,33 @@ export class RegistrationsService {
   }
 
   async updateStatus(id: number, status: string) {
-    await this.findOne(id);
-    return this.prisma.registration.update({
+    const registration = await this.findOne(id);
+    const nextStatus = status as RegistrationStatus;
+
+    const updatedRegistration = await this.prisma.registration.update({
       where: { id },
-      data:  { status: status as any },
+      data:  { status: nextStatus as any },
       include: { participant: true, event: true },
     });
+
+    const wasConfirmed = registration.status === RegistrationStatus.CONFIRMED;
+    const isNowConfirmed = updatedRegistration.status === RegistrationStatus.CONFIRMED;
+
+    if (!wasConfirmed && isNowConfirmed) {
+      try {
+        await this.registrationEmailService.sendApprovalEmail({
+          participantName: updatedRegistration.participant?.name || 'Participant',
+          participantEmail: updatedRegistration.participant?.email || '',
+          eventName: updatedRegistration.event?.name || 'the selected event',
+        });
+      } catch (error) {
+        // Do not block admin approval when email delivery fails.
+        const reason = error instanceof Error ? error.message : 'Unknown error';
+        this.logger.warn(`Failed to send approval email for registration ${id}: ${reason}`);
+      }
+    }
+
+    return updatedRegistration;
   }
 
   async updatePaymentStatus(id: number, paymentStatus: string) {
@@ -159,12 +180,13 @@ export class RegistrationsService {
       try {
         await this.registrationEmailService.sendApprovalEmail({
           participantName: updatedRegistration.participant?.name || 'Participant',
-          participantEmail: updatedRegistration.participant?.email,
+          participantEmail: updatedRegistration.participant?.email || '',
           eventName: updatedRegistration.event?.name || 'the selected event',
         });
       } catch (error) {
         // Do not block admin approval when email delivery fails.
-        this.logger.warn(`Failed to send approval email for registration ${id}`);
+        const reason = error instanceof Error ? error.message : 'Unknown error';
+        this.logger.warn(`Failed to send approval email for registration ${id}: ${reason}`);
       }
     }
 

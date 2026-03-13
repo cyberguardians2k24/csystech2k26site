@@ -15,6 +15,11 @@ export class RegistrationEmailService {
     participantEmail: string;
     eventName: string;
   }) {
+    if (!params.participantEmail) {
+      this.logger.warn('Approval email skipped because participant email is missing.');
+      return;
+    }
+
     const transporter = this.getTransporter();
     if (!transporter) {
       return;
