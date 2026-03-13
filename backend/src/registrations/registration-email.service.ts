@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { lookup } from 'node:dns';
 import * as nodemailer from 'nodemailer';
 import { SentMessageInfo, Transporter } from 'nodemailer';
 
@@ -324,6 +325,14 @@ export class RegistrationEmailService {
         user,
         pass,
       },
+      // Render can resolve Gmail to IPv6 addresses that are not reachable from the runtime.
+      // Force IPv4 lookup to prevent ENETUNREACH and intermittent connection timeouts.
+      lookup: (hostname, options, callback) => {
+        lookup(hostname, { ...options, family: 4, all: false }, callback);
+      },
+      connectionTimeout: 20_000,
+      greetingTimeout: 20_000,
+      socketTimeout: 30_000,
     });
 
     return this.transporter;
