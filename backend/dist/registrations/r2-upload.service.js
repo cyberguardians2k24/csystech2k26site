@@ -31,6 +31,7 @@ let R2UploadService = class R2UploadService {
         this.client = new client_s3_1.S3Client({
             region: 'auto',
             endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+            forcePathStyle: true,
             credentials: {
                 accessKeyId,
                 secretAccessKey,

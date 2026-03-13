@@ -60,17 +60,98 @@ export class EventsService {
 
   async seed() {
     const events = [
-      { name: 'Paper Presentation', slug: 'paper-presentation', description: 'Present your research on cutting-edge topics.', category: 'TECHNICAL', maxTeamSize: 2, prizeAmount: '₹15,000' },
-      { name: 'Hackathon',          slug: 'hackathon',          description: '24-hour coding sprint.', category: 'CODING', maxTeamSize: 4, prizeAmount: '₹30,000' },
-      { name: 'Technical Quiz',     slug: 'technical-quiz',     description: 'Test your tech knowledge.', category: 'KNOWLEDGE', maxTeamSize: 2, prizeAmount: '₹10,000' },
-      { name: 'Workshop – AI/ML',   slug: 'workshop-aiml',      description: 'Hands-on AI/ML session.', category: 'SKILL', maxTeamSize: 1 },
-      { name: 'Workshop – Cybersecurity', slug: 'workshop-cyber', description: 'Hands-on security session.', category: 'SKILL', maxTeamSize: 1 },
+      {
+        name: 'Poster Presentation',
+        slug: 'poster-presentation',
+        description: 'Present a cyber-tech concept in poster format.',
+        category: 'TECHNICAL',
+        maxTeamSize: 3,
+        prizeAmount: 'TBA',
+      },
+      {
+        name: 'Neuro Byte',
+        slug: 'neuro-byte',
+        description: 'Cyber-tech quiz rounds with online and offline stages.',
+        category: 'KNOWLEDGE',
+        maxTeamSize: 1,
+        prizeAmount: 'TBA',
+      },
+      {
+        name: 'Payload Paradise',
+        slug: 'payload-paradise',
+        description: 'Web vulnerability assessment in a controlled lab setup.',
+        category: 'CODING',
+        maxTeamSize: 4,
+        prizeAmount: 'TBA',
+      },
+      {
+        name: 'Design Duel',
+        slug: 'design-duel',
+        description: 'Three-round fun coding and problem solving challenge.',
+        category: 'CODING',
+        maxTeamSize: 2,
+        prizeAmount: 'TBA',
+      },
+      {
+        name: 'Arena (Free Fire)',
+        slug: 'arena-free-fire',
+        description: 'Custom-room Free Fire squad tournament.',
+        category: 'SKILL',
+        maxTeamSize: 4,
+        prizeAmount: 'TBA',
+      },
+      {
+        name: 'Arena (BGMI)',
+        slug: 'arena-bgmi',
+        description: 'Best-of-3 BGMI squad competition.',
+        category: 'SKILL',
+        maxTeamSize: 4,
+        prizeAmount: 'TBA',
+      },
+      {
+        name: 'Kabbadi',
+        slug: 'kabbadi',
+        description: 'On-ground kabaddi competition.',
+        category: 'SKILL',
+        maxTeamSize: 7,
+        prizeAmount: 'TBA',
+      },
+      {
+        name: 'Link Logic',
+        slug: 'link-logic',
+        description: 'Team buzzer event across multiple rounds.',
+        category: 'KNOWLEDGE',
+        maxTeamSize: 4,
+        prizeAmount: 'TBA',
+      },
+      {
+        name: 'Short Film',
+        slug: 'short-film',
+        description: 'Original short film screening competition.',
+        category: 'SKILL',
+        maxTeamSize: 5,
+        prizeAmount: 'TBA',
+      },
     ];
+
+    const validSlugs = events.map((event) => event.slug);
+
+    await this.prisma.event.updateMany({
+      where: { slug: { notIn: validSlugs } },
+      data: { isActive: false },
+    });
 
     for (const e of events) {
       await this.prisma.event.upsert({
         where:  { slug: e.slug },
-        update: {},
+        update: {
+          name: e.name,
+          description: e.description,
+          category: e.category as any,
+          maxTeamSize: e.maxTeamSize,
+          prizeAmount: e.prizeAmount,
+          isActive: true,
+        },
         create: e as any,
       });
     }
