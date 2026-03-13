@@ -25,9 +25,9 @@ export default {
 
       },
       fontFamily: {
-        heading: ['Space Grotesk', 'sans-serif'],
-        body: ['Outfit', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        heading: ['Panthera', 'sans-serif'],
+        body: ['Panthera', 'sans-serif'],
+        mono: ['Panthera', 'sans-serif'],
       },
       backgroundImage: {
         'wakanda-gradient': 'linear-gradient(to bottom right, #030005, #0a0014, #030005)',

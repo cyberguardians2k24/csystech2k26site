@@ -71,12 +71,12 @@ function GlitchTitle({ ready }) {
   }, [ready]);
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-visible py-3">
       <motion.h1
         initial={{ y: '105%', opacity: 0 }}
         animate={ready ? { y: 0, opacity: 1 } : {}}
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-        className="text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-none tracking-tight hero-shimmer-text select-none"
+        className="block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight hero-shimmer-text select-none pt-[0.06em] pb-[0.16em]"
       >
         CYSTECH 2K26
       </motion.h1>
@@ -90,7 +90,7 @@ function GlitchTitle({ ready }) {
               animate={{ opacity: [0, 0.7, 0] }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.12 }}
-              className="absolute inset-0 text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-none tracking-tight pointer-events-none select-none"
+              className="absolute left-0 top-0 block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight pointer-events-none select-none pt-[0.06em] pb-[0.16em]"
               style={{ color: '#00f0ff', left: '3px', top: '-2px', clipPath: 'inset(0 0 60% 0)' }}
             >
               CYSTECH 2K26
@@ -101,7 +101,7 @@ function GlitchTitle({ ready }) {
               animate={{ opacity: [0, 0.6, 0] }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.10, delay: 0.04 }}
-              className="absolute inset-0 text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-none tracking-tight pointer-events-none select-none"
+              className="absolute left-0 top-0 block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight pointer-events-none select-none pt-[0.06em] pb-[0.16em]"
               style={{ color: '#FF00AA', left: '-3px', top: '2px', clipPath: 'inset(60% 0 0 0)' }}
             >
               CYSTECH 2K26

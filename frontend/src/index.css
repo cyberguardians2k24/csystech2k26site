@@ -1,5 +1,15 @@
 /* Google Fonts loaded via <link> in index.html for non-blocking delivery */
 
+@font-face {
+  font-family: 'Panthera';
+  src: local('Panthera'),
+       local('Panthera Regular'),
+       url('../Assets/panthera-font/PantheraRegular-MVZ9J.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,7 +45,7 @@ html {
 body {
   background-color: var(--wakanda-dark);
   color: #ffffff;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Panthera', sans-serif;
   overflow-x: hidden;
   cursor: none;          /* hidden on desktop — custom cursor used */
   -webkit-font-smoothing: antialiased;
@@ -81,7 +91,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Panthera', sans-serif;
 }
 
 /* ─── Scroll Progress Bar ──────────────────────────────────────────────── */
@@ -180,7 +190,7 @@ h6 {
   border: 1px solid rgba(157,0,255,0.28);
   background: rgba(5, 4, 10, 0.72);
   color: rgba(180, 79, 255, 0.92);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Panthera', sans-serif;
   font-size: 9px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -576,7 +586,7 @@ select:focus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Panthera', sans-serif;
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
