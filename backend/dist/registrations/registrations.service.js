@@ -8,20 +8,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var RegistrationsService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegistrationsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
 const r2_upload_service_1 = require("./r2-upload.service");
-const registration_email_service_1 = require("./registration-email.service");
-let RegistrationsService = RegistrationsService_1 = class RegistrationsService {
-    constructor(prisma, r2UploadService, registrationEmailService) {
+let RegistrationsService = class RegistrationsService {
+    constructor(prisma, r2UploadService) {
         this.prisma = prisma;
         this.r2UploadService = r2UploadService;
-        this.registrationEmailService = registrationEmailService;
-        this.logger = new common_1.Logger(RegistrationsService_1.name);
     }
     async create(dto) {
         if (!dto.paymentScreenshot) {
@@ -115,11 +111,13 @@ let RegistrationsService = RegistrationsService_1 = class RegistrationsService {
     }
     async updateStatus(id, status) {
         await this.findOne(id);
-        return this.prisma.registration.update({
+        const nextStatus = status;
+        const updatedRegistration = await this.prisma.registration.update({
             where: { id },
-            data: { status: status },
+            data: { status: nextStatus },
             include: { participant: true, event: true },
         });
+        return updatedRegistration;
     }
     async updatePaymentStatus(id, paymentStatus) {
         const registration = await this.findOne(id);
@@ -137,20 +135,6 @@ let RegistrationsService = RegistrationsService_1 = class RegistrationsService {
             },
             include: { participant: true, event: true },
         });
-        const wasConfirmed = registration.status === client_1.RegistrationStatus.CONFIRMED;
-        const isNowConfirmed = updatedRegistration.status === client_1.RegistrationStatus.CONFIRMED;
-        if (!wasConfirmed && isNowConfirmed) {
-            try {
-                await this.registrationEmailService.sendApprovalEmail({
-                    participantName: updatedRegistration.participant?.name || 'Participant',
-                    participantEmail: updatedRegistration.participant?.email,
-                    eventName: updatedRegistration.event?.name || 'the selected event',
-                });
-            }
-            catch (error) {
-                this.logger.warn(`Failed to send approval email for registration ${id}`);
-            }
-        }
         return updatedRegistration;
     }
     async remove(id) {
@@ -178,10 +162,9 @@ let RegistrationsService = RegistrationsService_1 = class RegistrationsService {
     }
 };
 exports.RegistrationsService = RegistrationsService;
-exports.RegistrationsService = RegistrationsService = RegistrationsService_1 = __decorate([
+exports.RegistrationsService = RegistrationsService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        r2_upload_service_1.R2UploadService,
-        registration_email_service_1.RegistrationEmailService])
+        r2_upload_service_1.R2UploadService])
 ], RegistrationsService);
 //# sourceMappingURL=registrations.service.js.map

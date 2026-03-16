@@ -1,18 +1,14 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { PaymentStatus, RegistrationStatus } from '@prisma/client';
 import { R2UploadService } from './r2-upload.service';
-import { RegistrationEmailService } from './registration-email.service';
 
 @Injectable()
 export class RegistrationsService {
-  private readonly logger = new Logger(RegistrationsService.name);
-
   constructor(
     private prisma: PrismaService,
     private readonly r2UploadService: R2UploadService,
-    private readonly registrationEmailService: RegistrationEmailService,
   ) {}
 
   async create(dto: CreateRegistrationDto) {
@@ -67,24 +63,6 @@ export class RegistrationsService {
       },
       include: { participant: true, event: true },
     });
-
-    // 5. Send registration received email (non-blocking)
-    try {
-      await this.registrationEmailService.sendRegistrationReceivedEmail({
-        participantName:  participant.name,
-        participantEmail: participant.email,
-        eventName:        event.name,
-        college:          participant.college,
-        phone:            participant.phone,
-        teamName:         participant.teamName || undefined,
-        venue:            event.venue || undefined,
-        eventDate:        event.startTime ? event.startTime.toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }) : undefined,
-        paymentRef:       dto.paymentRef || undefined,
-      });
-    } catch (err) {
-      const reason = err instanceof Error ? err.message : 'Unknown error';
-      this.logger.warn(`Failed to send registration email for ${participant.email}: ${reason}`);
-    }
 
     return {
       success: true,
@@ -143,7 +121,7 @@ export class RegistrationsService {
   }
 
   async updateStatus(id: number, status: string) {
-    const registration = await this.findOne(id);
+    await this.findOne(id);
     const nextStatus = status as RegistrationStatus;
 
     const updatedRegistration = await this.prisma.registration.update({
@@ -151,28 +129,6 @@ export class RegistrationsService {
       data:  { status: nextStatus as any },
       include: { participant: true, event: true },
     });
-
-    const wasConfirmed = registration.status === RegistrationStatus.CONFIRMED;
-    const isNowConfirmed = updatedRegistration.status === RegistrationStatus.CONFIRMED;
-
-    if (!wasConfirmed && isNowConfirmed) {
-      try {
-        await this.registrationEmailService.sendApprovalEmail({
-          participantName:  updatedRegistration.participant?.name || 'Participant',
-          participantEmail: updatedRegistration.participant?.email || '',
-          eventName:        updatedRegistration.event?.name || 'the selected event',
-          college:          updatedRegistration.participant?.college,
-          phone:            updatedRegistration.participant?.phone,
-          teamName:         updatedRegistration.participant?.teamName || undefined,
-          venue:            (updatedRegistration.event as any)?.venue || undefined,
-          eventDate:        (updatedRegistration.event as any)?.startTime ? new Date((updatedRegistration.event as any).startTime).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }) : undefined,
-        });
-      } catch (error) {
-        // Do not block admin approval when email delivery fails.
-        const reason = error instanceof Error ? error.message : 'Unknown error';
-        this.logger.warn(`Failed to send approval email for registration ${id}: ${reason}`);
-      }
-    }
 
     return updatedRegistration;
   }
@@ -195,28 +151,6 @@ export class RegistrationsService {
       },
       include: { participant: true, event: true },
     });
-
-    const wasConfirmed = registration.status === RegistrationStatus.CONFIRMED;
-    const isNowConfirmed = updatedRegistration.status === RegistrationStatus.CONFIRMED;
-
-    if (!wasConfirmed && isNowConfirmed) {
-      try {
-        await this.registrationEmailService.sendApprovalEmail({
-          participantName:  updatedRegistration.participant?.name || 'Participant',
-          participantEmail: updatedRegistration.participant?.email || '',
-          eventName:        updatedRegistration.event?.name || 'the selected event',
-          college:          updatedRegistration.participant?.college,
-          phone:            updatedRegistration.participant?.phone,
-          teamName:         updatedRegistration.participant?.teamName || undefined,
-          venue:            (updatedRegistration.event as any)?.venue || undefined,
-          eventDate:        (updatedRegistration.event as any)?.startTime ? new Date((updatedRegistration.event as any).startTime).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }) : undefined,
-        });
-      } catch (error) {
-        // Do not block admin approval when email delivery fails.
-        const reason = error instanceof Error ? error.message : 'Unknown error';
-        this.logger.warn(`Failed to send approval email for registration ${id}: ${reason}`);
-      }
-    }
 
     return updatedRegistration;
   }

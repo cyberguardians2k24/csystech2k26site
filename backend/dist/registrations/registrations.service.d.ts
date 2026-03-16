@@ -1,13 +1,10 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { R2UploadService } from './r2-upload.service';
-import { RegistrationEmailService } from './registration-email.service';
 export declare class RegistrationsService {
     private prisma;
     private readonly r2UploadService;
-    private readonly registrationEmailService;
-    private readonly logger;
-    constructor(prisma: PrismaService, r2UploadService: R2UploadService, registrationEmailService: RegistrationEmailService);
+    constructor(prisma: PrismaService, r2UploadService: R2UploadService);
     create(dto: CreateRegistrationDto): Promise<{
         success: boolean;
         message: string;
