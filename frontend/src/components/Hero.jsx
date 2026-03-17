@@ -244,7 +244,15 @@ export default function Hero() {
     { value: formatCount(EVENT_STATS.totalCount), label: 'Events', glyph: '⬢', tone: 'vibranium' },
     { value: formatCount(participantCount), label: 'Participants', glyph: '✦', tone: 'cyan' },
     { value: formatCount(SPEAKERS.length), label: 'Speakers', glyph: '◈', tone: 'silver' },
-    { value: formatCount(countSponsors(SPONSOR_TIERS)), label: 'Sponsors', glyph: '❖', tone: 'vibranium' },
+    (() => {
+      const sponsorCount = countSponsors(SPONSOR_TIERS);
+      return {
+        value: sponsorCount > 0 ? formatCount(sponsorCount) : 'TBA',
+        label: 'Sponsors',
+        glyph: '❖',
+        tone: 'vibranium',
+      };
+    })(),
   ];
 
   return (

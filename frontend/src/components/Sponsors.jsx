@@ -51,8 +51,13 @@ export default function Sponsors() {
           {SPONSOR_TIERS.map((tier, ti) => (
             <div key={ti}>
               <p className={`font-mono text-[9px] tracking-[0.3em] uppercase mb-4 ${tier.text}`}>{tier.tier}</p>
-              <div className={`grid gap-4 ${tier.sponsors.length === 1 ? 'grid-cols-1 max-w-xs mx-auto' : tier.sponsors.length === 2 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-4'}`}>
-                {tier.sponsors.map((sp, si) => (
+              {(() => {
+                const sponsors = (tier.sponsors?.length ?? 0) > 0
+                  ? tier.sponsors
+                  : [{ name: 'To be announced', abbr: 'TBA' }];
+                return (
+                  <div className={`grid gap-4 ${sponsors.length === 1 ? 'grid-cols-1 max-w-xs mx-auto' : sponsors.length === 2 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-4'}`}>
+                    {sponsors.map((sp, si) => (
                   <SponsorCard
                     key={si}
                     {...sp}
@@ -62,8 +67,10 @@ export default function Sponsors() {
                     text={tier.text}
                     delay={si * 0.08}
                   />
-                ))}
-              </div>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
           ))}
         </div>

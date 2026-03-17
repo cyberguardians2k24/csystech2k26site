@@ -5,7 +5,7 @@ export const SPONSOR_TIERS = [
     border: 'border-vibranium/60',
     glow: 'shadow-[0_0_30px_rgba(157,0,255,0.7)] vibranium-glow',
     text: 'bp-vibranium-text',
-    sponsors: [{ name: 'VibraniumTech', abbr: 'VT' }],
+    sponsors: [],
   },
   {
     tier: 'Gold Sponsors',
@@ -13,10 +13,7 @@ export const SPONSOR_TIERS = [
     border: 'border-vibranium/30',
     glow: 'shadow-vibranium-glow',
     text: 'text-vibranium-light',
-    sponsors: [
-      { name: 'Wakanda Labs', abbr: 'WL' },
-      { name: 'HoloCorp', abbr: 'HC' },
-    ],
+    sponsors: [],
   },
   {
     tier: 'Silver Sponsors',
@@ -24,11 +21,7 @@ export const SPONSOR_TIERS = [
     border: 'border-holo-cyan/20',
     glow: 'shadow-[0_0_20px_rgba(0,240,255,0.1)]',
     text: 'text-holo-cyan',
-    sponsors: [
-      { name: 'NeuraSync', abbr: 'NS' },
-      { name: 'ByteForge', abbr: 'BF' },
-      { name: 'Orbital Dev', abbr: 'OD' },
-    ],
+    sponsors: [],
   },
   {
     tier: 'Community Partners',
@@ -36,12 +29,7 @@ export const SPONSOR_TIERS = [
     border: 'border-white/10',
     glow: '',
     text: 'text-white/40',
-    sponsors: [
-      { name: 'DevCircle', abbr: 'DC' },
-      { name: 'OpenCore', abbr: 'OC' },
-      { name: 'HackHub', abbr: 'HH' },
-      { name: 'TechGuild', abbr: 'TG' },
-    ],
+    sponsors: [],
   },
 ];
 
