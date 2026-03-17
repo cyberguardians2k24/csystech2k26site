@@ -5,7 +5,6 @@ import heroVideo from '../../Assets/hero/cystek cdo 2 selected.mp4';
 import { EVENT_STATS } from '../data/events';
 import { SPEAKERS } from '../data/speakers';
 import { SPONSOR_TIERS, countSponsors } from '../data/sponsors';
-import { api } from '../lib/api';
 const HeroParticles = lazy(() => import('./HeroParticles'));
 
 const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
@@ -211,23 +210,8 @@ export default function Hero() {
   const [videoReady, setVideoReady] = useState(false);
   const [spotlight, setSpotlight] = useState({ x: 0, y: 0 });
   const [btnHovered, setBtnHovered] = useState(false);
-  const [participantCount, setParticipantCount] = useState(null);
   const navigate = useNavigate();
   const heroRef = useRef(null);
-
-  useEffect(() => {
-    let mounted = true;
-    api.getStats()
-      .then((stats) => {
-        if (!mounted) return;
-        setParticipantCount(typeof stats?.totalParticipants === 'number' ? stats.totalParticipants : null);
-      })
-      .catch(() => {
-        if (!mounted) return;
-        setParticipantCount(null);
-      });
-    return () => { mounted = false; };
-  }, []);
 
   const handleMouseMove = useCallback((e) => {
     const rect = heroRef.current?.getBoundingClientRect();
@@ -242,7 +226,6 @@ export default function Hero() {
 
   const stats = [
     { value: formatCount(EVENT_STATS.totalCount), label: 'Events', glyph: '⬢', tone: 'vibranium' },
-    { value: formatCount(participantCount), label: 'Participants', glyph: '✦', tone: 'cyan' },
     { value: formatCount(SPEAKERS.length), label: 'Speakers', glyph: '◈', tone: 'silver' },
     (() => {
       const sponsorCount = countSponsors(SPONSOR_TIERS);
