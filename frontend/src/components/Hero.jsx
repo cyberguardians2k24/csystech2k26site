@@ -2,6 +2,10 @@ import React, { useState, useRef, useCallback, lazy, Suspense, useEffect } from 
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import heroVideo from '../../Assets/hero/cystek cdo 2 selected.mp4';
+import { EVENT_STATS } from '../data/events';
+import { SPEAKERS } from '../data/speakers';
+import { SPONSOR_TIERS, countSponsors } from '../data/sponsors';
+import { api } from '../lib/api';
 const HeroParticles = lazy(() => import('./HeroParticles'));
 
 const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
@@ -21,12 +25,11 @@ const GLYPH_TONES = {
   },
 };
 
-const STATS = [
-  { value: '50+', label: 'Events', glyph: '⬢', tone: 'vibranium' },
-  { value: '1K+', label: 'Participants', glyph: '✦', tone: 'cyan' },
-  { value: '25+', label: 'Speakers', glyph: '◈', tone: 'silver' },
-  { value: '12+', label: 'Sponsors', glyph: '❖', tone: 'vibranium' },
-];
+function formatCount(value) {
+  if (value === null || value === undefined) return '—';
+  if (typeof value === 'number') return value.toLocaleString('en-IN');
+  return String(value);
+}
 
 // floating emoji orbs
 const FLOAT_EMOJIS = [
@@ -208,8 +211,23 @@ export default function Hero() {
   const [videoReady, setVideoReady] = useState(false);
   const [spotlight, setSpotlight] = useState({ x: 0, y: 0 });
   const [btnHovered, setBtnHovered] = useState(false);
+  const [participantCount, setParticipantCount] = useState(null);
   const navigate = useNavigate();
   const heroRef = useRef(null);
+
+  useEffect(() => {
+    let mounted = true;
+    api.getStats()
+      .then((stats) => {
+        if (!mounted) return;
+        setParticipantCount(typeof stats?.totalParticipants === 'number' ? stats.totalParticipants : null);
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setParticipantCount(null);
+      });
+    return () => { mounted = false; };
+  }, []);
 
   const handleMouseMove = useCallback((e) => {
     const rect = heroRef.current?.getBoundingClientRect();
@@ -221,6 +239,13 @@ export default function Hero() {
   const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.18]);
   const videoOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -100]);
+
+  const stats = [
+    { value: formatCount(EVENT_STATS.totalCount), label: 'Events', glyph: '⬢', tone: 'vibranium' },
+    { value: formatCount(participantCount), label: 'Participants', glyph: '✦', tone: 'cyan' },
+    { value: formatCount(SPEAKERS.length), label: 'Speakers', glyph: '◈', tone: 'silver' },
+    { value: formatCount(countSponsors(SPONSOR_TIERS)), label: 'Sponsors', glyph: '❖', tone: 'vibranium' },
+  ];
 
   return (
     <section ref={heroRef} className="relative h-screen bg-black overflow-hidden" onMouseMove={!isTouch ? handleMouseMove : undefined}>
@@ -389,7 +414,7 @@ export default function Hero() {
 
           {/* Stats — bouncy pop-in */}
           <motion.div variants={fadeBlurUp} className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-8">
-            {STATS.map((s, i) => (
+            {stats.map((s, i) => (
               <React.Fragment key={s.label}>
                 {i > 0 && <span className="hidden sm:block w-px h-8 bg-white/10" />}
                 <motion.div

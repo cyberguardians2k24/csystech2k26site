@@ -142,11 +142,14 @@ let RegistrationsService = class RegistrationsService {
         return this.prisma.registration.delete({ where: { id } });
     }
     async getStats() {
-        const [approvedParticipants, totalRegistrations, byEvent, byStatus] = await Promise.all([
+        const [confirmedParticipants, totalParticipants, totalEvents, activeEvents, totalRegistrations, byEvent, byStatus,] = await Promise.all([
             this.prisma.registration.groupBy({
                 by: ['participantId'],
                 where: { status: client_1.RegistrationStatus.CONFIRMED },
             }),
+            this.prisma.participant.count(),
+            this.prisma.event.count(),
+            this.prisma.event.count({ where: { isActive: true } }),
             this.prisma.registration.count(),
             this.prisma.registration.groupBy({ by: ['eventId'], _count: true }),
             this.prisma.registration.groupBy({ by: ['status'], _count: true }),
@@ -154,7 +157,10 @@ let RegistrationsService = class RegistrationsService {
         const events = await this.prisma.event.findMany({ select: { id: true, name: true } });
         const eventMap = Object.fromEntries(events.map(e => [e.id, e.name]));
         return {
-            totalParticipants: approvedParticipants.length,
+            totalParticipants,
+            confirmedParticipants: confirmedParticipants.length,
+            totalEvents,
+            activeEvents,
             totalRegistrations,
             byEvent: byEvent.map(r => ({ event: eventMap[r.eventId] || r.eventId, count: r._count })),
             byStatus,

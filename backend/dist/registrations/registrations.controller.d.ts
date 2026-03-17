@@ -98,6 +98,9 @@ export declare class RegistrationsController {
     }>;
     getStats(): Promise<{
         totalParticipants: number;
+        confirmedParticipants: number;
+        totalEvents: number;
+        activeEvents: number;
         totalRegistrations: number;
         byEvent: {
             event: string | number;
