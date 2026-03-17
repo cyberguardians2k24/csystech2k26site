@@ -36,6 +36,7 @@ export class AdminService {
   async getDashboard() {
     const [
       approvedParticipants,
+      totalParticipants,
       totalRegistrations,
       totalEvents,
       recentRegistrations,
@@ -45,6 +46,7 @@ export class AdminService {
         by: ['participantId'],
         where: { status: RegistrationStatus.CONFIRMED },
       }),
+      this.prisma.participant.count(),
       this.prisma.registration.count(),
       this.prisma.event.count(),
       this.prisma.registration.findMany({
@@ -63,7 +65,8 @@ export class AdminService {
 
     return {
       stats: {
-        totalParticipants: approvedParticipants.length,
+        totalParticipants,
+        confirmedParticipants: approvedParticipants.length,
         totalRegistrations,
         totalEvents,
       },

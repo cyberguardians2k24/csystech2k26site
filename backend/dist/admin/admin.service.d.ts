@@ -18,6 +18,7 @@ export declare class AdminService {
     getDashboard(): Promise<{
         stats: {
             totalParticipants: number;
+            confirmedParticipants: number;
             totalRegistrations: number;
             totalEvents: number;
         };

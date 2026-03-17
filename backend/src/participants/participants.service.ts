@@ -1,7 +1,6 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateParticipantDto } from './dto/create-participant.dto';
-import { RegistrationStatus } from '@prisma/client';
 
 @Injectable()
 export class ParticipantsService {
@@ -18,28 +17,19 @@ export class ParticipantsService {
 
   async findAll(page = 1, limit = 20) {
     const skip = (page - 1) * limit;
-    const approvedWhere = {
-      registrations: {
-        some: {
-          status: RegistrationStatus.CONFIRMED,
-        },
-      },
-    };
-
     const [data, total] = await Promise.all([
       this.prisma.participant.findMany({
-        where: approvedWhere,
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
         include: {
           registrations: {
-            where: { status: RegistrationStatus.CONFIRMED },
             include: { event: true },
+            orderBy: { createdAt: 'desc' },
           },
         },
       }),
-      this.prisma.participant.count({ where: approvedWhere }),
+      this.prisma.participant.count(),
     ]);
     return { data, total, page, limit, pages: Math.ceil(total / limit) };
   }
@@ -49,14 +39,12 @@ export class ParticipantsService {
       where: { id },
       include: {
         registrations: {
-          where: { status: RegistrationStatus.CONFIRMED },
           include: { event: true },
+          orderBy: { createdAt: 'desc' },
         },
       },
     });
-    if (!p || p.registrations.length === 0) {
-      throw new NotFoundException('Participant not found');
-    }
+    if (!p) throw new NotFoundException('Participant not found');
     return p;
   }
 
@@ -65,14 +53,12 @@ export class ParticipantsService {
       where: { email },
       include: {
         registrations: {
-          where: { status: RegistrationStatus.CONFIRMED },
           include: { event: true },
+          orderBy: { createdAt: 'desc' },
         },
       },
     });
-    if (!p || p.registrations.length === 0) {
-      throw new NotFoundException('Participant not found');
-    }
+    if (!p) throw new NotFoundException('Participant not found');
     return p;
   }
 

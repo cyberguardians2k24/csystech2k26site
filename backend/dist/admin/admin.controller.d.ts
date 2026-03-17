@@ -27,6 +27,7 @@ export declare class AdminController {
     dashboard(): Promise<{
         stats: {
             totalParticipants: number;
+            confirmedParticipants: number;
             totalRegistrations: number;
             totalEvents: number;
         };

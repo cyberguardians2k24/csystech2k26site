@@ -43,11 +43,12 @@ let AdminService = class AdminService {
         };
     }
     async getDashboard() {
-        const [approvedParticipants, totalRegistrations, totalEvents, recentRegistrations, registrationsByEvent,] = await Promise.all([
+        const [approvedParticipants, totalParticipants, totalRegistrations, totalEvents, recentRegistrations, registrationsByEvent,] = await Promise.all([
             this.prisma.registration.groupBy({
                 by: ['participantId'],
                 where: { status: client_1.RegistrationStatus.CONFIRMED },
             }),
+            this.prisma.participant.count(),
             this.prisma.registration.count(),
             this.prisma.event.count(),
             this.prisma.registration.findMany({
@@ -64,7 +65,8 @@ let AdminService = class AdminService {
         const eventMap = Object.fromEntries(events.map(e => [e.id, e]));
         return {
             stats: {
-                totalParticipants: approvedParticipants.length,
+                totalParticipants,
+                confirmedParticipants: approvedParticipants.length,
                 totalRegistrations,
                 totalEvents,
             },

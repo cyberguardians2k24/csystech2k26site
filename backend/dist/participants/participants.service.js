@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParticipantsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-const client_1 = require("@prisma/client");
 let ParticipantsService = class ParticipantsService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -27,27 +26,19 @@ let ParticipantsService = class ParticipantsService {
     }
     async findAll(page = 1, limit = 20) {
         const skip = (page - 1) * limit;
-        const approvedWhere = {
-            registrations: {
-                some: {
-                    status: client_1.RegistrationStatus.CONFIRMED,
-                },
-            },
-        };
         const [data, total] = await Promise.all([
             this.prisma.participant.findMany({
-                where: approvedWhere,
                 skip,
                 take: limit,
                 orderBy: { createdAt: 'desc' },
                 include: {
                     registrations: {
-                        where: { status: client_1.RegistrationStatus.CONFIRMED },
                         include: { event: true },
+                        orderBy: { createdAt: 'desc' },
                     },
                 },
             }),
-            this.prisma.participant.count({ where: approvedWhere }),
+            this.prisma.participant.count(),
         ]);
         return { data, total, page, limit, pages: Math.ceil(total / limit) };
     }
@@ -56,14 +47,13 @@ let ParticipantsService = class ParticipantsService {
             where: { id },
             include: {
                 registrations: {
-                    where: { status: client_1.RegistrationStatus.CONFIRMED },
                     include: { event: true },
+                    orderBy: { createdAt: 'desc' },
                 },
             },
         });
-        if (!p || p.registrations.length === 0) {
+        if (!p)
             throw new common_1.NotFoundException('Participant not found');
-        }
         return p;
     }
     async findByEmail(email) {
@@ -71,14 +61,13 @@ let ParticipantsService = class ParticipantsService {
             where: { email },
             include: {
                 registrations: {
-                    where: { status: client_1.RegistrationStatus.CONFIRMED },
                     include: { event: true },
+                    orderBy: { createdAt: 'desc' },
                 },
             },
         });
-        if (!p || p.registrations.length === 0) {
+        if (!p)
             throw new common_1.NotFoundException('Participant not found');
-        }
         return p;
     }
     async remove(id) {
