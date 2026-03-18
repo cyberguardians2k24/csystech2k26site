@@ -8,13 +8,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var AdminService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const bcrypt = require("bcryptjs");
 const client_1 = require("@prisma/client");
-let AdminService = class AdminService {
+let AdminService = AdminService_1 = class AdminService {
     constructor(prisma) {
         this.prisma = prisma;
     }
@@ -69,6 +70,8 @@ let AdminService = class AdminService {
                 confirmedParticipants: approvedParticipants.length,
                 totalRegistrations,
                 totalEvents,
+                registrationFeeInr: AdminService_1.REGISTRATION_FEE_INR,
+                totalRevenueInr: totalRegistrations * AdminService_1.REGISTRATION_FEE_INR,
             },
             recentRegistrations: recentRegistrations.map(r => ({
                 id: r.id,
@@ -119,7 +122,8 @@ let AdminService = class AdminService {
     }
 };
 exports.AdminService = AdminService;
-exports.AdminService = AdminService = __decorate([
+AdminService.REGISTRATION_FEE_INR = 149;
+exports.AdminService = AdminService = AdminService_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], AdminService);

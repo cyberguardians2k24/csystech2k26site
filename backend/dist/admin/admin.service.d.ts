@@ -2,6 +2,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export declare class AdminService {
     private prisma;
     constructor(prisma: PrismaService);
+    private static readonly REGISTRATION_FEE_INR;
     create(email: string, password: string, name: string): Promise<{
         name: string;
         email: string;
@@ -21,6 +22,8 @@ export declare class AdminService {
             confirmedParticipants: number;
             totalRegistrations: number;
             totalEvents: number;
+            registrationFeeInr: number;
+            totalRevenueInr: number;
         };
         recentRegistrations: {
             id: number;

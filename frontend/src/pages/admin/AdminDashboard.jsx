@@ -20,6 +20,7 @@ const EMPTY_EVENT_FORM = {
   description: '',
   category: 'TECHNICAL',
   maxTeamSize: 1,
+  registrationFeeInr: 149,
   prizeAmount: '',
   venue: '',
   isActive: true,
@@ -34,6 +35,13 @@ function fmt(iso) {
   return iso
     ? new Date(iso).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
     : '—';
+}
+
+function formatInr(value) {
+  if (value === null || value === undefined || Number.isNaN(value)) return '—';
+  const num = typeof value === 'number' ? value : Number(value);
+  if (Number.isNaN(num)) return '—';
+  return `₹${num.toLocaleString('en-IN')}`;
 }
 
 function normalizeRegistration(reg) {
@@ -92,6 +100,7 @@ function StatusBadge({ status }) {
     WAITLISTED: 'bg-sky-500/15 text-sky-400 border-sky-500/25',
     ACTIVE: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25',
     INACTIVE: 'bg-slate-500/15 text-slate-400 border-slate-500/25',
+    FLAGGED: 'bg-red-500/15 text-red-400 border-red-500/25',
   };
   return (
     <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${styles[status] ?? styles.PENDING}`}>
@@ -466,6 +475,24 @@ export default function AdminDashboard() {
   );
   const pendingCount = pendingApprovals.length;
 
+  const utrCounts = useMemo(() => {
+    const counts = new Map();
+    for (const r of registrations) {
+      const raw = (r.paymentRef ?? '').trim();
+      if (!raw) continue;
+      const normalized = raw.replace(/\s+/g, '').toUpperCase();
+      counts.set(normalized, (counts.get(normalized) ?? 0) + 1);
+    }
+    return counts;
+  }, [registrations]);
+
+  const isUtrFlagged = useCallback((reg) => {
+    const raw = (reg?.paymentRef ?? '').trim();
+    if (!raw) return false;
+    const normalized = raw.replace(/\s+/g, '').toUpperCase();
+    return (utrCounts.get(normalized) ?? 0) > 1;
+  }, [utrCounts]);
+
   const registrationEventOptions = useMemo(() => {
     const fromRegs = registrations.map((r) => r.eventName);
     const fromDash = (dashboard?.registrationsByEvent ?? []).map((r) => r.event);
@@ -584,7 +611,12 @@ export default function AdminDashboard() {
     e.preventDefault();
     setSavingEvent(true);
     try {
-      await api.createEvent({ ...eventForm, slug: eventForm.slug || slugify(eventForm.name), maxTeamSize: Number(eventForm.maxTeamSize) || 1 });
+      await api.createEvent({
+        ...eventForm,
+        slug: eventForm.slug || slugify(eventForm.name),
+        maxTeamSize: Number(eventForm.maxTeamSize) || 1,
+        registrationFeeInr: Number(eventForm.registrationFeeInr) || 0,
+      });
       setEventForm(EMPTY_EVENT_FORM);
       await Promise.all([loadEvents(), loadDashboard()]);
       setTab('events');
@@ -710,9 +742,10 @@ export default function AdminDashboard() {
               {loadingDashboard ? <Spinner /> : dashboard && (
                 <>
                   {/* Stat cards */}
-                  <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
                     <StatCard label="Participants" value={dashboard.stats.totalParticipants} icon="users" accent="indigo" />
                     <StatCard label="Registrations" value={dashboard.stats.totalRegistrations} icon="clipboard" accent="sky" />
+                    <StatCard label="Revenue" value={formatInr(dashboard.stats.totalRevenueInr)} icon="activity" accent="emerald" />
                     <StatCard label="Active Events" value={activeEventsCount} icon="calendar" accent="amber" />
                     <StatCard label="Pending" value={pendingCount} icon="check-circle" accent="emerald" />
                   </div>
@@ -802,6 +835,7 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3">
                   {pendingApprovals.map((reg) => {
                     const p = reg.participant ?? {};
+                    const flagged = isUtrFlagged(reg);
                     return (
                       <Card key={reg.id} className="flex flex-col">
                         {/* Header */}
@@ -811,6 +845,7 @@ export default function AdminDashboard() {
                             <p className="truncate text-xs text-slate-500">{p.email}</p>
                           </div>
                           <div className="ml-3 flex flex-col items-end gap-1 shrink-0">
+                            {flagged && <StatusBadge status="FLAGGED" />}
                             <StatusBadge status={reg.status} />
                             <PaymentBadge status={reg.paymentStatus ?? 'UNPAID'} />
                           </div>
@@ -833,6 +868,10 @@ export default function AdminDashboard() {
                           <div>
                             <span className="text-slate-500">Registered</span>
                             <p className="mt-0.5 text-slate-300">{fmt(reg.createdAt)}</p>
+                          </div>
+                          <div>
+                            <span className="text-slate-500">UTR</span>
+                            <p className={`mt-0.5 truncate ${flagged ? 'text-red-400 font-semibold' : 'text-slate-300'}`}>{reg.paymentRef || '—'}</p>
                           </div>
                         </div>
 
@@ -897,17 +936,18 @@ export default function AdminDashboard() {
                       <table className="w-full min-w-[1100px]">
                         <thead>
                           <tr className="border-b border-slate-700/50 bg-slate-800/50">
-                            {['#', 'Name', 'Email', 'College', 'Event', 'Status', 'Payment', 'Proof', 'Date', 'Actions'].map((h) => (
+                            {['#', 'Name', 'Email', 'College', 'Event', 'Status', 'Payment', 'UTR', 'Proof', 'Date', 'Actions'].map((h) => (
                               <th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">{h}</th>
                             ))}
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-700/30">
                           {paginatedRegistrations.length === 0 ? (
-                            <tr><td colSpan={10} className="py-16 text-center text-sm text-slate-500">No registrations found</td></tr>
+                            <tr><td colSpan={11} className="py-16 text-center text-sm text-slate-500">No registrations found</td></tr>
                           ) : paginatedRegistrations.map((reg, idx) => {
                             const p = reg.participant ?? {};
                             const globalIdx = (currentPage - 1) * PER_PAGE + idx + 1;
+                            const flagged = isUtrFlagged(reg);
                             return (
                               <tr key={reg.id} className="hover:bg-slate-800/30 transition-colors">
                                 <td className="px-4 py-3 text-xs text-slate-500">{globalIdx}</td>
@@ -926,6 +966,12 @@ export default function AdminDashboard() {
                                     className="rounded-md border border-slate-700 bg-slate-800 px-2 py-1 text-xs text-white focus:border-indigo-500 focus:outline-none">
                                     {['UNPAID', 'PENDING', 'PAID', 'REFUNDED'].map((item) => <option key={item} value={item}>{item}</option>)}
                                   </select>
+                                </td>
+                                <td className="px-4 py-3">
+                                  <div className="flex items-center gap-2">
+                                    <span className={`max-w-[180px] truncate text-xs ${flagged ? 'text-red-400 font-semibold' : 'text-slate-400'}`}>{reg.paymentRef || '—'}</span>
+                                    {flagged && <StatusBadge status="FLAGGED" />}
+                                  </div>
                                 </td>
                                 <td className="px-4 py-3">
                                   {reg.paymentScreenshot ? (
@@ -1062,6 +1108,8 @@ export default function AdminDashboard() {
                     <input value={eventForm.maxTeamSize} onChange={handleEventField('maxTeamSize')} type="number" min="1" placeholder="Team size"
                       className="rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none" />
                   </div>
+                  <input value={eventForm.registrationFeeInr} onChange={handleEventField('registrationFeeInr')} type="number" min="0" step="1" placeholder="Registration fee (INR)"
+                    className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none" />
                   <div className="grid grid-cols-2 gap-3">
                     <input value={eventForm.prizeAmount} onChange={handleEventField('prizeAmount')} placeholder="Prize amount"
                       className="rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none" />
@@ -1112,6 +1160,7 @@ export default function AdminDashboard() {
                           <div className="mb-4 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
                             <div className="flex justify-between"><span className="text-slate-500">Team Size</span><span className="text-white">{event.maxTeamSize ?? 1}</span></div>
                             <div className="flex justify-between"><span className="text-slate-500">Registrations</span><span className="text-white">{regCount}</span></div>
+                            <div className="flex justify-between"><span className="text-slate-500">Fee</span><span className="text-white">{formatInr(event.registrationFeeInr)}</span></div>
                             <div className="flex justify-between"><span className="text-slate-500">Prize</span><span className="text-white">{event.prizeAmount || '—'}</span></div>
                             <div className="flex justify-between"><span className="text-slate-500">Venue</span><span className="text-white">{event.venue || '—'}</span></div>
                           </div>

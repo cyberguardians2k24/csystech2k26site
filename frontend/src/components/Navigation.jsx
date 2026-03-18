@@ -21,7 +21,7 @@ const MOBILE_NAV_LINKS = [
   { label: 'Schedule',          href: '#schedule'       },
   { label: 'Sponsors',          href: '#sponsors'       },
   { label: 'FAQ',               href: '#faq'            },
-  { label: 'Register',          href: '#register'       },
+  { label: 'Register',          href: '#events'       },
   { label: 'Admin Login',       href: '/admin'          },
 ];
 
@@ -165,7 +165,7 @@ export default function Navigation() {
               initial={{ y: 50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.6 }}
-              onClick={() => handleNavClick('#register')}
+              onClick={() => handleNavClick('#events')}
               className="mt-12 w-full py-4 rounded-full font-bold tracking-widest uppercase relative overflow-hidden"
               style={{
                 background: 'linear-gradient(105deg, #6B00BE 0%, #9D00FF 35%, #B44FFF 55%, #9D00FF 80%, #6B00BE 100%)',

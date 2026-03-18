@@ -30,7 +30,6 @@ const Speakers = lazy(() => import('./components/Speakers'));
 const Schedule = lazy(() => import('./components/Schedule'));
 const Sponsors = lazy(() => import('./components/Sponsors'));
 const FAQ = lazy(() => import('./components/FAQ'));
-const RegistrationCTA = lazy(() => import('./components/RegistrationCTA'));
 
 // ── Scroll Progress Bar ────────────────────────────────────────────────────
 function ScrollProgressBar() {
@@ -68,7 +67,7 @@ function FloatingRegisterBar() {
             <span className="w-2 h-2 rounded-full bg-holo-cyan animate-pulse shadow-[0_0_8px_#00f0ff]" />
             <span className="text-xs font-mono text-vibranium/60 tracking-widest uppercase hidden sm:block">Registration Open</span>
             <button
-              onClick={() => document.querySelector('#register')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth' })}
               className="px-5 py-1.5 rounded-full bg-vibranium text-wakanda-dark text-xs font-bold font-heading tracking-widest uppercase hover:shadow-vibranium-glow transition-all duration-200 hover:scale-105"
             >
               Register Now
@@ -497,14 +496,6 @@ export default function App() {
                   </Suspense>
                 </div>
 
-                <SectionDivider label="Register" variant="vibranium" />
-
-                <div id="register">
-                  <Suspense fallback={<div className="h-64 bg-wakanda-dark" />}>
-                    <RegistrationCTA />
-                  </Suspense>
-                </div>
-
                 {/* ── Footer ───────────────────────────────────────────────────── */}
                 <footer className="section-shell relative border-t border-vibranium/10 bg-wakanda-dark overflow-hidden">
                   <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-vibranium/40 to-transparent" />
@@ -524,7 +515,7 @@ export default function App() {
                         </p>
                       </div>
                       <button
-                        onClick={() => document.querySelector('#register')?.scrollIntoView({ behavior: 'smooth' })}
+                        onClick={() => document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth' })}
                         className="panel-sheen shrink-0 px-7 py-3.5 rounded-full bg-vibranium text-wakanda-dark font-heading font-black tracking-[0.16em] uppercase text-sm shadow-vibranium-glow hover:scale-[1.03] transition-all duration-300"
                       >
                         Reserve Entry
@@ -571,7 +562,7 @@ export default function App() {
                         { label: 'Schedule', href: '#schedule' },
                         { label: 'Sponsors', href: '#sponsors' },
                         { label: 'FAQ', href: '#faq' },
-                        { label: 'Register', href: '#register' },
+                        { label: 'Register', href: '#events' },
                       ].map(({ label, href }) => (
                         <li key={href}>
                           <a href={href} className="group flex items-center gap-1.5 text-white/25 text-sm font-body hover:text-vibranium-light transition-colors duration-200">

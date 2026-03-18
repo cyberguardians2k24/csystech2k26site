@@ -58,6 +58,7 @@ export class RegistrationsService {
         notes:         dto.notes,
         paymentRef:    dto.paymentRef,
         paymentScreenshot: normalizedScreenshot,
+        amount:        event.registrationFeeInr ?? 0,
         paymentStatus: 'PENDING',
         status:        'PENDING',
       },
@@ -143,11 +144,16 @@ export class RegistrationsService {
         ? RegistrationStatus.PENDING
         : registration.status;
 
+    const amountForPaid = (registration.amount ?? 0) > 0
+      ? (registration.amount ?? 0)
+      : (registration.event?.registrationFeeInr ?? 0);
+
     const updatedRegistration = await this.prisma.registration.update({
       where: { id },
       data: {
         paymentStatus: nextPaymentStatus,
         status: nextRegistrationStatus,
+        ...(nextPaymentStatus === 'PAID' ? { amount: amountForPaid } : {}),
       },
       include: { participant: true, event: true },
     });

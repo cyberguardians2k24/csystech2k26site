@@ -203,7 +203,7 @@ export default function TechnicalEvents() {
           <p className="text-white/60 mb-2 text-sm">Ready to compete?</p>
           <h2 className="text-2xl font-heading font-bold text-white mb-4">Secure your spot now</h2>
           <Link
-            to="/#register"
+            to="/#events"
             className="inline-block px-8 py-3 rounded-full bg-vibranium/20 border border-vibranium/50 text-white font-medium hover:bg-vibranium hover:shadow-vibranium-glow transition-all duration-300"
           >
             Register →

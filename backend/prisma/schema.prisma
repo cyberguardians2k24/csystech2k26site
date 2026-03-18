@@ -46,6 +46,7 @@ model Event {
   description   String
   category      EventCategory
   maxTeamSize   Int            @default(1)
+  registrationFeeInr Float     @default(149)
   prizeAmount   String?
   venue         String?
   startTime     DateTime?

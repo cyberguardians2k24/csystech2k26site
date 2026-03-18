@@ -1,6 +1,7 @@
-import { IsString, IsNotEmpty, IsEnum, IsOptional, IsInt, IsBoolean, IsDateString } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsOptional, IsInt, IsBoolean, IsDateString, IsNumber, Min } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { EventCategory } from '@prisma/client';
+import { Type } from 'class-transformer';
 
 export class UpdateEventDto {
   @ApiPropertyOptional({ example: 'Hackathon' })
@@ -27,9 +28,16 @@ export class UpdateEventDto {
   category?: EventCategory;
 
   @ApiPropertyOptional({ example: 4 })
+  @Type(() => Number)
   @IsInt()
   @IsOptional()
   maxTeamSize?: number;
+
+  @ApiPropertyOptional({ example: 149, description: 'Registration fee in INR for this event' })
+  @Type(() => Number)
+  @IsNumber() @Min(0)
+  @IsOptional()
+  registrationFeeInr?: number;
 
   @ApiPropertyOptional({ example: '₹30,000' })
   @IsString()

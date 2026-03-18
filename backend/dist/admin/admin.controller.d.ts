@@ -30,6 +30,8 @@ export declare class AdminController {
             confirmedParticipants: number;
             totalRegistrations: number;
             totalEvents: number;
+            registrationFeeInr: number;
+            totalRevenueInr: number;
         };
         recentRegistrations: {
             id: number;

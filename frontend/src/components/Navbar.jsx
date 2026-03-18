@@ -157,7 +157,7 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-2 shrink-0">
             <button
-              onClick={() => handleNavClick('#register')}
+              onClick={() => handleNavClick('#events')}
               className="panel-sheen px-4 py-2 rounded-full border border-[#a855f7]/28 bg-[linear-gradient(135deg,rgba(168,85,247,0.68),rgba(14,165,233,0.26))] text-white font-heading font-bold text-[11px] tracking-[0.18em] uppercase shadow-[0_0_24px_rgba(168,85,247,0.22)] hover:scale-[1.02] transition-all duration-300"
             >
               Register
@@ -166,7 +166,7 @@ export default function Navbar() {
 
           <div className="md:hidden flex items-center gap-2 shrink-0">
             <button
-              onClick={() => handleNavClick('#register')}
+              onClick={() => handleNavClick('#events')}
               className="px-3 py-2 rounded-full border border-[#a855f7]/28 bg-[linear-gradient(135deg,rgba(168,85,247,0.72),rgba(14,165,233,0.22))] text-white font-heading font-bold text-[10px] tracking-[0.18em] uppercase shadow-[0_0_22px_rgba(168,85,247,0.18)]"
             >
               Register
@@ -259,7 +259,7 @@ export default function Navbar() {
                     initial={{ opacity: 0, y: 14 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.25, delay: 0.22 }}
-                    onClick={() => handleNavClick('#register')}
+                    onClick={() => handleNavClick('#events')}
                     className="panel-sheen rounded-[1.2rem] border border-[#a855f7]/35 bg-[linear-gradient(135deg,rgba(168,85,247,0.78),rgba(14,165,233,0.22))] px-4 py-4 text-left shadow-[0_0_30px_rgba(168,85,247,0.18)]"
                   >
                     <div className="font-heading text-sm font-black uppercase tracking-[0.16em] text-white">Register</div>

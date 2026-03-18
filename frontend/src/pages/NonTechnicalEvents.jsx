@@ -193,7 +193,7 @@ export default function NonTechnicalEvents() {
           <p className="text-white/60 mb-2 text-sm">Ready to showcase your talent?</p>
           <h2 className="text-2xl font-heading font-bold text-white mb-4">Register for your event</h2>
           <Link
-            to="/#register"
+            to="/#events"
             className="inline-block px-8 py-3 rounded-full bg-vibranium/20 border border-vibranium/50 text-vibranium font-medium hover:bg-vibranium hover:text-white hover:shadow-[0_0_20px_rgba(157,0,255,0.4)] transition-all duration-300"
           >
             Register →

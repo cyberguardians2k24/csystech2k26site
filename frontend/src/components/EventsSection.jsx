@@ -123,7 +123,7 @@ export default function EventsSection() {
           transition={{ delay: 0.25, duration: 0.6 }}
           className="mt-12"
         >
-          <a href="#register" className="btn-neon inline-flex gap-3">
+          <a href="#events" className="btn-neon inline-flex gap-3">
             <span>Register For Events</span>
             <span className="text-vibranium-400">→</span>
           </a>
@@ -183,7 +183,7 @@ function EventCard({ event, variants }) {
         {/* Floating register link */}
         <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
           <a
-            href="#register"
+            href="#events"
             className="font-mono text-xs tracking-widest"
             style={{ color: event.color }}
           >

@@ -377,7 +377,7 @@ export default function Hero() {
               whileTap={{ scale: 0.93 }}
               onHoverStart={() => setBtnHovered(true)}
               onHoverEnd={() => setBtnHovered(false)}
-              onClick={() => document.querySelector('#register')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth' })}
               className="relative rounded-full px-10 py-3.5 font-mono text-[11px] tracking-[0.25em] uppercase font-black overflow-hidden bg-[#9D00FF] text-white shadow-[0_0_28px_rgba(157,0,255,0.5)]"
             >
               <AnimatePresence>
@@ -463,7 +463,7 @@ export default function Hero() {
           <motion.button
             whileHover={{ scale: 1.08, boxShadow: '0 0 20px rgba(157,0,255,0.6)' }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => document.querySelector('#register')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth' })}
             className="px-4 py-1.5 rounded-full bg-[#9D00FF] text-white font-mono text-[9px] tracking-[0.15em] uppercase font-black"
           >
             Register Now

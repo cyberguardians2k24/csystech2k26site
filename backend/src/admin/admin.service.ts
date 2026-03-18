@@ -41,6 +41,7 @@ export class AdminService {
       totalEvents,
       recentRegistrations,
       registrationsByEvent,
+      paidRegistrations,
     ] = await Promise.all([
       this.prisma.registration.groupBy({
         by: ['participantId'],
@@ -58,7 +59,19 @@ export class AdminService {
         by: ['eventId'],
         _count: { id: true },
       }),
+      this.prisma.registration.findMany({
+        where: { paymentStatus: 'PAID' },
+        select: {
+          amount: true,
+          event: { select: { registrationFeeInr: true } },
+        },
+      }),
     ]);
+
+    const totalRevenueInr = paidRegistrations.reduce((sum, r) => {
+      const amount = (r.amount ?? 0) > 0 ? (r.amount ?? 0) : (r.event?.registrationFeeInr ?? 0);
+      return sum + amount;
+    }, 0);
 
     const events = await this.prisma.event.findMany({ select: { id: true, name: true, category: true } });
     const eventMap = Object.fromEntries(events.map(e => [e.id, e]));
@@ -69,6 +82,7 @@ export class AdminService {
         confirmedParticipants: approvedParticipants.length,
         totalRegistrations,
         totalEvents,
+        totalRevenueInr,
       },
       recentRegistrations: recentRegistrations.map(r => ({
         id:          r.id,
