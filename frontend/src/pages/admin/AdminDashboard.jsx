@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { api } from '../../lib/api';
+import * as XLSX from 'xlsx';
 
 /* ─── constants ─── */
 const NAV_ITEMS = [
@@ -538,71 +539,49 @@ export default function AdminDashboard() {
     } catch (err) { handleError(err); }
   };
 
-  const handleExport = async () => {
+  const handleExport = () => {
     try {
-      const xlsxModule = await import('xlsx');
-      const XLSX = xlsxModule.default ?? xlsxModule;
-
-      const fetchAllParticipants = async () => {
-        const limit = 500;
-        const first = await api.getParticipants(1, limit);
-        const pages = Math.max(1, Number(first?.pages) || 1);
-        const all = [...(first?.data ?? [])];
-        for (let page = 2; page <= pages; page += 1) {
-          const res = await api.getParticipants(page, limit);
-          all.push(...(res?.data ?? []));
-        }
-        return all;
-      };
-
-      // If you're viewing registrations filtered by an event, export confirmed participants for that event.
-      // Otherwise, export the full participant directory.
-      const eventQuery = tab === 'registrations' ? (filterEvent || undefined) : undefined;
-      const participantsToExport = eventQuery ? await api.exportEvent(eventQuery) : await fetchAllParticipants();
-
       const rows = [];
-      for (const participant of participantsToExport ?? []) {
-        const regs = Array.isArray(participant.registrations) ? participant.registrations : [];
-        if (regs.length === 0) {
-          rows.push({
-            'Participant Name': participant.name ?? '',
-            'Email': participant.email ?? '',
-            'Phone': participant.phone ?? '',
-            'College': participant.college ?? '',
-            'Team Name': participant.teamName ?? '',
-            'Event': '',
-            'Event Slug': '',
-            'Registration Status': '',
-            'Payment Status': '',
-            'Amount (INR)': '',
-            'Registered At': fmt(participant.createdAt),
-          });
-          continue;
-        }
 
-        for (const reg of regs) {
+      if (tab === 'registrations') {
+        const source = filteredRegistrations;
+        for (const reg of source) {
+          const p = reg.participant ?? {};
+          rows.push({
+            'Participant Name': p.name ?? '',
+            'Email': p.email ?? '',
+            'Phone': p.phone ?? '',
+            'College': p.college ?? '',
+            'Team Name': p.teamName ?? '',
+            'Event': reg.eventName ?? reg.event ?? '',
+            'Registration Status': reg.status ?? '',
+            'Payment Status': reg.paymentStatus ?? '',
+            'Amount (INR)': reg.amount ?? '',
+            'UTR / Payment Ref': reg.paymentRef ?? '',
+            'Registered At': fmt(reg.createdAt),
+          });
+        }
+      } else if (tab === 'participants') {
+        const source = filteredParticipants;
+        for (const participant of source) {
+          const regs = Array.isArray(participant.registrations) ? participant.registrations : [];
           rows.push({
             'Participant Name': participant.name ?? '',
             'Email': participant.email ?? '',
             'Phone': participant.phone ?? '',
             'College': participant.college ?? '',
             'Team Name': participant.teamName ?? '',
-            'Event': reg?.event?.name ?? '',
-            'Event Slug': reg?.event?.slug ?? '',
-            'Registration Status': reg?.status ?? '',
-            'Payment Status': reg?.paymentStatus ?? '',
-            'Amount (INR)': reg?.amount ?? '',
-            'Registered At': fmt(reg?.createdAt ?? participant.createdAt),
+            'Events': regs.length ? regs.map((r) => r?.event?.name).filter(Boolean).join(', ') : '',
+            'Registered At': fmt(participant.createdAt),
           });
         }
       }
 
       const ws = XLSX.utils.json_to_sheet(rows);
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Participants');
+      XLSX.utils.book_append_sheet(wb, ws, 'Export');
 
-      const suffix = eventQuery ? slugify(eventQuery) : 'all';
-
+      const suffix = tab === 'registrations' && filterEvent ? slugify(filterEvent) : tab;
       const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
       const blob = new Blob([out], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -610,7 +589,7 @@ export default function AdminDashboard() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `cystech2k26-participants-${suffix}.xlsx`;
+      a.download = `cystech2k26-export-${suffix}.xlsx`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -703,7 +682,7 @@ export default function AdminDashboard() {
           </div>
           <div className="flex items-center gap-2">
             {(tab === 'registrations' || tab === 'participants') && (
-              <button onClick={handleExport} className="hidden items-center gap-1.5 rounded-lg border border-slate-600 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-800 sm:flex">
+              <button type="button" onClick={handleExport} className="hidden cursor-pointer select-none items-center gap-1.5 rounded-lg border border-slate-600 px-3 py-1.5 text-xs text-slate-300 transition-colors hover:bg-slate-800 hover:text-white active:bg-slate-800 sm:flex">
                 <Icon name="download" className="h-3.5 w-3.5" /> Export
               </button>
             )}
