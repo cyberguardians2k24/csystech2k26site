@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const FAQS = [
   {
-    q: "Who can participate in CYSTECH 2K26?",
+    q: "Who can participate in CYSTECH2K26?",
     a: "Any undergraduate or postgraduate student from a recognized college or university can participate. There are no branch restrictions — all disciplines are welcome!"
   },
   {

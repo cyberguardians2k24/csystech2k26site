@@ -1,20 +1,20 @@
 export const SYMPOSIUM_INFO = {
-  theme: 'Cyber Punk',
-  eventName: 'CYSTECH 2K26',
+  theme: 'Purple Shield',
+  eventName: 'CYSTECH2K26',
   edition: '2K26',
   year: '2026',
   date: '08-04-2026',
-  dateDisplay: 'April 8, 2026',
+  dateDisplay: '08 April 2026',
   eventDateISO: '2026-04-08T09:00:00+05:30',
   time: '9:00 AM to 3:30 PM',
   venue: 'ECE Block (2nd Floor)',
   campus: 'Dhanalakshmi College of Engineering (Manimangalam)',
   address: 'Dr. VPR Nagar, Manimangalam, Tambaram, Chennai-601301.',
-  convenor: 'Dr S.J. Sultanuddin',
-  coConvenor: 'Dr P Karpagam',
-  staffCoordinator: 'Ms J Agnes Tressa',
-  studentOrganizer: 'R Rishi',
-  studentOrganizerPhone: '8610621613',
+  convenor: 'Mr Mohamed Abdhahir',
+  coConvenor: '',
+  staffCoordinator: 'Ms Pavithra R',
+  studentOrganizer: 'Mohammed Anish B',
+  studentOrganizerPhone: '9962675938',
 }
 
 export const EVENT_DAY_SCHEDULE = {
@@ -28,7 +28,7 @@ export const EVENT_DAY_SCHEDULE = {
     {
       time: '09:30 AM',
       name: 'Morning Technical Events Begin',
-      desc: 'Paper Presentation and Bug Bash begin in the first morning session.',
+      desc: 'Cipher Vista and Bug Bash begin in the first morning session.',
       tag: 'COMPETITION',
     },
     {
@@ -75,7 +75,7 @@ export const EVENT_DAY_SCHEDULE = {
     },
     {
       time: '10:00 AM - 03:00 PM',
-      name: 'Kabbadi',
+      name: 'Kabaddi',
       desc: 'Kabaddi runs as an extended non-technical event block through the day.',
       tag: 'COMPETITION',
     },

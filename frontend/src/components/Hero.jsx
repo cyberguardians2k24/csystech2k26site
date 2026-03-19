@@ -81,7 +81,7 @@ function GlitchTitle({ ready }) {
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
         className="block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight hero-shimmer-text select-none pt-[0.06em] pb-[0.16em]"
       >
-        CYSTECH 2K26
+        CYSTECH2K26
       </motion.h1>
       {/* glitch layers */}
       <AnimatePresence>
@@ -96,7 +96,7 @@ function GlitchTitle({ ready }) {
               className="absolute left-0 top-0 block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight pointer-events-none select-none pt-[0.06em] pb-[0.16em]"
               style={{ color: '#00f0ff', left: '3px', top: '-2px', clipPath: 'inset(0 0 60% 0)' }}
             >
-              CYSTECH 2K26
+              CYSTECH2K26
             </motion.h1>
             <motion.h1
               key="g2"
@@ -107,7 +107,7 @@ function GlitchTitle({ ready }) {
               className="absolute left-0 top-0 block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight pointer-events-none select-none pt-[0.06em] pb-[0.16em]"
               style={{ color: '#FF00AA', left: '-3px', top: '2px', clipPath: 'inset(60% 0 0 0)' }}
             >
-              CYSTECH 2K26
+              CYSTECH2K26
             </motion.h1>
           </>
         )}

@@ -2,16 +2,16 @@ import React, { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 
 const TIMELINE = [
-  { time: '08:30',  label: 'Registration & Kit Collection', icon: '◈', tag: 'GATE OPEN'   },
-  { time: '09:00',  label: 'Inaugural Ceremony & Keynote',  icon: '◉', tag: 'CEREMONY'    },
-  { time: '10:00',  label: 'Workshop – AI / ML Track',      icon: '⬡', tag: 'WORKSHOP'    },
-  { time: '11:00',  label: 'Technical Quiz – Round 1',      icon: '◆', tag: 'COMPETITION' },
-  { time: '12:30',  label: 'Lunch Break',                   icon: '◇', tag: 'BREAK'       },
-  { time: '13:30',  label: 'Paper Presentation',            icon: '▲', tag: 'PRESENTATION' },
-  { time: '14:00',  label: 'Hackathon Kick-off',            icon: '◉', tag: 'HACKATHON'   },
-  { time: '16:00',  label: 'Workshop – Cybersecurity',      icon: '⬡', tag: 'WORKSHOP'    },
-  { time: '18:00',  label: 'Cultural & Networking Hour',    icon: '◈', tag: 'NETWORKING'  },
-  { time: '19:30',  label: 'Valedictory & Prize Distribution', icon: '◆', tag: 'AWARDS'   },
+  { time: '09:00', label: 'Inauguration (EEE Auditorium)', icon: '◉', tag: 'CEREMONY' },
+  { time: '09:30', label: 'Technical Events Begin', icon: '◆', tag: 'COMPETITION' },
+  { time: '10:00', label: 'Technical Batch 1 (Parallel Events)', icon: '⬡', tag: 'BATCH 1' },
+  { time: '11:00', label: 'Refreshments', icon: '◇', tag: 'BREAK' },
+  { time: '11:30', label: 'Technical Batch 2 (Parallel Events)', icon: '⬡', tag: 'BATCH 2' },
+  { time: '12:15', label: 'Lunch Break', icon: '◇', tag: 'BREAK' },
+  { time: '13:00', label: 'Arena (Free Fire / BGMI)', icon: '◈', tag: 'NON-TECH' },
+  { time: '13:30', label: 'Non-Technical Events (Parallel)', icon: '◆', tag: 'NON-TECH' },
+  { time: '15:00', label: 'Prize Distribution', icon: '◆', tag: 'CEREMONY' },
+  { time: '15:30', label: 'Event Concludes', icon: '◈', tag: 'CLOSE' },
 ]
 
 export default function TimelineSection() {

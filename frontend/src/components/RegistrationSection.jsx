@@ -66,7 +66,7 @@ export default function RegistrationSection() {
           <div className="mt-6 flex items-center gap-4">
             <img
               src="/cystech-logo.png"
-              alt="CYSTECH 2K26"
+              alt="CYSTECH2K26"
               className="w-20 object-contain"
               style={{ filter: 'drop-shadow(0 0 14px rgba(191,0,255,0.65))' }}
             />
@@ -86,7 +86,7 @@ export default function RegistrationSection() {
           </div>
 
           <p className="mt-3 max-w-2xl font-rajdhani text-white/55 text-lg">
-            Seats are limited. Secure your spot for CYSTECH 2K26.
+            Seats are limited. Secure your spot for CYSTECH2K26.
           </p>
         </motion.div>
 
@@ -206,7 +206,7 @@ function SuccessState() {
         REGISTRATION SUCCESSFUL
       </h3>
       <p className="font-rajdhani text-white/60 text-lg">
-        Welcome to CYSTECH 2K26. A confirmation has been sent to your email.
+        Welcome to CYSTECH2K26. A confirmation has been sent to your email.
         <br />The vibranium awaits you.
       </p>
       <div className="font-mono text-vibranium-500 text-xs tracking-[0.3em] animate-pulse-slow">

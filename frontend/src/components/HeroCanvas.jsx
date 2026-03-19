@@ -253,7 +253,7 @@ export default function HeroCanvas() {
               {/* Logo during load */}
               <motion.img
                 src="/cystech-logo.png"
-                alt="CYSTECH 2K26"
+                alt="CYSTECH2K26"
                 className="mb-10 holo-flicker"
                 style={{
                   width: 'clamp(200px, 30vw, 340px)',
@@ -304,7 +304,7 @@ export default function HeroCanvas() {
         {/* Always-visible label so the hero never feels empty */}
         <div className="pointer-events-none absolute left-6 top-24 z-[15] select-none">
           <div className="text-[11px] tracking-[0.32em] text-white/60">
-            CYSTECH 2K26 â€¢ SYMPOSIUM
+            CYSTECH2K26 • SYMPOSIUM
           </div>
           <div className="mt-1 font-mono text-[11px] tracking-[0.38em] text-vibranium-400 opacity-80">
             SCROLL TO REVEAL
@@ -393,7 +393,7 @@ export default function HeroCanvas() {
             {/* Main logo */}
             <img
               src="/cystech-logo.png"
-              alt="CYSTECH 2K26"
+              alt="CYSTECH2K26"
               className="relative z-10 holo-flicker select-none"
               style={{
                 width: 'clamp(280px, 46vw, 560px)',

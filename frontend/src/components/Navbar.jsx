@@ -80,7 +80,7 @@ export default function Navbar() {
 
   const currentPageLabel = useMemo(() => {
     if (location.pathname.startsWith('/register/')) return 'Event Registration'
-    return PAGE_LABELS[location.pathname] ?? 'CYSTECH 2K26'
+    return PAGE_LABELS[location.pathname] ?? 'CYSTECH2K26'
   }, [location.pathname])
 
   const handleNavClick = (href) => {

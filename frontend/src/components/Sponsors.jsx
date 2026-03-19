@@ -98,7 +98,7 @@ export default function Sponsors() {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-vibranium to-vibranium-light">Sponsor</span>
               </h4>
               <p className="text-white/30 font-mono text-xs tracking-wide max-w-sm mx-auto mb-6 leading-relaxed">
-                Reach symposium participants, campus creators, and technical competitors at CYSTECH 2K26.
+                Reach symposium participants, campus creators, and technical competitors at CYSTECH2K26.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <a
