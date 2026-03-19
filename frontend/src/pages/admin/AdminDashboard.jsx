@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { api } from '../../lib/api';
-import * as XLSXImport from 'xlsx';
+import * as XLSX from 'xlsx';
 
 /* ─── constants ─── */
 const NAV_ITEMS = [
@@ -541,8 +541,6 @@ export default function AdminDashboard() {
 
   const handleExport = () => {
     try {
-      const XLSX = XLSXImport && (XLSXImport.default ?? XLSXImport);
-
       const canExportRegistrations = !loadingRegs && filteredRegistrations.length > 0;
       const canExportParticipants = !loadingParticipants && filteredParticipants.length > 0;
       const canExport = tab === 'registrations'
