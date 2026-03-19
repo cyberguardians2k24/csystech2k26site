@@ -5,6 +5,7 @@ export declare class RegistrationsController {
     constructor(svc: RegistrationsService);
     create(dto: CreateRegistrationDto): Promise<{
         success: boolean;
+        emailSent: boolean;
         message: string;
         registration: {
             event: {
@@ -16,6 +17,7 @@ export declare class RegistrationsController {
                 slug: string;
                 category: import(".prisma/client").$Enums.EventCategory;
                 maxTeamSize: number;
+                registrationFeeInr: number;
                 prizeAmount: string | null;
                 venue: string | null;
                 startTime: Date | null;
@@ -62,6 +64,7 @@ export declare class RegistrationsController {
                 slug: string;
                 category: import(".prisma/client").$Enums.EventCategory;
                 maxTeamSize: number;
+                registrationFeeInr: number;
                 prizeAmount: string | null;
                 venue: string | null;
                 startTime: Date | null;
@@ -120,6 +123,7 @@ export declare class RegistrationsController {
             slug: string;
             category: import(".prisma/client").$Enums.EventCategory;
             maxTeamSize: number;
+            registrationFeeInr: number;
             prizeAmount: string | null;
             venue: string | null;
             startTime: Date | null;
@@ -149,84 +153,8 @@ export declare class RegistrationsController {
         amount: number;
         notes: string | null;
     }>;
-    updateStatus(id: number, status: string): Promise<{
-        event: {
-            name: string;
-            description: string;
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
-            slug: string;
-            category: import(".prisma/client").$Enums.EventCategory;
-            maxTeamSize: number;
-            prizeAmount: string | null;
-            venue: string | null;
-            startTime: Date | null;
-            endTime: Date | null;
-            isActive: boolean;
-        };
-        participant: {
-            name: string;
-            email: string;
-            phone: string;
-            college: string;
-            teamName: string | null;
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
-        };
-    } & {
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
-        participantId: number;
-        eventId: number;
-        status: import(".prisma/client").$Enums.RegistrationStatus;
-        paymentStatus: import(".prisma/client").$Enums.PaymentStatus;
-        paymentRef: string | null;
-        paymentScreenshot: string | null;
-        amount: number;
-        notes: string | null;
-    }>;
-    updatePaymentStatus(id: number, paymentStatus: string): Promise<{
-        event: {
-            name: string;
-            description: string;
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
-            slug: string;
-            category: import(".prisma/client").$Enums.EventCategory;
-            maxTeamSize: number;
-            prizeAmount: string | null;
-            venue: string | null;
-            startTime: Date | null;
-            endTime: Date | null;
-            isActive: boolean;
-        };
-        participant: {
-            name: string;
-            email: string;
-            phone: string;
-            college: string;
-            teamName: string | null;
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
-        };
-    } & {
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
-        participantId: number;
-        eventId: number;
-        status: import(".prisma/client").$Enums.RegistrationStatus;
-        paymentStatus: import(".prisma/client").$Enums.PaymentStatus;
-        paymentRef: string | null;
-        paymentScreenshot: string | null;
-        amount: number;
-        notes: string | null;
-    }>;
+    updateStatus(id: number, status: string): Promise<any>;
+    updatePaymentStatus(id: number, paymentStatus: string): Promise<any>;
     remove(id: number): Promise<{
         id: number;
         createdAt: Date;

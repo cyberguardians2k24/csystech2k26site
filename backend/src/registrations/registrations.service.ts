@@ -3,12 +3,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { PaymentStatus, RegistrationStatus } from '@prisma/client';
 import { R2UploadService } from './r2-upload.service';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class RegistrationsService {
   constructor(
     private prisma: PrismaService,
     private readonly r2UploadService: R2UploadService,
+    private readonly emailService: EmailService,
   ) {}
 
   async create(dto: CreateRegistrationDto) {
@@ -16,13 +18,15 @@ export class RegistrationsService {
       throw new BadRequestException('Payment screenshot is required');
     }
 
+    const normalizedEmail = (dto.email || '').trim().toLowerCase();
+
     // 1. Upsert participant
-    let participant = await this.prisma.participant.findUnique({ where: { email: dto.email } });
+    let participant = await this.prisma.participant.findUnique({ where: { email: normalizedEmail } });
     if (!participant) {
       participant = await this.prisma.participant.create({
         data: {
           name:     dto.name,
-          email:    dto.email,
+          email:    normalizedEmail,
           phone:    dto.phone,
           college:  dto.college,
           teamName: dto.teamName,
@@ -65,9 +69,18 @@ export class RegistrationsService {
       include: { participant: true, event: true },
     });
 
+    const emailSent = await this.emailService.sendRegistrationReceivedEmail({
+      to: normalizedEmail,
+      participantName: registration.participant.name,
+      eventName: registration.event.name,
+      registrationId: registration.id,
+      paymentRef: registration.paymentRef,
+    });
+
     return {
       success: true,
-      message: `Registration submitted for ${participant.name}. Payment verification is pending admin approval.`,
+      emailSent,
+      message: `Registration submitted for ${participant.name}. Payment verification is pending admin approval.${emailSent ? ' A confirmation email has been sent.' : ''} If fake/edited payment proof is submitted, the registration will be cancelled.`,
       registration,
     };
   }
@@ -131,7 +144,17 @@ export class RegistrationsService {
       include: { participant: true, event: true },
     });
 
-    return updatedRegistration;
+    const cancelledEmailSent = nextStatus === RegistrationStatus.CANCELLED
+      ? await this.emailService.sendRegistrationCancelledEmail({
+        to: updatedRegistration.participant.email,
+        participantName: updatedRegistration.participant.name,
+        eventName: updatedRegistration.event.name,
+        registrationId: updatedRegistration.id,
+        reason: 'Fake/invalid payment proof or admin cancellation.',
+      })
+      : false;
+
+    return { ...updatedRegistration, cancelledEmailSent } as any;
   }
 
   async updatePaymentStatus(id: number, paymentStatus: string) {
@@ -158,7 +181,16 @@ export class RegistrationsService {
       include: { participant: true, event: true },
     });
 
-    return updatedRegistration;
+    const confirmedEmailSent = nextPaymentStatus === PaymentStatus.PAID
+      ? await this.emailService.sendRegistrationConfirmedEmail({
+        to: updatedRegistration.participant.email,
+        participantName: updatedRegistration.participant.name,
+        eventName: updatedRegistration.event.name,
+        registrationId: updatedRegistration.id,
+      })
+      : false;
+
+    return { ...updatedRegistration, confirmedEmailSent } as any;
   }
 
   async remove(id: number) {

@@ -8,14 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var AdminService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const bcrypt = require("bcryptjs");
 const client_1 = require("@prisma/client");
-let AdminService = AdminService_1 = class AdminService {
+let AdminService = class AdminService {
     constructor(prisma) {
         this.prisma = prisma;
     }
@@ -44,7 +43,7 @@ let AdminService = AdminService_1 = class AdminService {
         };
     }
     async getDashboard() {
-        const [approvedParticipants, totalParticipants, totalRegistrations, totalEvents, recentRegistrations, registrationsByEvent,] = await Promise.all([
+        const [approvedParticipants, totalParticipants, totalRegistrations, totalEvents, recentRegistrations, registrationsByEvent, paidRegistrations,] = await Promise.all([
             this.prisma.registration.groupBy({
                 by: ['participantId'],
                 where: { status: client_1.RegistrationStatus.CONFIRMED },
@@ -61,7 +60,18 @@ let AdminService = AdminService_1 = class AdminService {
                 by: ['eventId'],
                 _count: { id: true },
             }),
+            this.prisma.registration.findMany({
+                where: { paymentStatus: 'PAID' },
+                select: {
+                    amount: true,
+                    event: { select: { registrationFeeInr: true } },
+                },
+            }),
         ]);
+        const totalRevenueInr = paidRegistrations.reduce((sum, r) => {
+            const amount = (r.amount ?? 0) > 0 ? (r.amount ?? 0) : (r.event?.registrationFeeInr ?? 0);
+            return sum + amount;
+        }, 0);
         const events = await this.prisma.event.findMany({ select: { id: true, name: true, category: true } });
         const eventMap = Object.fromEntries(events.map(e => [e.id, e]));
         return {
@@ -70,8 +80,7 @@ let AdminService = AdminService_1 = class AdminService {
                 confirmedParticipants: approvedParticipants.length,
                 totalRegistrations,
                 totalEvents,
-                registrationFeeInr: AdminService_1.REGISTRATION_FEE_INR,
-                totalRevenueInr: totalRegistrations * AdminService_1.REGISTRATION_FEE_INR,
+                totalRevenueInr,
             },
             recentRegistrations: recentRegistrations.map(r => ({
                 id: r.id,
@@ -122,8 +131,7 @@ let AdminService = AdminService_1 = class AdminService {
     }
 };
 exports.AdminService = AdminService;
-AdminService.REGISTRATION_FEE_INR = 149;
-exports.AdminService = AdminService = AdminService_1 = __decorate([
+exports.AdminService = AdminService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], AdminService);

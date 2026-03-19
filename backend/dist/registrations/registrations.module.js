@@ -11,11 +11,13 @@ const common_1 = require("@nestjs/common");
 const registrations_service_1 = require("./registrations.service");
 const registrations_controller_1 = require("./registrations.controller");
 const r2_upload_service_1 = require("./r2-upload.service");
+const email_module_1 = require("../email/email.module");
 let RegistrationsModule = class RegistrationsModule {
 };
 exports.RegistrationsModule = RegistrationsModule;
 exports.RegistrationsModule = RegistrationsModule = __decorate([
     (0, common_1.Module)({
+        imports: [email_module_1.EmailModule],
         controllers: [registrations_controller_1.RegistrationsController],
         providers: [registrations_service_1.RegistrationsService, r2_upload_service_1.R2UploadService],
         exports: [registrations_service_1.RegistrationsService],

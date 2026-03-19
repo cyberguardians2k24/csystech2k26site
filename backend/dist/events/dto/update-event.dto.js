@@ -13,6 +13,7 @@ exports.UpdateEventDto = void 0;
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
 const client_1 = require("@prisma/client");
+const class_transformer_1 = require("class-transformer");
 class UpdateEventDto {
 }
 exports.UpdateEventDto = UpdateEventDto;
@@ -45,10 +46,19 @@ __decorate([
 ], UpdateEventDto.prototype, "category", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: 4 }),
+    (0, class_transformer_1.Type)(() => Number),
     (0, class_validator_1.IsInt)(),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], UpdateEventDto.prototype, "maxTeamSize", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 149, description: 'Registration fee in INR for this event' }),
+    (0, class_transformer_1.Type)(() => Number),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(0),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], UpdateEventDto.prototype, "registrationFeeInr", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: '₹30,000' }),
     (0, class_validator_1.IsString)(),

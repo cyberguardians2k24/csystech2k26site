@@ -13,18 +13,6 @@ const NAV_ITEMS = [
 ];
 
 const STATUS_OPTIONS = ['CONFIRMED', 'PENDING', 'CANCELLED', 'WAITLISTED'];
-const EVENT_CATEGORIES = ['TECHNICAL', 'CODING', 'KNOWLEDGE', 'SKILL', 'KEYNOTE'];
-const EMPTY_EVENT_FORM = {
-  name: '',
-  slug: '',
-  description: '',
-  category: 'TECHNICAL',
-  maxTeamSize: 1,
-  registrationFeeInr: 149,
-  prizeAmount: '',
-  venue: '',
-  isActive: true,
-};
 
 /* ─── helpers ─── */
 function slugify(value) {
@@ -398,7 +386,6 @@ export default function AdminDashboard() {
   const [loadingRegs, setLoadingRegs] = useState(false);
   const [loadingParticipants, setLoadingParticipants] = useState(false);
   const [loadingEvents, setLoadingEvents] = useState(false);
-  const [savingEvent, setSavingEvent] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [posterEvent, setPosterEvent] = useState(null);
 
@@ -406,7 +393,6 @@ export default function AdminDashboard() {
   const [filterEvent, setFilterEvent] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
   const [participantSearch, setParticipantSearch] = useState('');
-  const [eventForm, setEventForm] = useState(EMPTY_EVENT_FORM);
   const [currentPage, setCurrentPage] = useState(1);
 
   const PER_PAGE = 20;
@@ -554,12 +540,68 @@ export default function AdminDashboard() {
 
   const handleExport = async () => {
     try {
-      const data = await api.exportEvent(filterEvent || undefined);
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url;
-      a.download = `cystech-export-${filterEvent || 'all'}.json`;
-      a.click(); URL.revokeObjectURL(url);
+      const XLSX = await import('xlsx');
+
+      const fetchAllParticipants = async () => {
+        const limit = 500;
+        const first = await api.getParticipants(1, limit);
+        const pages = Math.max(1, Number(first?.pages) || 1);
+        const all = [...(first?.data ?? [])];
+        for (let page = 2; page <= pages; page += 1) {
+          const res = await api.getParticipants(page, limit);
+          all.push(...(res?.data ?? []));
+        }
+        return all;
+      };
+
+      // If you're viewing registrations filtered by an event, export confirmed participants for that event.
+      // Otherwise, export the full participant directory.
+      const eventQuery = tab === 'registrations' ? (filterEvent || undefined) : undefined;
+      const participantsToExport = eventQuery ? await api.exportEvent(eventQuery) : await fetchAllParticipants();
+
+      const rows = [];
+      for (const participant of participantsToExport ?? []) {
+        const regs = Array.isArray(participant.registrations) ? participant.registrations : [];
+        if (regs.length === 0) {
+          rows.push({
+            'Participant Name': participant.name ?? '',
+            'Email': participant.email ?? '',
+            'Phone': participant.phone ?? '',
+            'College': participant.college ?? '',
+            'Team Name': participant.teamName ?? '',
+            'Event': '',
+            'Event Slug': '',
+            'Registration Status': '',
+            'Payment Status': '',
+            'Amount (INR)': '',
+            'Registered At': fmt(participant.createdAt),
+          });
+          continue;
+        }
+
+        for (const reg of regs) {
+          rows.push({
+            'Participant Name': participant.name ?? '',
+            'Email': participant.email ?? '',
+            'Phone': participant.phone ?? '',
+            'College': participant.college ?? '',
+            'Team Name': participant.teamName ?? '',
+            'Event': reg?.event?.name ?? '',
+            'Event Slug': reg?.event?.slug ?? '',
+            'Registration Status': reg?.status ?? '',
+            'Payment Status': reg?.paymentStatus ?? '',
+            'Amount (INR)': reg?.amount ?? '',
+            'Registered At': fmt(reg?.createdAt ?? participant.createdAt),
+          });
+        }
+      }
+
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Participants');
+
+      const suffix = eventQuery ? slugify(eventQuery) : 'all';
+      XLSX.writeFile(wb, `cystech2k26-participants-${suffix}.xlsx`);
     } catch (err) { handleError(err); }
   };
 
@@ -598,32 +640,6 @@ export default function AdminDashboard() {
     } catch (err) { handleError(err); }
   };
 
-  const handleEventField = (key) => (e) => {
-    const value = key === 'isActive' ? e.target.checked : e.target.value;
-    setEventForm((cur) => {
-      const next = { ...cur, [key]: value };
-      if (key === 'name' && !cur.slug) next.slug = slugify(value);
-      return next;
-    });
-  };
-
-  const handleCreateEvent = async (e) => {
-    e.preventDefault();
-    setSavingEvent(true);
-    try {
-      await api.createEvent({
-        ...eventForm,
-        slug: eventForm.slug || slugify(eventForm.name),
-        maxTeamSize: Number(eventForm.maxTeamSize) || 1,
-        registrationFeeInr: Number(eventForm.registrationFeeInr) || 0,
-      });
-      setEventForm(EMPTY_EVENT_FORM);
-      await Promise.all([loadEvents(), loadDashboard()]);
-      setTab('events');
-    } catch (err) { handleError(err); }
-    finally { setSavingEvent(false); }
-  };
-
   const handleToggleEvent = async (event) => {
     try {
       const updated = await api.updateEvent(event.id, { isActive: !event.isActive });
@@ -648,7 +664,7 @@ export default function AdminDashboard() {
     approvals: { title: 'Pending Approvals', subtitle: `${pendingCount} registration${pendingCount !== 1 ? 's' : ''} waiting for review` },
     registrations: { title: 'Registrations', subtitle: 'Manage all participant registrations' },
     participants: { title: 'Participants', subtitle: 'Directory of all registered participants' },
-    events: { title: 'Events', subtitle: 'Create and manage symposium events' },
+    events: { title: 'Events', subtitle: 'Manage symposium events' },
   }[tab];
 
   const activeEventsCount = events.filter((e) => e.isActive).length;
@@ -673,7 +689,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {tab === 'registrations' && (
+            {(tab === 'registrations' || tab === 'participants') && (
               <button onClick={handleExport} className="hidden items-center gap-1.5 rounded-lg border border-slate-600 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-800 sm:flex">
                 <Icon name="download" className="h-3.5 w-3.5" /> Export
               </button>
@@ -1082,53 +1098,7 @@ export default function AdminDashboard() {
 
           {/* ════ EVENTS TAB ════ */}
           {tab === 'events' && (
-            <div className="grid grid-cols-1 gap-5 xl:grid-cols-[400px_1fr]">
-              {/* Create event form */}
-              <Card>
-                <div className="mb-5">
-                  <div className="mb-1 flex items-center gap-2">
-                    <Icon name="plus" className="h-4 w-4 text-indigo-400" />
-                    <h3 className="text-base font-semibold text-white">Create Event</h3>
-                  </div>
-                  <p className="text-xs text-slate-500">Add a new event to your symposium</p>
-                </div>
-
-                <form onSubmit={handleCreateEvent} className="space-y-3">
-                  <input value={eventForm.name} onChange={handleEventField('name')} placeholder="Event name" required
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none" />
-                  <input value={eventForm.slug} onChange={handleEventField('slug')} placeholder="event-slug" required
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none" />
-                  <textarea value={eventForm.description} onChange={handleEventField('description')} placeholder="Description" required rows={3}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none" />
-                  <div className="grid grid-cols-2 gap-3">
-                    <select value={eventForm.category} onChange={handleEventField('category')}
-                      className="rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none">
-                      {EVENT_CATEGORIES.map((item) => <option key={item} value={item}>{item}</option>)}
-                    </select>
-                    <input value={eventForm.maxTeamSize} onChange={handleEventField('maxTeamSize')} type="number" min="1" placeholder="Team size"
-                      className="rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none" />
-                  </div>
-                  <input value={eventForm.registrationFeeInr} onChange={handleEventField('registrationFeeInr')} type="number" min="0" step="1" placeholder="Registration fee (INR)"
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none" />
-                  <div className="grid grid-cols-2 gap-3">
-                    <input value={eventForm.prizeAmount} onChange={handleEventField('prizeAmount')} placeholder="Prize amount"
-                      className="rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none" />
-                    <input value={eventForm.venue} onChange={handleEventField('venue')} placeholder="Venue"
-                      className="rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none" />
-                  </div>
-                  <label className="flex items-center gap-2.5 rounded-lg border border-slate-700 bg-slate-800/30 px-3 py-2.5 text-sm text-slate-300 cursor-pointer">
-                    <input type="checkbox" checked={eventForm.isActive} onChange={handleEventField('isActive')} className="accent-indigo-500" />
-                    Active on creation
-                  </label>
-                  <button type="submit" disabled={savingEvent}
-                    className="w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-500 disabled:opacity-50">
-                    {savingEvent ? 'Saving...' : 'Create Event'}
-                  </button>
-                </form>
-              </Card>
-
-              {/* Events list */}
-              <div className="space-y-4">
+            <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-semibold text-white">All Events</h3>
                   <span className="text-xs text-slate-500">{events.length} event{events.length !== 1 ? 's' : ''}</span>
@@ -1188,7 +1158,6 @@ export default function AdminDashboard() {
                     })}
                   </div>
                 )}
-              </div>
             </div>
           )}
         </main>

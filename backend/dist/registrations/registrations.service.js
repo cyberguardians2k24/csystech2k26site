@@ -14,21 +14,24 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
 const r2_upload_service_1 = require("./r2-upload.service");
+const email_service_1 = require("../email/email.service");
 let RegistrationsService = class RegistrationsService {
-    constructor(prisma, r2UploadService) {
+    constructor(prisma, r2UploadService, emailService) {
         this.prisma = prisma;
         this.r2UploadService = r2UploadService;
+        this.emailService = emailService;
     }
     async create(dto) {
         if (!dto.paymentScreenshot) {
             throw new common_1.BadRequestException('Payment screenshot is required');
         }
-        let participant = await this.prisma.participant.findUnique({ where: { email: dto.email } });
+        const normalizedEmail = (dto.email || '').trim().toLowerCase();
+        let participant = await this.prisma.participant.findUnique({ where: { email: normalizedEmail } });
         if (!participant) {
             participant = await this.prisma.participant.create({
                 data: {
                     name: dto.name,
-                    email: dto.email,
+                    email: normalizedEmail,
                     phone: dto.phone,
                     college: dto.college,
                     teamName: dto.teamName,
@@ -59,14 +62,23 @@ let RegistrationsService = class RegistrationsService {
                 notes: dto.notes,
                 paymentRef: dto.paymentRef,
                 paymentScreenshot: normalizedScreenshot,
+                amount: event.registrationFeeInr ?? 0,
                 paymentStatus: 'PENDING',
                 status: 'PENDING',
             },
             include: { participant: true, event: true },
         });
+        const emailSent = await this.emailService.sendRegistrationReceivedEmail({
+            to: normalizedEmail,
+            participantName: registration.participant.name,
+            eventName: registration.event.name,
+            registrationId: registration.id,
+            paymentRef: registration.paymentRef,
+        });
         return {
             success: true,
-            message: `Registration submitted for ${participant.name}. Payment verification is pending admin approval.`,
+            emailSent,
+            message: `Registration submitted for ${participant.name}. Payment verification is pending admin approval.${emailSent ? ' A confirmation email has been sent.' : ''} If fake/edited payment proof is submitted, the registration will be cancelled.`,
             registration,
         };
     }
@@ -117,7 +129,16 @@ let RegistrationsService = class RegistrationsService {
             data: { status: nextStatus },
             include: { participant: true, event: true },
         });
-        return updatedRegistration;
+        const cancelledEmailSent = nextStatus === client_1.RegistrationStatus.CANCELLED
+            ? await this.emailService.sendRegistrationCancelledEmail({
+                to: updatedRegistration.participant.email,
+                participantName: updatedRegistration.participant.name,
+                eventName: updatedRegistration.event.name,
+                registrationId: updatedRegistration.id,
+                reason: 'Fake/invalid payment proof or admin cancellation.',
+            })
+            : false;
+        return { ...updatedRegistration, cancelledEmailSent };
     }
     async updatePaymentStatus(id, paymentStatus) {
         const registration = await this.findOne(id);
@@ -127,15 +148,27 @@ let RegistrationsService = class RegistrationsService {
             : registration.status === client_1.RegistrationStatus.CONFIRMED
                 ? client_1.RegistrationStatus.PENDING
                 : registration.status;
+        const amountForPaid = (registration.amount ?? 0) > 0
+            ? (registration.amount ?? 0)
+            : (registration.event?.registrationFeeInr ?? 0);
         const updatedRegistration = await this.prisma.registration.update({
             where: { id },
             data: {
                 paymentStatus: nextPaymentStatus,
                 status: nextRegistrationStatus,
+                ...(nextPaymentStatus === 'PAID' ? { amount: amountForPaid } : {}),
             },
             include: { participant: true, event: true },
         });
-        return updatedRegistration;
+        const confirmedEmailSent = nextPaymentStatus === client_1.PaymentStatus.PAID
+            ? await this.emailService.sendRegistrationConfirmedEmail({
+                to: updatedRegistration.participant.email,
+                participantName: updatedRegistration.participant.name,
+                eventName: updatedRegistration.event.name,
+                registrationId: updatedRegistration.id,
+            })
+            : false;
+        return { ...updatedRegistration, confirmedEmailSent };
     }
     async remove(id) {
         await this.findOne(id);
@@ -171,6 +204,7 @@ exports.RegistrationsService = RegistrationsService;
 exports.RegistrationsService = RegistrationsService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        r2_upload_service_1.R2UploadService])
+        r2_upload_service_1.R2UploadService,
+        email_service_1.EmailService])
 ], RegistrationsService);
 //# sourceMappingURL=registrations.service.js.map

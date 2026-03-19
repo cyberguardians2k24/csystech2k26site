@@ -369,7 +369,10 @@ export default function EventRegistration() {
                       <p className="font-mono text-xs uppercase tracking-[0.2em] text-amber-400 font-bold">Pending Admin Approval</p>
                     </div>
                     <p className="text-white/45 font-mono text-[11px] text-left leading-relaxed">
-                      Your payment screenshot has been uploaded. An admin will review and verify it. You will receive a confirmation once approved.
+                      Your payment screenshot has been uploaded. An admin will review and verify it. A confirmation email will be sent to you.
+                    </p>
+                    <p className="mt-3 text-white/35 font-mono text-[11px] text-left leading-relaxed">
+                      Important: If any fake/edited payment proof is submitted, the registration will be cancelled.
                     </p>
                   </motion.div>
 
@@ -380,7 +383,7 @@ export default function EventRegistration() {
                       {[
                         { step: '01', label: 'Registration Received', desc: 'Your details and payment screenshot are saved.', done: true, color: 'text-green-400 border-green-400/30 bg-green-400/10' },
                         { step: '02', label: 'Payment Under Review', desc: 'Admin verifies your payment proof (usually within 24 hrs).', done: false, color: 'text-amber-400 border-amber-400/30 bg-amber-400/10' },
-                        { step: '03', label: 'Confirmation Sent', desc: 'Once approved, your registration is confirmed.', done: false, color: 'text-white/25 border-white/10 bg-white/5' },
+                        { step: '03', label: 'Confirmation Sent', desc: 'Once approved, your registration is confirmed by email.', done: false, color: 'text-white/25 border-white/10 bg-white/5' },
                       ].map(({ step, label, desc, done, color }) => (
                         <div key={step} className="flex items-start gap-3">
                           <div className={`flex-shrink-0 w-8 h-8 rounded-full border font-mono text-[9px] font-bold flex items-center justify-center ${color}`}>
@@ -455,6 +458,7 @@ export default function EventRegistration() {
                             <li>3. Enter your UTR / payment reference number and upload the screenshot.</li>
                             <li>4. Admin will verify the payment before confirming your registration.</li>
                             <li>5. While coming to the event, you must show your payment proof (screenshot/receipt).</li>
+                            <li>6. Fake or edited payment proof will result in registration cancellation.</li>
                           </ul>
                         </div>
                         <InputField label="Payment Reference / UTR" id="reg-payment-ref" placeholder="Enter UTR / payment reference" value={paymentRef} onChange={(e) => setPaymentRef(e.target.value)} required />

@@ -13,6 +13,7 @@ export declare class EventsController {
         slug: string;
         category: import(".prisma/client").$Enums.EventCategory;
         maxTeamSize: number;
+        registrationFeeInr: number;
         prizeAmount: string | null;
         venue: string | null;
         startTime: Date | null;
@@ -32,6 +33,7 @@ export declare class EventsController {
         slug: string;
         category: import(".prisma/client").$Enums.EventCategory;
         maxTeamSize: number;
+        registrationFeeInr: number;
         prizeAmount: string | null;
         venue: string | null;
         startTime: Date | null;
@@ -75,6 +77,7 @@ export declare class EventsController {
         slug: string;
         category: import(".prisma/client").$Enums.EventCategory;
         maxTeamSize: number;
+        registrationFeeInr: number;
         prizeAmount: string | null;
         venue: string | null;
         startTime: Date | null;
@@ -90,6 +93,7 @@ export declare class EventsController {
         slug: string;
         category: import(".prisma/client").$Enums.EventCategory;
         maxTeamSize: number;
+        registrationFeeInr: number;
         prizeAmount: string | null;
         venue: string | null;
         startTime: Date | null;
@@ -109,6 +113,7 @@ export declare class EventsController {
         slug: string;
         category: import(".prisma/client").$Enums.EventCategory;
         maxTeamSize: number;
+        registrationFeeInr: number;
         prizeAmount: string | null;
         venue: string | null;
         startTime: Date | null;
@@ -124,6 +129,7 @@ export declare class EventsController {
         slug: string;
         category: import(".prisma/client").$Enums.EventCategory;
         maxTeamSize: number;
+        registrationFeeInr: number;
         prizeAmount: string | null;
         venue: string | null;
         startTime: Date | null;

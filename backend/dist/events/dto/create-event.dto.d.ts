@@ -5,6 +5,7 @@ export declare class CreateEventDto {
     description: string;
     category: EventCategory;
     maxTeamSize?: number;
+    registrationFeeInr?: number;
     prizeAmount?: string;
     venue?: string;
     startTime?: string;
