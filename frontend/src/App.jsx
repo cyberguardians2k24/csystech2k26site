@@ -210,6 +210,7 @@ function RouteScene({ children, routeKey }) {
 export default function App() {
   const location = useLocation();
   const isHome = location.pathname === '/';
+  const isAdminRoute = location.pathname.startsWith('/admin');
   const [loading, setLoading] = useState(isHome);
   const [clawTrigger, setClawTrigger] = useState(false);
   const [pulseKey, setPulseKey] = useState(0);
@@ -324,10 +325,10 @@ export default function App() {
         />
       </div>
       )}
-      <Navbar />
+      {!isAdminRoute && <Navbar />}
       {/* Custom Cursor */}
-      <CustomCursor />
-      <ScrollProgressBar />
+      {!isAdminRoute && <CustomCursor />}
+      {!isAdminRoute && <ScrollProgressBar />}
       {/* Floating register bar — home only */}
       {isHome && <FloatingRegisterBar />}
 
