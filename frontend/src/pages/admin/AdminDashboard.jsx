@@ -541,74 +541,88 @@ export default function AdminDashboard() {
 
   const handleExport = () => {
     try {
-      const canExportRegistrations = !loadingRegs && filteredRegistrations.length > 0;
-      const canExportParticipants = !loadingParticipants && filteredParticipants.length > 0;
-      const canExport = tab === 'registrations'
-        ? canExportRegistrations
-        : tab === 'participants'
-          ? canExportParticipants
-          : false;
-
-      if (!canExport) {
-        setError(tab === 'registrations'
-          ? 'No registrations loaded to export. Click refresh first.'
-          : 'No participants loaded to export. Click refresh first.');
+      if (tab === 'registrations' && filteredRegistrations.length === 0) {
+        setError('No registrations to export. Click Refresh first.');
+        return;
+      }
+      if (tab === 'participants' && filteredParticipants.length === 0) {
+        setError('No participants to export. Click Refresh first.');
         return;
       }
 
       const rows = [];
-
       if (tab === 'registrations') {
-        const source = filteredRegistrations;
-        for (const reg of source) {
+        const headers = ['Participant Name', 'Email', 'Phone', 'College', 'Team Name', 'Event', 'Status', 'Payment Status', 'Amount', 'UTR/Ref', 'Registered'];
+        rows.push(headers);
+        for (const reg of filteredRegistrations) {
           const p = reg.participant ?? {};
-          rows.push({
-            'Participant Name': p.name ?? '',
-            'Email': p.email ?? '',
-            'Phone': p.phone ?? '',
-            'College': p.college ?? '',
-            'Team Name': p.teamName ?? '',
-            'Event': reg.eventName ?? reg.event ?? '',
-            'Registration Status': reg.status ?? '',
-            'Payment Status': reg.paymentStatus ?? '',
-            'Amount (INR)': reg.amount ?? '',
-            'UTR / Payment Ref': reg.paymentRef ?? '',
-            'Registered At': fmt(reg.createdAt),
-          });
+          rows.push([
+            p.name || '',
+            p.email || '',
+            p.phone || '',
+            p.college || '',
+            p.teamName || '',
+            reg.eventName || reg.event || '',
+            reg.status || '',
+            reg.paymentStatus || '',
+            reg.amount || '',
+            reg.paymentRef || '',
+            fmt(reg.createdAt),
+          ]);
         }
       } else if (tab === 'participants') {
-        const source = filteredParticipants;
-        for (const participant of source) {
+        const headers = ['Participant Name', 'Email', 'Phone', 'College', 'Team Name', 'Events', 'Registered'];
+        rows.push(headers);
+        for (const participant of filteredParticipants) {
           const regs = Array.isArray(participant.registrations) ? participant.registrations : [];
-          rows.push({
-            'Participant Name': participant.name ?? '',
-            'Email': participant.email ?? '',
-            'Phone': participant.phone ?? '',
-            'College': participant.college ?? '',
-            'Team Name': participant.teamName ?? '',
-            'Events': regs.length ? regs.map((r) => r?.event?.name).filter(Boolean).join(', ') : '',
-            'Registered At': fmt(participant.createdAt),
-          });
+          rows.push([
+            participant.name || '',
+            participant.email || '',
+            participant.phone || '',
+            participant.college || '',
+            participant.teamName || '',
+            regs.length ? regs.map((r) => r?.event?.name).filter(Boolean).join('; ') : '',
+            fmt(participant.createdAt),
+          ]);
         }
       }
 
-      const ws = XLSX.utils.json_to_sheet(rows);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Export');
+      const csv = rows.map((row) => 
+        row.map((cell) => {
+          const val = String(cell || '').trim();
+          return val.includes(',') || val.includes('"') || val.includes('\n') 
+            ? `"${val.replace(/"/g, '""')}"` 
+            : val;
+        }).join(',')
+      ).join('\n');
 
       const suffix = tab === 'registrations' && filterEvent ? slugify(filterEvent) : tab;
-      const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-      const blob = new Blob([out], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `cystech2k26-export-${suffix}.xlsx`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+
+      try {
+        const ws = XLSX.utils.json_to_sheet(rows.slice(1), { header: rows[0] });
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Export');
+        const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cystech2k26-export-${suffix}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      } catch {
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cystech2k26-export-${suffix}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
     } catch (err) { handleError(err); }
   };
 
