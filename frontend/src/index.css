@@ -59,6 +59,20 @@ body {
     linear-gradient(180deg, rgba(1, 0, 2, 0.92) 0%, rgba(3, 0, 5, 1) 100%);
 }
 
+/* Admin dashboard uses normal cursor instead of the custom hidden cursor system. */
+body.admin-route,
+body.admin-route * {
+  cursor: auto !important;
+}
+
+body.admin-route button,
+body.admin-route a,
+body.admin-route [role='button'],
+body.admin-route select,
+body.admin-route summary {
+  cursor: pointer !important;
+}
+
 body::before {
   content: '';
   position: fixed;

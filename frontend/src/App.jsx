@@ -301,6 +301,11 @@ export default function App() {
     }
   }, [location.pathname]);
 
+  useEffect(() => {
+    document.body.classList.toggle('admin-route', isAdminRoute);
+    return () => document.body.classList.remove('admin-route');
+  }, [isAdminRoute]);
+
   return (
     <div className="bg-wakanda-dark min-h-screen text-slate-50 font-body overflow-x-hidden relative">
       <CircuitBoard />
@@ -325,7 +330,7 @@ export default function App() {
         />
       </div>
       )}
-      {!isAdminRoute && <Navbar />}
+      <Navbar />
       {/* Custom Cursor */}
       {!isAdminRoute && <CustomCursor />}
       {!isAdminRoute && <ScrollProgressBar />}

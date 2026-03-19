@@ -599,7 +599,14 @@ export default function AdminDashboard() {
       const suffix = tab === 'registrations' && filterEvent ? slugify(filterEvent) : tab;
 
       try {
-        const ws = XLSX.utils.json_to_sheet(rows.slice(1), { header: rows[0] });
+        const ws = XLSX.utils.aoa_to_sheet(rows);
+        ws['!cols'] = rows[0].map((header, index) => {
+          const maxLen = Math.max(
+            String(header ?? '').length,
+            ...rows.slice(1).map((r) => String(r[index] ?? '').length),
+          );
+          return { wch: Math.min(42, Math.max(12, maxLen + 2)) };
+        });
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Export');
         const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
@@ -694,7 +701,7 @@ export default function AdminDashboard() {
 
   /* ════════════════════ RENDER ════════════════════ */
   return (
-    <div className="flex min-h-screen bg-[#0f1729] text-white">
+    <div className="flex min-h-screen bg-[#0f1729] pt-24 text-white">
       <Sidebar tab={tab} setTab={(next) => { setTab(next); setMobileMenuOpen(false); }} admin={admin} onLogout={handleLogout} pendingCount={pendingCount} />
 
       <div className="flex flex-1 flex-col overflow-hidden">

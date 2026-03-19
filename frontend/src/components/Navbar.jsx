@@ -20,7 +20,7 @@ const PAGE_LABELS = {
   '/admin/dashboard': 'Admin Dashboard',
 }
 
-export default function Navbar() {
+export default function Navbar({ nonInteractive = false }) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [activeLink, setActiveLink] = useState('')
@@ -112,7 +112,7 @@ export default function Navbar() {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4"
+        className={`fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 ${nonInteractive ? 'pointer-events-none' : ''}`}
       >
         <div className={`nav-command-shell mx-auto max-w-5xl rounded-[1.2rem] px-3 py-2.5 sm:py-2 flex items-center justify-between gap-2 sm:gap-3 transition-all duration-700 ${scrolled ? 'bg-wakanda-darker/92 shadow-[0_20px_80px_rgba(0,0,0,0.45)] border border-vibranium/16 backdrop-blur-2xl' : 'bg-[#06020d]/74 border border-[#c084fc]/10 backdrop-blur-xl'}`}>
           <button
