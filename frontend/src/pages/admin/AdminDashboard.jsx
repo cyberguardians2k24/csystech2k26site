@@ -540,7 +540,8 @@ export default function AdminDashboard() {
 
   const handleExport = async () => {
     try {
-      const XLSX = await import('xlsx');
+      const xlsxModule = await import('xlsx');
+      const XLSX = xlsxModule.default ?? xlsxModule;
 
       const fetchAllParticipants = async () => {
         const limit = 500;
@@ -601,7 +602,19 @@ export default function AdminDashboard() {
       XLSX.utils.book_append_sheet(wb, ws, 'Participants');
 
       const suffix = eventQuery ? slugify(eventQuery) : 'all';
-      XLSX.writeFile(wb, `cystech2k26-participants-${suffix}.xlsx`);
+
+      const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([out], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `cystech2k26-participants-${suffix}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
     } catch (err) { handleError(err); }
   };
 
