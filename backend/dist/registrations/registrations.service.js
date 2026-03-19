@@ -15,6 +15,13 @@ const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
 const r2_upload_service_1 = require("./r2-upload.service");
 const email_service_1 = require("../email/email.service");
+function slugify(value) {
+    return String(value || '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+}
 let RegistrationsService = class RegistrationsService {
     constructor(prisma, r2UploadService, emailService) {
         this.prisma = prisma;
@@ -38,13 +45,29 @@ let RegistrationsService = class RegistrationsService {
                 },
             });
         }
+        const rawEvent = String(dto.event || '').trim();
+        const normalizedSlug = slugify(rawEvent);
+        const aliasSlugMap = {
+            kabaddi: ['kabbadi'],
+            kabbadi: ['kabaddi'],
+            'cipher-vista': ['poster-presentation'],
+            'poster-presentation': ['cipher-vista'],
+        };
+        const aliasSlugs = aliasSlugMap[normalizedSlug] ?? [];
+        const or = [];
+        if (normalizedSlug) {
+            or.push({ slug: { equals: normalizedSlug, mode: 'insensitive' } });
+            for (const alias of aliasSlugs)
+                or.push({ slug: { equals: alias, mode: 'insensitive' } });
+        }
+        if (rawEvent) {
+            or.push({ name: { equals: rawEvent, mode: 'insensitive' } });
+            or.push({ name: { contains: rawEvent, mode: 'insensitive' } });
+        }
         const event = await this.prisma.event.findFirst({
             where: {
-                OR: [
-                    { name: { contains: dto.event, mode: 'insensitive' } },
-                    { slug: { contains: dto.event, mode: 'insensitive' } },
-                ],
                 isActive: true,
+                OR: or.length ? or : undefined,
             },
         });
         if (!event)

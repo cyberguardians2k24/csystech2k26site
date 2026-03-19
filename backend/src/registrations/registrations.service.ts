@@ -5,6 +5,14 @@ import { PaymentStatus, RegistrationStatus } from '@prisma/client';
 import { R2UploadService } from './r2-upload.service';
 import { EmailService } from '../email/email.service';
 
+function slugify(value: string) {
+  return String(value || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
 @Injectable()
 export class RegistrationsService {
   constructor(
@@ -34,14 +42,32 @@ export class RegistrationsService {
       });
     }
 
-    // 2. Find event by name or slug (case-insensitive)
+    // 2. Find event by name or slug (case-insensitive). Accept legacy aliases.
+    const rawEvent = String(dto.event || '').trim();
+    const normalizedSlug = slugify(rawEvent);
+
+    const aliasSlugMap: Record<string, string[]> = {
+      kabaddi: ['kabbadi'],
+      kabbadi: ['kabaddi'],
+      'cipher-vista': ['poster-presentation'],
+      'poster-presentation': ['cipher-vista'],
+    };
+    const aliasSlugs = aliasSlugMap[normalizedSlug] ?? [];
+
+    const or: any[] = [];
+    if (normalizedSlug) {
+      or.push({ slug: { equals: normalizedSlug, mode: 'insensitive' } });
+      for (const alias of aliasSlugs) or.push({ slug: { equals: alias, mode: 'insensitive' } });
+    }
+    if (rawEvent) {
+      or.push({ name: { equals: rawEvent, mode: 'insensitive' } });
+      or.push({ name: { contains: rawEvent, mode: 'insensitive' } });
+    }
+
     const event = await this.prisma.event.findFirst({
       where: {
-        OR: [
-          { name: { contains: dto.event, mode: 'insensitive' } },
-          { slug: { contains: dto.event, mode: 'insensitive' } },
-        ],
         isActive: true,
+        OR: or.length ? or : undefined,
       },
     });
     if (!event) throw new NotFoundException(`Event "${dto.event}" not found or inactive`);

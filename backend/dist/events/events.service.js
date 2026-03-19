@@ -65,9 +65,9 @@ let EventsService = class EventsService {
     async seed() {
         const events = [
             {
-                name: 'Poster Presentation',
-                slug: 'poster-presentation',
-                description: 'Present a cyber-tech concept in poster format.',
+                name: 'Cipher Vista',
+                slug: 'cipher-vista',
+                description: 'Present a sharp cyber-tech idea with clarity and originality.',
                 category: 'TECHNICAL',
                 maxTeamSize: 3,
                 prizeAmount: 'TBA',
@@ -121,8 +121,8 @@ let EventsService = class EventsService {
                 prizeAmount: 'TBA',
             },
             {
-                name: 'Kabbadi',
-                slug: 'kabbadi',
+                name: 'Kabaddi',
+                slug: 'kabaddi',
                 description: 'On-ground kabaddi competition.',
                 category: 'SKILL',
                 maxTeamSize: 7,

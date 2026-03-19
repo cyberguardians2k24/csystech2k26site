@@ -126,7 +126,7 @@ export default function Navbar() {
           {/* Mobile-only brand */}
           <button
             onClick={() => handleNavClick('#hero')}
-            className="md:hidden flex min-w-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1.5"
+            className="md:hidden flex min-w-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1.5 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
           >
             <div className="w-8 h-8 rounded-full bg-vibranium/20 border border-vibranium/40 flex items-center justify-center shadow-vibranium-glow shrink-0">
               <span className="font-heading font-black text-white text-xs">C</span>
@@ -167,7 +167,7 @@ export default function Navbar() {
           <div className="md:hidden flex items-center gap-2 shrink-0">
             <button
               onClick={() => handleNavClick('#events')}
-              className="px-3 py-2 rounded-full border border-[#a855f7]/28 bg-[linear-gradient(135deg,rgba(168,85,247,0.72),rgba(14,165,233,0.22))] text-white font-heading font-bold text-[10px] tracking-[0.18em] uppercase shadow-[0_0_22px_rgba(168,85,247,0.18)]"
+              className="px-3 py-2 rounded-full border border-[#a855f7]/28 bg-[linear-gradient(135deg,rgba(168,85,247,0.72),rgba(14,165,233,0.22))] text-white font-heading font-bold text-[10px] tracking-[0.18em] uppercase shadow-[0_0_22px_rgba(168,85,247,0.18)] backdrop-blur-xl"
             >
               Register
             </button>

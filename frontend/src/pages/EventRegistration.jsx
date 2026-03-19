@@ -146,7 +146,7 @@ export default function EventRegistration() {
         fileName: paymentFile.name,
         contentType: paymentFile.type || 'application/octet-stream',
         participantEmail: normalizedEmail,
-        event: event.title,
+        event: event.id,
       });
 
       const uploadRes = await fetch(signed.uploadUrl, {
@@ -167,7 +167,7 @@ export default function EventRegistration() {
         phone:    form.phone,
         college:  form.college,
         teamName: form.teamName || undefined,
-        event:    event.title,
+        event:    event.id,
         notes:    [form.department, form.yearOfStudy ? `Year ${form.yearOfStudy}` : '', form.notes].filter(Boolean).join(' | ') || undefined,
         paymentScreenshot: signed.storageUrl,
         paymentRef: normalizedPaymentRef,
