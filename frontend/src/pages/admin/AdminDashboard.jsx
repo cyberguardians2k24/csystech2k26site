@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { api } from '../../lib/api';
-import * as XLSX from 'xlsx';
+import * as XLSXImport from 'xlsx';
 
 /* ─── constants ─── */
 const NAV_ITEMS = [
@@ -541,6 +541,23 @@ export default function AdminDashboard() {
 
   const handleExport = () => {
     try {
+      const XLSX = XLSXImport && (XLSXImport.default ?? XLSXImport);
+
+      const canExportRegistrations = !loadingRegs && filteredRegistrations.length > 0;
+      const canExportParticipants = !loadingParticipants && filteredParticipants.length > 0;
+      const canExport = tab === 'registrations'
+        ? canExportRegistrations
+        : tab === 'participants'
+          ? canExportParticipants
+          : false;
+
+      if (!canExport) {
+        setError(tab === 'registrations'
+          ? 'No registrations loaded to export. Click refresh first.'
+          : 'No participants loaded to export. Click refresh first.');
+        return;
+      }
+
       const rows = [];
 
       if (tab === 'registrations') {
@@ -681,11 +698,27 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {(tab === 'registrations' || tab === 'participants') && (
-              <button type="button" onClick={handleExport} className="hidden cursor-pointer select-none items-center gap-1.5 rounded-lg border border-slate-600 px-3 py-1.5 text-xs text-slate-300 transition-colors hover:bg-slate-800 hover:text-white active:bg-slate-800 sm:flex">
-                <Icon name="download" className="h-3.5 w-3.5" /> Export
-              </button>
-            )}
+            {(tab === 'registrations' || tab === 'participants') && (() => {
+              const disabled = tab === 'registrations'
+                ? loadingRegs || filteredRegistrations.length === 0
+                : loadingParticipants || filteredParticipants.length === 0;
+
+              return (
+                <button
+                  type="button"
+                  onClick={handleExport}
+                  disabled={disabled}
+                  className={`flex select-none items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs transition-colors ${
+                    disabled
+                      ? 'cursor-not-allowed border-slate-700 text-slate-600'
+                      : 'cursor-pointer border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white active:bg-slate-800'
+                  }`}
+                  title={disabled ? 'Load data first (Refresh) to export' : 'Export to Excel'}
+                >
+                  <Icon name="download" className="h-3.5 w-3.5" /> Export
+                </button>
+              );
+            })()}
             <button onClick={handleRefresh} className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white" title="Refresh data">
               <Icon name="refresh" className="h-4 w-4" />
             </button>
