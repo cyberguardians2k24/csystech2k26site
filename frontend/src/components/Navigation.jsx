@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { EVENT_STATS } from '../data/events';
@@ -154,7 +154,7 @@ export default function Navigation() {
                   initial={{ x: -50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.2 + i * 0.1 }}
-                  className="hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-vibranium hover:to-holo-cyan transition-all w-fit relative group"
+                  className="hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-vibranium hover:to-vibranium-gold transition-all w-fit relative group"
                 >
                   {item.label}
                   <div className="absolute -bottom-2 left-0 w-0 h-[2px] bg-vibranium transition-all duration-300 group-hover:w-full"></div>
@@ -168,11 +168,11 @@ export default function Navigation() {
               onClick={() => handleNavClick('#events')}
               className="mt-12 w-full py-4 rounded-full font-bold tracking-widest uppercase relative overflow-hidden"
               style={{
-                background: 'linear-gradient(105deg, #6B00BE 0%, #9D00FF 35%, #B44FFF 55%, #9D00FF 80%, #6B00BE 100%)',
+                background: 'linear-gradient(105deg, #E8A000 0%, #C41E3A 35%, #8B0000 55%, #C41E3A 80%, #FFD700 100%)',
                 backgroundSize: '200% auto',
                 animation: 'vibranium-sweep 2.8s linear infinite',
                 color: '#ffffff',
-                boxShadow: '0 0 30px rgba(157,0,255,0.5), 0 0 60px rgba(157,0,255,0.2)',
+                boxShadow: '0 0 30px rgba(196, 30, 58,0.5), 0 0 60px rgba(196, 30, 58,0.2)',
               }}
             >
               Access Request
@@ -237,7 +237,7 @@ function EventsDropdown({ activeLink, onNavigate, navigate }) {
               onClick={() => { navigate('/technical'); setOpen(false); }}
               className="flex items-center gap-3 w-full px-4 py-3 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-colors text-left border-b border-white/5"
             >
-              <span className="w-6 h-6 rounded-full bg-holo-cyan/20 flex items-center justify-center text-xs">🔬</span>
+              <span className="w-6 h-6 rounded-full bg-vibranium-gold/20 flex items-center justify-center text-xs">🔬</span>
               <div>
                 <div className="text-white/80 font-medium">Technical Events</div>
                 <div className="text-white/30 text-xs mt-0.5">{EVENT_STATS.technicalCount} events · {EVENT_STATS.technicalPrizePoolLabel} prizes</div>

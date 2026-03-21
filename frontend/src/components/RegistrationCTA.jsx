@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ALL_EVENTS, CATEGORY_META, EVENT_STATS } from '../data/events';
 
@@ -43,7 +43,7 @@ function SelectField({ label, id, value, onChange, options, required }) {
         value={value}
         onChange={onChange}
         required={required}
-        className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body focus:outline-none focus:border-vibranium/60 focus:bg-vibranium/5 focus:shadow-[0_0_16px_rgba(157,0,255,0.15)] transition-all duration-300 appearance-none cursor-pointer"
+        className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body focus:outline-none focus:border-vibranium/60 focus:bg-vibranium/5 focus:shadow-[0_0_16px_rgba(196, 30, 58,0.15)] transition-all duration-300 appearance-none cursor-pointer"
         style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ffffff40' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center' }}
       >
         <option value="" disabled className="bg-[#0a0612] text-white/40">{options[0].placeholder ?? 'Select…'}</option>
@@ -68,7 +68,7 @@ function InputField({ label, id, type = 'text', placeholder, value, onChange, re
         value={value}
         onChange={onChange}
         required={required}
-        className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-vibranium/60 focus:bg-vibranium/5 focus:shadow-[0_0_16px_rgba(157,0,255,0.15)] transition-all duration-300"
+        className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-vibranium/60 focus:bg-vibranium/5 focus:shadow-[0_0_16px_rgba(196, 30, 58,0.15)] transition-all duration-300"
       />
     </div>
   );
@@ -98,7 +98,7 @@ export default function RegistrationCTA() {
 
   return (
     <section id="register" className="section-shell relative py-16 md:py-32 bg-wakanda-dark overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(123,44,255,0.2),transparent_55%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(196,30,58,0.2),transparent_55%)] pointer-events-none" />
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{
@@ -106,15 +106,15 @@ export default function RegistrationCTA() {
           backgroundSize: '56px 100px'
         }}
       />
-      <div className="absolute bottom-0 right-0 w-[420px] h-[420px] bg-[#9D00FF]/8 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[420px] h-[420px] bg-[#C41E3A]/8 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-4xl mx-auto px-6">
-        <div className="panel-sheen rounded-[2.2rem] border border-[#7b2cff]/28 bg-[#09020f]/78 backdrop-blur-2xl p-6 md:p-10 lg:p-16 relative overflow-hidden shadow-[0_0_60px_rgba(123,44,255,0.14)]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(123,44,255,0.18),transparent_24%),radial-gradient(circle_at_82%_82%,rgba(212,175,55,0.12),transparent_26%)] pointer-events-none" />
-          <span className="absolute top-6 left-6 w-8 h-8 border-t-2 border-l-2 border-[#67e8f9]/45 transition-all duration-300 hover:w-12 hover:h-12" />
-          <span className="absolute top-6 right-6 w-8 h-8 border-t-2 border-r-2 border-[#67e8f9]/45 transition-all duration-300 hover:w-12 hover:h-12" />
-          <span className="absolute bottom-6 left-6 w-8 h-8 border-b-2 border-l-2 border-[#67e8f9]/45 transition-all duration-300 hover:w-12 hover:h-12" />
-          <span className="absolute bottom-6 right-6 w-8 h-8 border-b-2 border-r-2 border-[#67e8f9]/45 transition-all duration-300 hover:w-12 hover:h-12" />
+        <div className="panel-sheen rounded-[2.2rem] border border-[#C41E3A]/28 bg-[#0a0200]/78 backdrop-blur-2xl p-6 md:p-10 lg:p-16 relative overflow-hidden shadow-[0_0_60px_rgba(196,30,58,0.18)]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(196,30,58,0.18),transparent_24%),radial-gradient(circle_at_82%_82%,rgba(212,175,55,0.12),transparent_26%)] pointer-events-none" />
+          <span className="absolute top-6 left-6 w-8 h-8 border-t-2 border-l-2 border-[#FFD700]/45 transition-all duration-300 hover:w-12 hover:h-12" />
+          <span className="absolute top-6 right-6 w-8 h-8 border-t-2 border-r-2 border-[#FFD700]/45 transition-all duration-300 hover:w-12 hover:h-12" />
+          <span className="absolute bottom-6 left-6 w-8 h-8 border-b-2 border-l-2 border-[#FFD700]/45 transition-all duration-300 hover:w-12 hover:h-12" />
+          <span className="absolute bottom-6 right-6 w-8 h-8 border-b-2 border-r-2 border-[#FFD700]/45 transition-all duration-300 hover:w-12 hover:h-12" />
 
           <div className="text-center mb-10 relative z-10">
             <SeatsCounter />
@@ -126,7 +126,7 @@ export default function RegistrationCTA() {
               className="mt-6 text-4xl sm:text-5xl md:text-[5rem] font-black font-heading tracking-tighter text-slate-50 uppercase leading-[0.9]"
             >
               Secure <br />
-              <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #67e8f9 0%, #9D00FF 54%, #7b2cff 100%)' }}>
+              <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #FFD700 0%, #C41E3A 54%, #C41E3A 100%)' }}>
                 Your Access
               </span>
             </motion.h2>
@@ -174,7 +174,7 @@ export default function RegistrationCTA() {
                 </div>
 
                 <div>
-                  <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/40 mb-3">Select Events <span className="text-[#9D00FF]">*</span></p>
+                  <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/40 mb-3">Select Events <span className="text-[#C41E3A]">*</span></p>
                   <div className="flex items-center justify-between mb-3 gap-4 flex-wrap">
                     <p className="text-white/30 font-mono text-[10px] tracking-[0.2em] uppercase">
                       Choose from {EVENT_STATS.totalCount} updated events
@@ -192,9 +192,9 @@ export default function RegistrationCTA() {
                           type="button"
                           onClick={() => toggleEvent(event.title)}
                           whileTap={{ scale: 0.95 }}
-                          className={`relative flex items-start gap-2 px-3 py-3 rounded-xl border text-left text-xs font-mono tracking-wide transition-all duration-300 ${active ? 'border-[#9D00FF]/60 bg-[linear-gradient(135deg,rgba(123,44,255,0.18),rgba(212,175,55,0.12))] text-white shadow-[0_0_28px_rgba(123,44,255,0.18)]' : 'border-white/10 bg-white/[0.02] text-white/40 hover:border-[#7b2cff]/30 hover:text-white/70'}`}
+                          className={`relative flex items-start gap-2 px-3 py-3 rounded-xl border text-left text-xs font-mono tracking-wide transition-all duration-300 ${active ? 'border-[#C41E3A]/60 bg-[linear-gradient(135deg,rgba(196,30,58,0.18),rgba(212,175,55,0.12))] text-white shadow-[0_0_28px_rgba(196,30,58,0.18)]' : 'border-white/10 bg-white/[0.02] text-white/40 hover:border-[#C41E3A]/30 hover:text-white/70'}`}
                         >
-                          <span className={`w-3 h-3 rounded-full flex-shrink-0 border transition-all duration-300 ${active ? 'bg-[#9D00FF] border-[#9D00FF] shadow-[0_0_12px_rgba(212,175,55,0.42)]' : 'border-white/20'}`} />
+                          <span className={`w-3 h-3 rounded-full flex-shrink-0 border transition-all duration-300 ${active ? 'bg-[#C41E3A] border-[#C41E3A] shadow-[0_0_12px_rgba(212,175,55,0.42)]' : 'border-white/20'}`} />
                           <span className="flex-1">
                             <span className="block text-white/80">{event.title}</span>
                             <span className={`mt-1 inline-flex px-2 py-0.5 rounded-full border text-[9px] uppercase tracking-[0.2em] ${CATEGORY_META[event.category].chip}`}>
@@ -213,7 +213,7 @@ export default function RegistrationCTA() {
                     disabled={loading || form.events.length === 0}
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.96 }}
-                    className="relative inline-flex items-center gap-3 px-12 py-5 rounded-full font-bold font-heading tracking-widest uppercase text-sm text-white disabled:opacity-40 disabled:cursor-not-allowed bg-[linear-gradient(135deg,rgba(212,175,55,0.9),rgba(123,44,255,0.9))] shadow-[0_0_40px_rgba(212,175,55,0.24)] hover:shadow-[0_0_60px_rgba(212,175,55,0.35)] transition-all duration-300 overflow-hidden"
+                    className="relative inline-flex items-center gap-3 px-12 py-5 rounded-full font-bold font-heading tracking-widest uppercase text-sm text-white disabled:opacity-40 disabled:cursor-not-allowed bg-[linear-gradient(135deg,rgba(212,175,55,0.9),rgba(196,30,58,0.9))] shadow-[0_0_40px_rgba(212,175,55,0.24)] hover:shadow-[0_0_60px_rgba(212,175,55,0.35)] transition-all duration-300 overflow-hidden"
                   >
                     <span className="absolute inset-0 gold-sweep opacity-40 pointer-events-none" />
                     {loading ? (
@@ -231,7 +231,7 @@ export default function RegistrationCTA() {
                         <motion.span
                           animate={{ opacity: [1, 0.3, 1] }}
                           transition={{ duration: 1, repeat: Infinity }}
-                            className="w-2 h-2 rounded-full bg-[#67e8f9]"
+                            className="w-2 h-2 rounded-full bg-[#FFD700]"
                         />
                       </>
                     )}
@@ -250,13 +250,13 @@ export default function RegistrationCTA() {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
-                  className="w-20 h-20 rounded-full border-2 border-[#67e8f9] shadow-[0_0_30px_rgba(103,232,249,0.4)] flex items-center justify-center text-3xl bg-[#67e8f9]/10"
+                  className="w-20 h-20 rounded-full border-2 border-[#FFD700] shadow-[0_0_30px_rgba(103,232,249,0.4)] flex items-center justify-center text-3xl bg-[#FFD700]/10"
                 >
                   ✓
                 </motion.div>
                 <div>
                   <h3 className="text-3xl font-black font-heading text-white mb-2">Access Granted</h3>
-                  <p className="text-white/50 font-mono text-sm">Confirmation has been sent to <span className="text-[#67e8f9]">{form.email}</span>.</p>
+                  <p className="text-white/50 font-mono text-sm">Confirmation has been sent to <span className="text-[#FFD700]">{form.email}</span>.</p>
                   <p className="text-white/30 font-mono text-xs mt-2 tracking-widest">Your event shortlist is locked in for CYSTECH2K26.</p>
                 </div>
               </motion.div>

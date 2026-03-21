@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import Lenis from 'lenis';
@@ -22,6 +22,7 @@ const EnergyReveal = lazy(() => import('./components/EnergyReveal'));
 // Lazy-load sub-pages
 const TechnicalEvents = lazy(() => import('./pages/TechnicalEvents'));
 const NonTechnicalEvents = lazy(() => import('./pages/NonTechnicalEvents'));
+const SelectiveRegistration = lazy(() => import('./pages/SelectiveRegistration'));
 const EventRegistration = lazy(() => import('./pages/EventRegistration'));
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
@@ -64,7 +65,7 @@ function FloatingRegisterBar() {
           className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] pointer-events-auto"
         >
           <div className="flex items-center gap-3 px-5 py-3 rounded-full bg-wakanda-dark/90 backdrop-blur-xl border border-vibranium/40 shadow-vibranium-glow">
-            <span className="w-2 h-2 rounded-full bg-holo-cyan animate-pulse shadow-[0_0_8px_#00f0ff]" />
+            <span className="w-2 h-2 rounded-full bg-vibranium-gold animate-pulse shadow-[0_0_8px_#FFD700]" />
             <span className="text-xs font-mono text-vibranium/60 tracking-widest uppercase hidden sm:block">Registration Open</span>
             <button
               onClick={() => document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth' })}
@@ -112,7 +113,7 @@ function SectionPulseOverlay({ pulseKey }) {
             initial={{ rotate: 0, scale: 0.7 }}
             animate={{ rotate: 30, scale: 1.25 }}
             transition={{ duration: 0.95, ease: 'easeOut' }}
-            className="absolute w-[54rem] h-[54rem] rounded-full bg-[radial-gradient(circle,rgba(123,44,255,0.18)_0%,rgba(123,44,255,0.10)_28%,rgba(212,175,55,0.08)_42%,transparent_72%)] blur-[24px]"
+            className="absolute w-[54rem] h-[54rem] rounded-full bg-[radial-gradient(circle,rgba(196,30,58,0.18)_0%,rgba(196,30,58,0.10)_28%,rgba(232,160,0,0.08)_42%,transparent_72%)] blur-[24px]"
           />
           <motion.div
             initial={{ opacity: 0.9, scaleX: 0.35, scaleY: 0.7 }}
@@ -124,13 +125,13 @@ function SectionPulseOverlay({ pulseKey }) {
             initial={{ opacity: 0.7, scale: 0.35 }}
             animate={{ opacity: 0, scale: 1.65 }}
             transition={{ duration: 0.9, ease: 'easeOut' }}
-            className="absolute w-[24rem] h-[24rem] rounded-full border border-[#67e8f9]/35"
+            className="absolute w-[24rem] h-[24rem] rounded-full border border-[#FFD700]/35"
           />
           <motion.div
             initial={{ opacity: 0.85, scale: 0.45 }}
             animate={{ opacity: 0, scale: 1.85 }}
             transition={{ duration: 0.95, ease: 'easeOut', delay: 0.04 }}
-            className="absolute w-[18rem] h-[18rem] rounded-full border border-[#9D00FF]/35"
+            className="absolute w-[18rem] h-[18rem] rounded-full border border-[#C41E3A]/35"
           />
         </motion.div>
       )}
@@ -168,7 +169,7 @@ function RouteTransitionOverlay({ transitionKey }) {
             initial={{ opacity: 0.8, scaleX: 0.12 }}
             animate={{ opacity: [0, 1, 0], scaleX: [0.12, 1.15, 1.45] }}
             transition={{ duration: 0.75, ease: 'easeOut' }}
-            className="absolute left-1/2 top-1/2 h-[2px] w-[88vw] max-w-[88rem] -translate-x-1/2 -translate-y-1/2 bg-[linear-gradient(90deg,transparent,rgba(103,232,249,0.95),rgba(212,175,55,0.85),rgba(123,44,255,0.9),transparent)] shadow-[0_0_30px_rgba(103,232,249,0.35)]"
+            className="absolute left-1/2 top-1/2 h-[2px] w-[88vw] max-w-[88rem] -translate-x-1/2 -translate-y-1/2 bg-[linear-gradient(90deg,transparent,rgba(255,215,0,0.95),rgba(232,160,0,0.85),rgba(196,30,58,0.9),transparent)] shadow-[0_0_30px_rgba(255,215,0,0.35)]"
           />
 
           {[0, 1, 2].map((index) => (
@@ -177,7 +178,7 @@ function RouteTransitionOverlay({ transitionKey }) {
               initial={{ opacity: 0, scale: 0.25 }}
               animate={{ opacity: [0, 0.75, 0], scale: [0.25, 1.1 + index * 0.25, 1.55 + index * 0.2] }}
               transition={{ duration: 0.82, delay: index * 0.04, ease: 'easeOut' }}
-              className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border ${index === 1 ? 'w-[26rem] h-[26rem] border-[#9D00FF]/28' : index === 2 ? 'w-[36rem] h-[36rem] border-[#67e8f9]/18' : 'w-[16rem] h-[16rem] border-[#7b2cff]/35'}`}
+              className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border ${index === 1 ? 'w-[26rem] h-[26rem] border-[#C41E3A]/28' : index === 2 ? 'w-[36rem] h-[36rem] border-[#FFD700]/18' : 'w-[16rem] h-[16rem] border-[#8B0000]/35'}`}
             />
           ))}
 
@@ -185,7 +186,7 @@ function RouteTransitionOverlay({ transitionKey }) {
             initial={{ opacity: 0.7 }}
             animate={{ opacity: [0, 0.5, 0] }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(123,44,255,0.14),rgba(103,232,249,0.06)_26%,transparent_62%)]"
+            className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(196,30,58,0.14),rgba(255,215,0,0.06)_26%,transparent_62%)]"
           />
         </motion.div>
       )}
@@ -309,26 +310,26 @@ export default function App() {
   return (
     <div className="bg-wakanda-dark min-h-screen text-slate-50 font-body overflow-x-hidden relative">
       <CircuitBoard />
-      {!isTouch && <ClawTransition trigger={clawTrigger} color="#7b2cff" />}
+      {!isTouch && <ClawTransition trigger={clawTrigger} color="#C41E3A" />}
       {!isTouch && <SectionPulseOverlay pulseKey={pulseKey} />}
       {!isTouch && <RouteTransitionOverlay transitionKey={routeTransitionKey} />}
       {!isTouch && (
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute -top-24 left-[8%] w-[28rem] h-[28rem] rounded-full bg-vibranium/10 blur-[150px] float-orb" />
-        <div className="absolute top-[22%] right-[5%] w-[24rem] h-[24rem] rounded-full bg-holo-cyan/7 blur-[150px] float-orb" style={{ animationDelay: '1.2s' }} />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[46rem] h-[20rem] rounded-full bg-vibranium-dark/10 blur-[170px]" />
-        <div className="absolute inset-0 mesh-fade opacity-10" />
-        <motion.div
-          animate={{ opacity: [0.16, 0.34, 0.16], scaleX: [0.94, 1.08, 0.94] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-[18%] left-1/2 h-[1px] w-[82vw] max-w-[78rem] -translate-x-1/2 bg-[linear-gradient(90deg,transparent,rgba(103,232,249,0.55),rgba(212,175,55,0.5),transparent)] blur-[0.5px]"
-        />
-        <motion.div
-          animate={{ opacity: [0.08, 0.22, 0.08], scaleX: [0.82, 1.06, 0.82] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
-          className="absolute bottom-[16%] left-1/2 h-[1px] w-[74vw] max-w-[70rem] -translate-x-1/2 bg-[linear-gradient(90deg,transparent,rgba(123,44,255,0.48),rgba(103,232,249,0.26),transparent)] blur-[0.5px]"
-        />
-      </div>
+        <div className="fixed inset-0 pointer-events-none z-0">
+          <div className="absolute -top-24 left-[8%] w-[28rem] h-[28rem] rounded-full bg-vibranium/10 blur-[150px] float-orb" />
+          <div className="absolute top-[22%] right-[5%] w-[24rem] h-[24rem] rounded-full bg-vibranium-gold/7 blur-[150px] float-orb" style={{ animationDelay: '1.2s' }} />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[46rem] h-[20rem] rounded-full bg-vibranium-dark/10 blur-[170px]" />
+          <div className="absolute inset-0 mesh-fade opacity-10" />
+          <motion.div
+            animate={{ opacity: [0.16, 0.34, 0.16], scaleX: [0.94, 1.08, 0.94] }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute top-[18%] left-1/2 h-[1px] w-[82vw] max-w-[78rem] -translate-x-1/2 bg-[linear-gradient(90deg,transparent,rgba(103,232,249,0.55),rgba(212,175,55,0.5),transparent)] blur-[0.5px]"
+          />
+          <motion.div
+            animate={{ opacity: [0.08, 0.22, 0.08], scaleX: [0.82, 1.06, 0.82] }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+            className="absolute bottom-[16%] left-1/2 h-[1px] w-[74vw] max-w-[70rem] -translate-x-1/2 bg-[linear-gradient(90deg,transparent,rgba(196,30,58,0.48),rgba(255,215,0,0.26),transparent)] blur-[0.5px]"
+          />
+        </div>
       )}
       <Navbar />
       {/* Custom Cursor */}
@@ -352,7 +353,7 @@ export default function App() {
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ repeat: Infinity, duration: 5, ease: 'linear' }}
-                className="absolute inset-0 rounded-full border-2 border-transparent border-t-holo-cyan border-r-vibranium opacity-80"
+                className="absolute inset-0 rounded-full border-2 border-transparent border-t-vibranium-gold border-r-vibranium opacity-80"
               />
               {/* Mid ring — gold + vibranium (Black Panther gold accent) */}
               <motion.div
@@ -362,7 +363,7 @@ export default function App() {
                 style={{
                   borderBottomColor: 'var(--vibranium)',
                   borderLeftColor: 'var(--vibranium-light)',
-                  boxShadow: '0 0 14px rgba(157,0,255,0.5)',
+                  boxShadow: '0 0 14px rgba(196, 30, 58,0.5)',
                 }}
               />
               {/* Inner ring — deep gold shimmer */}
@@ -370,13 +371,13 @@ export default function App() {
                 animate={{ rotate: 360 }}
                 transition={{ repeat: Infinity, duration: 14, ease: 'linear' }}
                 className="absolute inset-7 rounded-full border"
-                style={{ borderColor: 'rgba(157,0,255,0.35)' }}
+                style={{ borderColor: 'rgba(196, 30, 58,0.35)' }}
               />
               {/* Radial gold ambient glow behind the rings */}
               <div
                 className="absolute inset-0 rounded-full pointer-events-none"
                 style={{
-                  background: 'radial-gradient(circle, rgba(157,0,255,0.18), transparent 70%)',
+                  background: 'radial-gradient(circle, rgba(196, 30, 58,0.18), transparent 70%)',
                   filter: 'blur(2px)',
                 }}
               />
@@ -412,7 +413,7 @@ export default function App() {
               <motion.div
                 animate={{ x: ['100%', '-100%'] }}
                 transition={{ repeat: Infinity, duration: 1.8, ease: 'linear' }}
-                className="absolute inset-y-0 w-1/2 right-0 bg-gradient-to-r from-transparent via-holo-cyan to-transparent"
+                className="absolute inset-y-0 w-1/2 right-0 bg-gradient-to-r from-transparent via-vibranium-gold to-transparent"
               />
             </motion.div>
 
@@ -442,7 +443,8 @@ export default function App() {
         <Routes location={location} key={location.pathname}>
           <Route path="/technical" element={<RouteScene routeKey="technical"><Suspense fallback={null}><TechnicalEvents /></Suspense></RouteScene>} />
           <Route path="/non-technical" element={<RouteScene routeKey="non-technical"><Suspense fallback={null}><NonTechnicalEvents /></Suspense></RouteScene>} />
-          <Route path="/register/:eventId" element={<RouteScene routeKey="registration"><Suspense fallback={null}><EventRegistration /></Suspense></RouteScene>} />
+          <Route path="/register" element={<RouteScene routeKey="registration"><Suspense fallback={null}><SelectiveRegistration /></Suspense></RouteScene>} />
+          <Route path="/register/:eventId" element={<RouteScene routeKey="event-registration"><Suspense fallback={null}><EventRegistration /></Suspense></RouteScene>} />
           <Route path="/admin" element={<RouteScene routeKey="admin-login"><Suspense fallback={null}><AdminLogin /></Suspense></RouteScene>} />
           <Route path="/admin/dashboard" element={<RouteScene routeKey="admin-dashboard"><Suspense fallback={null}><AdminDashboard /></Suspense></RouteScene>} />
           <Route path="/" element={
@@ -506,8 +508,8 @@ export default function App() {
                 {/* ── Footer ───────────────────────────────────────────────────── */}
                 <footer className="section-shell relative border-t border-vibranium/10 bg-wakanda-dark overflow-hidden">
                   <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-vibranium/40 to-transparent" />
-                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(157,0,255,0.08),transparent_60%)] pointer-events-none" />
-                  <div className="absolute right-[10%] top-10 w-56 h-56 rounded-full bg-holo-cyan/6 blur-[110px] pointer-events-none" />
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(196, 30, 58,0.08),transparent_60%)] pointer-events-none" />
+                  <div className="absolute right-[10%] top-10 w-56 h-56 rounded-full bg-vibranium-gold/6 blur-[110px] pointer-events-none" />
                   <div className="absolute left-[8%] bottom-0 w-64 h-64 rounded-full bg-vibranium/8 blur-[120px] pointer-events-none" />
 
                   <div className="container mx-auto px-6 max-w-6xl relative z-10 pt-14 pb-8">
@@ -528,103 +530,103 @@ export default function App() {
                         Reserve Entry
                       </button>
                     </div>
-                {/* 4-column grid */}
+                    {/* 4-column grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-10 mb-8 md:mb-12">
 
-                  {/* Brand */}
-                  <div className="col-span-2 md:col-span-1 space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-vibranium/20 border border-vibranium/40 flex items-center justify-center shadow-vibranium-glow flex-shrink-0">
-                        <span className="font-heading font-black text-white text-sm">C</span>
-                      </div>
-                      <div>
-                        <div className="font-heading font-black text-white text-sm tracking-widest">CYSTECH</div>
-                        <div className="font-mono text-vibranium/50 text-[10px] tracking-[0.3em]">2K26</div>
-                      </div>
-                    </div>
-                    <p className="text-white/25 text-sm font-body leading-relaxed">
-                      Dept. of Computer Science — Annual Technology Symposium. Where innovation meets vision.
-                    </p>
-                    <div className="font-mono text-vibranium/30 text-[10px] tracking-widest uppercase">08 April 2026</div>
-                    <div className="flex items-center gap-2.5 pt-1">
-                      <SocialIcon href="#" label="GitHub">
-                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" /></svg>
-                      </SocialIcon>
-                      <SocialIcon href="#" label="Twitter / X">
-                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-                      </SocialIcon>
-                      <SocialIcon href="#" label="LinkedIn">
-                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
-                      </SocialIcon>
-                    </div>
-                  </div>
-
-                  {/* Quick Links */}
-                  <div className="space-y-4">
-                    <h4 className="font-mono text-white/50 text-[10px] tracking-[0.3em] uppercase">Navigate</h4>
-                    <ul className="space-y-2.5">
-                      {[
-                        { label: 'Events', href: '#events' },
-                        { label: 'Speakers', href: '#speakers' },
-                        { label: 'Schedule', href: '#schedule' },
-                        { label: 'Sponsors', href: '#sponsors' },
-                        { label: 'FAQ', href: '#faq' },
-                        { label: 'Register', href: '#events' },
-                      ].map(({ label, href }) => (
-                        <li key={href}>
-                          <a href={href} className="group flex items-center gap-1.5 text-white/25 text-sm font-body hover:text-vibranium-light transition-colors duration-200">
-                            <span className="w-0 group-hover:w-2.5 h-px bg-vibranium transition-all duration-300 rounded-full" />
-                            {label}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Events */}
-                  <div className="space-y-4">
-                    <h4 className="font-mono text-white/50 text-[10px] tracking-[0.3em] uppercase">Events</h4>
-                    <ul className="space-y-2.5">
-                      {[
-                        { label: 'All Events', href: '#events' },
-                        { label: 'Technical Events', href: '/technical' },
-                        { label: 'Non-Technical', href: '/non-technical' },
-                        { label: 'Debugging', href: '/technical' },
-                        { label: 'Cipher Vista', href: '/technical' },
-                        { label: 'E-Sports', href: '/non-technical' },
-                      ].map(({ label, href }) => (
-                        <li key={label}>
-                          <a href={href} className="group flex items-center gap-1.5 text-white/25 text-sm font-body hover:text-holo-cyan transition-colors duration-200">
-                            <span className="w-0 group-hover:w-2.5 h-px bg-holo-cyan transition-all duration-300 rounded-full" />
-                            {label}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Contact */}
-                  <div className="space-y-4">
-                    <h4 className="font-mono text-white/50 text-[10px] tracking-[0.3em] uppercase">Contact</h4>
-                    <ul className="space-y-3">
-                      {[
-                        { icon: '📍', text: 'Dhanalakshmi College of Engineering', sub: 'ECE Block (2nd Floor), Manimangalam' },
-                        { icon: '📅', text: '08 April 2026', sub: '9:00 AM to 3:30 PM' },
-                        { icon: '🧭', text: 'Dr. VPR Nagar, Manimangalam, Tambaram, Chennai-601301', sub: 'Campus address' },
-                        { icon: '📞', text: 'Mohammed Anish B · 9962675938', sub: 'Student organizer' },
-                      ].map(({ icon, text, sub }) => (
-                        <li key={text} className="flex items-start gap-2.5">
-                          <span className="text-sm mt-0.5">{icon}</span>
-                          <div>
-                            <p className="text-white/35 text-xs font-body">{text}</p>
-                            <p className="text-white/18 text-[10px] font-mono tracking-widest">{sub}</p>
+                      {/* Brand */}
+                      <div className="col-span-2 md:col-span-1 space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-vibranium/20 border border-vibranium/40 flex items-center justify-center shadow-vibranium-glow flex-shrink-0">
+                            <span className="font-heading font-black text-white text-sm">C</span>
                           </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                          <div>
+                            <div className="font-heading font-black text-white text-sm tracking-widest">CYSTECH</div>
+                            <div className="font-mono text-vibranium/50 text-[10px] tracking-[0.3em]">2K26</div>
+                          </div>
+                        </div>
+                        <p className="text-white/25 text-sm font-body leading-relaxed">
+                          Dept. of Computer Science — Annual Technology Symposium. Where innovation meets vision.
+                        </p>
+                        <div className="font-mono text-vibranium/30 text-[10px] tracking-widest uppercase">08 April 2026</div>
+                        <div className="flex items-center gap-2.5 pt-1">
+                          <SocialIcon href="#" label="GitHub">
+                            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" /></svg>
+                          </SocialIcon>
+                          <SocialIcon href="#" label="Twitter / X">
+                            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+                          </SocialIcon>
+                          <SocialIcon href="#" label="LinkedIn">
+                            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
+                          </SocialIcon>
+                        </div>
+                      </div>
 
-                </div>
+                      {/* Quick Links */}
+                      <div className="space-y-4">
+                        <h4 className="font-mono text-white/50 text-[10px] tracking-[0.3em] uppercase">Navigate</h4>
+                        <ul className="space-y-2.5">
+                          {[
+                            { label: 'Events', href: '#events' },
+                            { label: 'Speakers', href: '#speakers' },
+                            { label: 'Schedule', href: '#schedule' },
+                            { label: 'Sponsors', href: '#sponsors' },
+                            { label: 'FAQ', href: '#faq' },
+                            { label: 'Register', href: '#events' },
+                          ].map(({ label, href }) => (
+                            <li key={href}>
+                              <a href={href} className="group flex items-center gap-1.5 text-white/25 text-sm font-body hover:text-vibranium-light transition-colors duration-200">
+                                <span className="w-0 group-hover:w-2.5 h-px bg-vibranium transition-all duration-300 rounded-full" />
+                                {label}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Events */}
+                      <div className="space-y-4">
+                        <h4 className="font-mono text-white/50 text-[10px] tracking-[0.3em] uppercase">Events</h4>
+                        <ul className="space-y-2.5">
+                          {[
+                            { label: 'All Events', href: '#events' },
+                            { label: 'Technical Events', href: '/technical' },
+                            { label: 'Non-Technical', href: '/non-technical' },
+                            { label: 'Debugging', href: '/technical' },
+                            { label: 'Cipher Vista', href: '/technical' },
+                            { label: 'E-Sports', href: '/non-technical' },
+                          ].map(({ label, href }) => (
+                            <li key={label}>
+                              <a href={href} className="group flex items-center gap-1.5 text-white/25 text-sm font-body hover:text-vibranium-gold transition-colors duration-200">
+                                <span className="w-0 group-hover:w-2.5 h-px bg-vibranium-gold transition-all duration-300 rounded-full" />
+                                {label}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Contact */}
+                      <div className="space-y-4">
+                        <h4 className="font-mono text-white/50 text-[10px] tracking-[0.3em] uppercase">Contact</h4>
+                        <ul className="space-y-3">
+                          {[
+                            { icon: '📍', text: 'Dhanalakshmi College of Engineering', sub: 'ECE Block (2nd Floor), Manimangalam' },
+                            { icon: '📅', text: '08 April 2026', sub: '9:00 AM to 3:30 PM' },
+                            { icon: '🧭', text: 'Dr. VPR Nagar, Manimangalam, Tambaram, Chennai-601301', sub: 'Campus address' },
+                            { icon: '📞', text: 'Mohammed Anish B · 9962675938', sub: 'Student organizer' },
+                          ].map(({ icon, text, sub }) => (
+                            <li key={text} className="flex items-start gap-2.5">
+                              <span className="text-sm mt-0.5">{icon}</span>
+                              <div>
+                                <p className="text-white/35 text-xs font-body">{text}</p>
+                                <p className="text-white/18 text-[10px] font-mono tracking-widest">{sub}</p>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                    </div>
 
                     {/* Divider */}
                     <div className="h-px bg-gradient-to-r from-transparent via-vibranium/15 to-transparent mb-7" />

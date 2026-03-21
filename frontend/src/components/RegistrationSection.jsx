@@ -45,8 +45,8 @@ export default function RegistrationSection() {
       className="relative py-24 bg-wakanda-dark overflow-hidden"
     >
       {/* Background glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_35%_35%,rgba(100,0,150,0.18),transparent_60%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_80%,rgba(191,0,255,0.08),transparent_55%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_35%_35%,rgba(139,0,0,0.18),transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_80%,rgba(196,30,58,0.08),transparent_55%)]" />
       <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-vibranium-700/40 to-transparent" />
 
       <div className="relative z-10 container mx-auto px-6 max-w-5xl">
@@ -68,13 +68,13 @@ export default function RegistrationSection() {
               src="/cystech-logo.png"
               alt="CYSTECH2K26"
               className="w-20 object-contain"
-              style={{ filter: 'drop-shadow(0 0 14px rgba(191,0,255,0.65))' }}
+              style={{ filter: 'drop-shadow(0 0 14px rgba(196,30,58,0.65))' }}
             />
             <h2 className="font-orbitron font-black text-white" style={{ fontSize: 'clamp(1.9rem, 4.2vw, 3.6rem)' }}>
               Join{' '}
               <span
                 style={{
-                  background: 'linear-gradient(135deg, #bf00ff, #e040fb)',
+                  background: 'linear-gradient(135deg, #C41E3A, #FFD700)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -96,7 +96,7 @@ export default function RegistrationSection() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
           transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="holo-panel rounded-sm p-8 md:p-10"
-          style={{ border: '1px solid rgba(191,0,255,0.28)', boxShadow: '0 0 60px rgba(191,0,255,0.12)' }}
+          style={{ border: '1px solid rgba(196,30,58,0.28)', boxShadow: '0 0 60px rgba(196,30,58,0.12)' }}
         >
           {status === 'success' ? (
             <SuccessState />
@@ -161,7 +161,7 @@ function FormField({ label, name, value, onChange, placeholder, type = 'text' })
         placeholder={placeholder}
         required={name !== 'teamName'}
         className="w-full bg-transparent border border-vibranium-800/60 px-4 py-3 font-rajdhani text-white placeholder-white/20 focus:outline-none focus:border-vibranium-500 transition-colors duration-300 text-sm backdrop-blur-sm"
-        style={{ boxShadow: 'inset 0 0 10px rgba(191,0,255,0.05)' }}
+        style={{ boxShadow: 'inset 0 0 10px rgba(196,30,58,0.05)' }}
       />
     </div>
   )
@@ -177,7 +177,7 @@ function FormSelect({ label, name, value, onChange, options }) {
         onChange={onChange}
         required
         className="w-full bg-wakanda-black border border-vibranium-800/60 px-4 py-3 font-rajdhani text-white focus:outline-none focus:border-vibranium-500 transition-colors duration-300 text-sm"
-        style={{ boxShadow: 'inset 0 0 10px rgba(191,0,255,0.05)' }}
+        style={{ boxShadow: 'inset 0 0 10px rgba(196,30,58,0.05)' }}
       >
         <option value="">-- Select Event --</option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
@@ -198,7 +198,7 @@ function SuccessState() {
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
         className="w-24 h-24 rounded-full mx-auto flex items-center justify-center"
-        style={{ background: 'linear-gradient(135deg, #4a0080, #bf00ff)', boxShadow: '0 0 40px rgba(191,0,255,0.6)' }}
+        style={{ background: 'linear-gradient(135deg, #8B0000, #C41E3A)', boxShadow: '0 0 40px rgba(196,30,58,0.6)' }}
       >
         <span className="text-4xl">✓</span>
       </motion.div>

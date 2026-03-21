@@ -1,11 +1,11 @@
-﻿import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion';
 import { EVENT_DAY_SCHEDULE, SYMPOSIUM_INFO } from '../data/symposium';
 
 const SCHEDULE = EVENT_DAY_SCHEDULE;
 
 const TAG_COLORS = {
-  KEYNOTE: "text-holo-cyan border-holo-cyan/30 bg-holo-cyan/5",
+  KEYNOTE: "text-vibranium-gold border-vibranium-gold/30 bg-vibranium-gold/5",
   COMPETITION: "text-vibranium border-vibranium/30 bg-vibranium/5",
   WORKSHOP: "text-vibranium border-vibranium/30 bg-vibranium/5",
   LOGISTICS: "text-white/40 border-white/10 bg-white/5",
@@ -24,9 +24,9 @@ export default function Schedule() {
 
   return (
     <section id="schedule" ref={containerRef} className="section-shell py-16 md:py-32 bg-wakanda-dark text-slate-50 relative overflow-hidden">
-      <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#7b2cff]/20 to-transparent pointer-events-none" />
-      <div className="absolute -left-40 top-40 w-80 h-80 bg-[#7b2cff]/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute right-0 bottom-40 w-64 h-64 bg-[#67e8f9]/6 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C41E3A]/20 to-transparent pointer-events-none" />
+      <div className="absolute -left-40 top-40 w-80 h-80 bg-[#C41E3A]/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute right-0 bottom-40 w-64 h-64 bg-[#FFD700]/6 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute inset-0 mesh-fade opacity-[0.1] pointer-events-none" />
 
       <div className="container mx-auto px-6 max-w-5xl relative z-10">
@@ -36,27 +36,27 @@ export default function Schedule() {
           viewport={{ once: true }}
           className="mb-12 text-center flex flex-col items-center"
         >
-          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-[#7b2cff]/25 bg-[#090212]/65 backdrop-blur-xl mb-5 panel-sheen">
-            <span className="w-2 h-2 rounded-full bg-[#67e8f9] animate-pulse" />
-            <h2 className="text-sm font-mono tracking-[0.2em] text-[#d8b4fe] uppercase font-bold">Agenda</h2>
+          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-[#C41E3A]/25 bg-[#120400]/65 backdrop-blur-xl mb-5 panel-sheen">
+            <span className="w-2 h-2 rounded-full bg-[#FFD700] animate-pulse" />
+            <h2 className="text-sm font-mono tracking-[0.2em] text-[#E8A000] uppercase font-bold">Agenda</h2>
           </div>
           <h3 className="text-5xl md:text-7xl font-black font-heading tracking-tighter uppercase mb-8">
-            <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(90deg, #7b2cff 0%, #9D00FF 50%, #67e8f9 100%)' }}>Timeline</span>
+            <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(90deg, #C41E3A 0%, #C41E3A 50%, #FFD700 100%)' }}>Timeline</span>
           </h3>
 
-          <div className="panel-sheen rounded-[1.8rem] border border-white/8 bg-[#09020f]/72 px-8 py-4 flex flex-wrap gap-6 items-center justify-center text-sm mb-10 backdrop-blur-xl">
+          <div className="panel-sheen rounded-[1.8rem] border border-white/8 bg-[#120400]/72 px-8 py-4 flex flex-wrap gap-6 items-center justify-center text-sm mb-10 backdrop-blur-xl">
             <div className="flex items-center gap-2 text-white/50 font-mono text-xs tracking-widest">
-              <span className="text-[#67e8f9]">📍</span>
+              <span className="text-[#FFD700]">📍</span>
               <span>{SYMPOSIUM_INFO.venue}</span>
             </div>
-            <div className="w-px h-4 bg-[#7b2cff]/20 hidden sm:block" />
+            <div className="w-px h-4 bg-[#C41E3A]/20 hidden sm:block" />
             <div className="flex items-center gap-2 text-white/50 font-mono text-xs tracking-widest">
-              <span className="text-[#9D00FF]">📅</span>
+              <span className="text-[#C41E3A]">📅</span>
               <span>{SYMPOSIUM_INFO.dateDisplay}</span>
             </div>
-            <div className="w-px h-4 bg-[#7b2cff]/20 hidden sm:block" />
+            <div className="w-px h-4 bg-[#C41E3A]/20 hidden sm:block" />
             <div className="flex items-center gap-2 text-white/50 font-mono text-xs tracking-widest">
-              <span className="text-[#d8b4fe]">⏱</span>
+              <span className="text-[#FFD700]">⏱</span>
               <span>{SYMPOSIUM_INFO.time}</span>
             </div>
           </div>
@@ -72,7 +72,7 @@ export default function Schedule() {
                 {activeDay === day && (
                   <motion.span
                     layoutId="day-pill"
-                    className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,rgba(123,44,255,0.78),rgba(212,175,55,0.22))] shadow-[0_0_30px_rgba(123,44,255,0.24)]"
+                    className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,rgba(196,30,58,0.78),rgba(212,175,55,0.22))] shadow-[0_0_30px_rgba(196,30,58,0.24)]"
                     transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                   />
                 )}
@@ -94,7 +94,7 @@ export default function Schedule() {
             <div className="absolute left-[39px] md:left-1/2 top-0 bottom-0 w-[2px] bg-white/5 md:-translate-x-1/2">
               <motion.div
                 style={{ height: lineProgress }}
-                className="w-full bg-gradient-to-b from-[#7b2cff] via-[#9D00FF] to-[#67e8f9] shadow-[0_0_25px_rgba(123,44,255,0.5)]"
+                className="w-full bg-gradient-to-b from-[#C41E3A] via-[#C41E3A] to-[#FFD700] shadow-[0_0_25px_rgba(196,30,58,0.5)]"
               />
             </div>
 
@@ -108,16 +108,16 @@ export default function Schedule() {
                   transition={{ delay: i * 0.06, duration: 0.5 }}
                   className={`relative flex flex-col md:flex-row items-center justify-between group ${i % 2 === 0 ? 'md:flex-row-reverse' : ''}`}
                 >
-                  <div className="absolute left-[28px] md:left-1/2 w-6 h-6 rounded-full bg-wakanda-dark border-2 border-[#9D00FF] md:-translate-x-1/2 flex items-center justify-center group-hover:border-[#67e8f9] transition-colors z-10 shadow-[0_0_20px_rgba(212,175,55,0.18)]">
-                    <div className="w-2 h-2 rounded-full bg-[#9D00FF]/70 group-hover:bg-[#67e8f9] transition-colors shadow-[0_0_12px_rgba(212,175,55,0.42)] group-hover:shadow-[0_0_14px_rgba(103,232,249,0.45)]" />
+                  <div className="absolute left-[28px] md:left-1/2 w-6 h-6 rounded-full bg-wakanda-dark border-2 border-[#C41E3A] md:-translate-x-1/2 flex items-center justify-center group-hover:border-[#FFD700] transition-colors z-10 shadow-[0_0_20px_rgba(212,175,55,0.18)]">
+                    <div className="w-2 h-2 rounded-full bg-[#C41E3A]/70 group-hover:bg-[#FFD700] transition-colors shadow-[0_0_12px_rgba(212,175,55,0.42)] group-hover:shadow-[0_0_14px_rgba(103,232,249,0.45)]" />
                   </div>
 
                   <div className="w-full md:w-5/12 pl-20 md:pl-0 flex flex-col justify-center">
-                    <div className={`panel-sheen rounded-[1.8rem] border border-white/8 bg-[#09020f]/72 backdrop-blur-xl p-6 hover:border-[#9D00FF]/30 transition-all cursor-crosshair group-hover:-translate-y-1 ${i % 2 === 0 ? 'md:mr-8 md:text-right' : 'md:ml-8'}`}>
+                    <div className={`panel-sheen rounded-[1.8rem] border border-white/8 bg-[#120400]/72 backdrop-blur-xl p-6 hover:border-[#C41E3A]/30 transition-all cursor-crosshair group-hover:-translate-y-1 ${i % 2 === 0 ? 'md:mr-8 md:text-right' : 'md:ml-8'}`}>
                       <span className={`inline-block mb-2 font-mono text-[9px] tracking-[0.2em] uppercase border px-2 py-0.5 rounded-full ${TAG_COLORS[item.tag] ?? 'text-white/30 border-white/10'}`}>
                         {item.tag}
                       </span>
-                      <div className="text-3xl md:text-5xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-white/30 to-white/10 group-hover:from-[#9D00FF] group-hover:to-[#67e8f9] transition-all duration-500 mb-2">
+                      <div className="text-3xl md:text-5xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-white/30 to-white/10 group-hover:from-[#C41E3A] group-hover:to-[#FFD700] transition-all duration-500 mb-2">
                         {item.time}
                       </div>
                       <h4 className="text-xl font-bold font-heading tracking-tight mb-2 text-white/90 group-hover:text-white">

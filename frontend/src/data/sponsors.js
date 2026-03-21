@@ -3,7 +3,7 @@ export const SPONSOR_TIERS = [
     tier: 'Title Sponsor',
     color: 'from-vibranium-dark/25 to-vibranium/10',
     border: 'border-vibranium/60',
-    glow: 'shadow-[0_0_30px_rgba(157,0,255,0.7)] vibranium-glow',
+    glow: 'shadow-[0_0_30px_rgba(196, 30, 58,0.7)] vibranium-glow',
     text: 'bp-vibranium-text',
     sponsors: [],
   },
@@ -17,10 +17,10 @@ export const SPONSOR_TIERS = [
   },
   {
     tier: 'Silver Sponsors',
-    color: 'from-holo-cyan/10 to-holo-cyan/5',
-    border: 'border-holo-cyan/20',
-    glow: 'shadow-[0_0_20px_rgba(0,240,255,0.1)]',
-    text: 'text-holo-cyan',
+    color: 'from-vibranium-gold/10 to-vibranium-gold/5',
+    border: 'border-vibranium-gold/20',
+    glow: 'shadow-[0_0_20px_rgba(255, 215, 0,0.1)]',
+    text: 'text-vibranium-gold',
     sponsors: [],
   },
   {

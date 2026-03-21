@@ -24,7 +24,7 @@ function SponsorCard({ name, abbr, color, border, glow, text, delay }) {
 export default function Sponsors() {
   return (
     <section id="sponsors" className="relative py-16 md:py-28 bg-wakanda-dark overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(157,0,255,0.05),transparent_70%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(196, 30, 58,0.05),transparent_70%)] pointer-events-none" />
 
       <div className="container mx-auto px-6 max-w-5xl relative z-10">
         <motion.div
@@ -103,7 +103,7 @@ export default function Sponsors() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <a
                   href="mailto:sponsors@cystech.edu"
-                  className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-vibranium text-black font-bold font-mono text-xs tracking-widest uppercase hover:shadow-[0_0_30px_rgba(157,0,255,0.5)] transition-all duration-300 hover:scale-105"
+                  className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-vibranium text-black font-bold font-mono text-xs tracking-widest uppercase hover:shadow-[0_0_30px_rgba(196, 30, 58,0.5)] transition-all duration-300 hover:scale-105"
                 >
                   ✉ Contact Us
                 </a>

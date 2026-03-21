@@ -21,7 +21,7 @@ export default function ParticleField() {
       vy:    -Math.random() * 0.8 - 0.2,
       r:     Math.random() * 2 + 0.5,
       alpha: Math.random() * 0.8 + 0.2,
-      hue:   270 + Math.random() * 60,  // purple band
+      hue:   Math.random() > 0.5 ? (Math.random() * 15) : (35 + Math.random() * 15),  // red or gold band
       life:  Math.random(),
     }))
 
@@ -64,7 +64,7 @@ export default function ParticleField() {
               ctx.beginPath()
               ctx.moveTo(particles[i].x, particles[i].y)
               ctx.lineTo(particles[j].x, particles[j].y)
-              ctx.strokeStyle = `rgba(191, 0, 255, ${0.15 * (1 - dist / 100)})`
+              ctx.strokeStyle = `rgba(196, 30, 58, ${0.15 * (1 - dist / 100)})`
               ctx.lineWidth = 0.5
               ctx.stroke()
             }

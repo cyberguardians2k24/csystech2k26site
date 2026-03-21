@@ -9,6 +9,7 @@ export default function CustomCursor() {
   const dotRef = useRef(null);
   const ringRef = useRef(null);
   const auraRef = useRef(null);
+  const clawsRef = useRef(null);
   const [hovering, setHovering] = useState(false);
 
   // Smooth ring position
@@ -35,6 +36,7 @@ export default function CustomCursor() {
       if (e.target.closest('a, button, [data-hover]')) {
         ringRef.current?.classList.add('expanded');
         auraRef.current?.classList.add('expanded');
+        clawsRef.current?.classList.add('expanded');
         setHovering(true);
       }
     };
@@ -42,6 +44,7 @@ export default function CustomCursor() {
       if (e.target.closest('a, button, [data-hover]')) {
         ringRef.current?.classList.remove('expanded');
         auraRef.current?.classList.remove('expanded');
+        clawsRef.current?.classList.remove('expanded');
         setHovering(false);
       }
     };
@@ -71,12 +74,17 @@ export default function CustomCursor() {
         style={{ left: ringX, top: ringY }}
       />
       <motion.div
+        ref={clawsRef}
+        className="cursor-claws"
+        style={{ left: ringX, top: ringY }}
+      />
+      <motion.div
         className="cursor-label"
         animate={{ opacity: hovering ? 1 : 0, scale: hovering ? 1 : 0.86, y: hovering ? 0 : 6 }}
         transition={{ duration: 0.2 }}
         style={{ left: ringX, top: ringY }}
       >
-        TAP
+        CLAW
       </motion.div>
     </>
   );

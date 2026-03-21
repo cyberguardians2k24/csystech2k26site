@@ -1,12 +1,12 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { EVENT_STATS, NON_TECHNICAL_EVENTS } from '../data/events';
 import { SYMPOSIUM_INFO } from '../data/symposium';
 
 // ── Re-usable EventCard ────────────────────────────────────────────────────
 function EventCard({ event, index }) {
-  const [expanded, setExpanded] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
 
   return (
     <motion.div
@@ -14,11 +14,16 @@ function EventCard({ event, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.08 }}
-      className={`relative rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br ${event.color}/10 backdrop-blur-sm group hover:border-white/25 transition-all duration-500`}
+      className={`relative rounded-2xl overflow-hidden border border-white/10 backdrop-blur-sm group hover:border-white/20 hover:shadow-[0_0_28px_rgba(196,30,58,0.20)] transition-all duration-300 h-full`}
+      style={{ perspective: 1000, transformStyle: 'preserve-3d' }}
     >
-      <div className={`absolute inset-0 bg-gradient-to-br ${event.color} opacity-5 group-hover:opacity-10 transition-opacity duration-500`} />
-
-      <div className="relative z-10 p-6 flex flex-col h-full">
+      {/* Front Side */}
+      <motion.div
+        className="relative z-10 p-6 flex flex-col h-full w-full"
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        transition={{ duration: 0.6 }}
+        style={{ backfaceVisibility: 'hidden' }}
+      >
         <div className="flex items-start justify-between mb-4">
           <div>
             <span className="text-[10px] font-mono tracking-[0.25em] text-vibranium/80 uppercase">{event.tag}</span>
@@ -27,6 +32,19 @@ function EventCard({ event, index }) {
           </div>
           <span className="text-4xl ml-4 shrink-0">{event.icon}</span>
         </div>
+
+        {event.poster && (
+          <Link
+            to={`/register/${event.id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="mb-4 overflow-hidden rounded-xl border border-white/10 group/poster relative block"
+          >
+            <img src={event.poster} alt={`${event.title} poster`} className="w-full aspect-[4/3] object-cover object-top" loading="lazy" />
+            <motion.div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover/poster:opacity-100 transition-opacity duration-300">
+              <span className="text-white font-bold font-mono tracking-widest uppercase text-sm">Register Now ⚡</span>
+            </motion.div>
+          </Link>
+        )}
 
         <p className="text-white/60 text-sm leading-relaxed flex-1">{event.desc}</p>
 
@@ -48,74 +66,91 @@ function EventCard({ event, index }) {
             <p className="text-2xl font-heading font-black text-vibranium">{event.prize}</p>
           </div>
           <button
-            onClick={() => setExpanded((x) => !x)}
+            onClick={() => setIsFlipped(true)}
             className="text-xs px-4 py-2 rounded-full border border-vibranium/40 text-vibranium hover:bg-vibranium/20 transition-all duration-300 font-medium"
           >
-            {expanded ? 'Hide Rules ↑' : 'View Rules ↓'}
+            View Rules ↓
+          </button>
+        </div>
+      </motion.div>
+
+      {/* Back Side */}
+      <motion.div
+        className="absolute inset-0 p-6 flex flex-col w-full h-full rounded-2xl bg-gradient-to-br from-vibranium/5 to-vibranium/5 backdrop-blur-sm border border-white/10"
+        animate={{ rotateY: isFlipped ? 0 : 180 }}
+        transition={{ duration: 0.6 }}
+        style={{ backfaceVisibility: 'hidden' }}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="text-lg font-heading font-bold text-white">Event Details</h4>
+          <button
+            onClick={() => setIsFlipped(false)}
+            className="text-xs px-4 py-2 rounded-full border border-vibranium/40 text-vibranium hover:bg-vibranium/20 transition-all duration-300 font-medium"
+          >
+            ↑ Back
           </button>
         </div>
 
-        <AnimatePresence>
-          {expanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.35 }}
-              className="overflow-hidden"
-            >
-              <div className="mt-4 border-t border-white/10 pt-4 space-y-3">
-                <ul className="space-y-1.5">
-                  {event.rules.map((r, i) => (
-                    <li key={i} className="flex items-start gap-2 text-xs text-white/60">
-                      <span className="text-vibranium mt-0.5 shrink-0">›</span>
-                      {r}
-                    </li>
-                  ))}
-                </ul>
-                <div className="rounded-xl bg-white/5 border border-white/10 p-3 space-y-1 text-xs text-white/50">
-                  <p><span className="text-white/30">Venue:</span> {event.venue}</p>
-                  <p><span className="text-white/30">Date:</span> {event.date}</p>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { place: '1st', amount: event.firstPrize, color: 'text-vibranium border-vibranium/30' },
-                    { place: '2nd', amount: event.secondPrize, color: 'text-white/70 border-white/20' },
-                    { place: '3rd', amount: event.thirdPrize, color: 'text-vibranium-light border-vibranium-light/30' },
-                  ].map(({ place, amount, color }) => (
-                    <div key={place} className={`rounded-xl border p-2 text-center ${color} bg-white/[0.02]`}>
-                      <p className="text-[10px] opacity-60">{place} Place</p>
-                      <p className="font-bold text-sm">{amount}</p>
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <p className="text-[10px] font-mono tracking-widest text-white/30 uppercase mb-1">Coordinators</p>
-                  <div className="flex flex-wrap gap-2">
-                    {event.coordinators.map((c) => (
-                      <a
-                        key={c.phone}
-                        href={`tel:${c.phone}`}
-                        className="text-xs px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-vibranium hover:border-vibranium/30 transition-colors flex items-center gap-1.5"
-                      >
-                        <span>📞</span> {c.name}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-                {/* Register CTA */}
-                <Link
-                  to={`/register/${event.id}`}
-                  onClick={(e) => e.stopPropagation()}
-                  className="block w-full text-center py-3 rounded-full bg-vibranium/20 border border-vibranium/50 text-vibranium font-bold font-mono tracking-widest uppercase text-xs hover:bg-vibranium hover:text-white hover:shadow-[0_0_25px_rgba(157,0,255,0.4)] transition-all duration-300"
-                >
-                  Register Now ⚡
-                </Link>
+        <div className="flex-1 overflow-y-auto space-y-3">
+          {/* Rule list */}
+          <div>
+            <p className="text-[10px] font-mono tracking-widest text-white/50 uppercase mb-2">Rules</p>
+            <ul className="space-y-1.5">
+              {event.rules.map((r, i) => (
+                <li key={i} className="flex items-start gap-2 text-xs text-white/60">
+                  <span className="text-vibranium mt-0.5 shrink-0">›</span>
+                  {r}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Venue + date */}
+          <div className="rounded-xl bg-white/5 border border-white/10 p-3 space-y-1 text-xs text-white/50">
+            <p><span className="text-white/30">Venue:</span> {event.venue}</p>
+            <p><span className="text-white/30">Date:</span> {event.date}</p>
+          </div>
+
+          {/* Prize breakdown */}
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { place: '1st', amount: event.firstPrize, color: 'text-vibranium border-vibranium/30' },
+              { place: '2nd', amount: event.secondPrize, color: 'text-white/70 border-white/20' },
+              { place: '3rd', amount: event.thirdPrize, color: 'text-vibranium-light border-vibranium-light/30' },
+            ].map(({ place, amount, color }) => (
+              <div key={place} className={`rounded-xl border p-2 text-center ${color} bg-white/[0.02]`}>
+                <p className="text-[10px] opacity-60">{place} Place</p>
+                <p className="font-bold text-sm">{amount}</p>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+            ))}
+          </div>
+
+          {/* Coordinators */}
+          <div>
+            <p className="text-[10px] font-mono tracking-widest text-white/30 uppercase mb-1">Coordinators</p>
+            <div className="flex flex-wrap gap-2">
+              {event.coordinators.map((c) => (
+                <a
+                  key={c.phone}
+                  href={`tel:${c.phone}`}
+                  className="text-xs px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-vibranium hover:border-vibranium/30 transition-colors flex items-center gap-1.5"
+                >
+                  <span>📞</span> {c.name}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Register CTA */}
+          <Link
+            to={`/register/${event.id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="block w-full text-center py-3 rounded-full bg-vibranium/20 border border-vibranium/50 text-white font-bold font-mono tracking-widest uppercase text-xs hover:bg-vibranium hover:text-white hover:shadow-[0_0_25px_rgba(196, 30, 58,0.4)] transition-all duration-300 mt-4"
+          >
+            Register Now ⚡
+          </Link>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
@@ -194,7 +229,7 @@ export default function NonTechnicalEvents() {
           <h2 className="text-2xl font-heading font-bold text-white mb-4">Register for your event</h2>
           <Link
             to="/#events"
-            className="inline-block px-8 py-3 rounded-full bg-vibranium/20 border border-vibranium/50 text-vibranium font-medium hover:bg-vibranium hover:text-white hover:shadow-[0_0_20px_rgba(157,0,255,0.4)] transition-all duration-300"
+            className="inline-block px-8 py-3 rounded-full bg-vibranium/20 border border-vibranium/50 text-vibranium font-medium hover:bg-vibranium hover:text-white hover:shadow-[0_0_20px_rgba(196, 30, 58,0.4)] transition-all duration-300"
           >
             Register →
           </Link>

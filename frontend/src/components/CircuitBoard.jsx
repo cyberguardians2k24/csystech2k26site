@@ -5,43 +5,43 @@ const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: co
 /* ─── Static trace paths (edges + corners of viewport) ─────────────────── */
 const STATIC_TRACES = [
   // ── Left edge cluster ──
-  { d: 'M 0 160 H 90 V 290 H 170 V 380 H 90 V 490 H 0',         c: '#9D00FF' },
-  { d: 'M 170 290 H 250 V 230 H 320',                             c: '#9D00FF' },
-  { d: 'M 90 490 V 570 H 0',                                      c: '#00f0ff' },
-  { d: 'M 0 380 H 50',                                            c: '#00f0ff' },
-  { d: 'M 320 230 H 380 V 200',                                   c: '#9D00FF' },
+  { d: 'M 0 160 H 90 V 290 H 170 V 380 H 90 V 490 H 0',         c: '#C41E3A' },
+  { d: 'M 170 290 H 250 V 230 H 320',                             c: '#C41E3A' },
+  { d: 'M 90 490 V 570 H 0',                                      c: '#FFD700' },
+  { d: 'M 0 380 H 50',                                            c: '#FFD700' },
+  { d: 'M 320 230 H 380 V 200',                                   c: '#C41E3A' },
 
   // ── Top edge cluster ──
-  { d: 'M 360 0 V 75 H 510 V 28 H 670 V 75 H 820 V 0',           c: '#00f0ff' },
-  { d: 'M 510 75 V 130 H 430 V 170',                              c: '#9D00FF' },
-  { d: 'M 670 75 V 130 H 750 V 100',                              c: '#00f0ff' },
-  { d: 'M 510 28 V 0',                                            c: '#9D00FF' },
-  { d: 'M 670 28 V 0',                                            c: '#9D00FF' },
+  { d: 'M 360 0 V 75 H 510 V 28 H 670 V 75 H 820 V 0',           c: '#FFD700' },
+  { d: 'M 510 75 V 130 H 430 V 170',                              c: '#C41E3A' },
+  { d: 'M 670 75 V 130 H 750 V 100',                              c: '#FFD700' },
+  { d: 'M 510 28 V 0',                                            c: '#C41E3A' },
+  { d: 'M 670 28 V 0',                                            c: '#C41E3A' },
 
   // ── Right edge cluster ──
-  { d: 'M 1440 185 H 1350 V 315 H 1270 V 445 H 1350 V 575 H 1440', c: '#9D00FF' },
-  { d: 'M 1270 315 H 1195 V 265 H 1130',                          c: '#00f0ff' },
-  { d: 'M 1270 445 H 1185 V 495',                                  c: '#9D00FF' },
-  { d: 'M 1350 315 H 1440',                                        c: '#00f0ff' },
+  { d: 'M 1440 185 H 1350 V 315 H 1270 V 445 H 1350 V 575 H 1440', c: '#C41E3A' },
+  { d: 'M 1270 315 H 1195 V 265 H 1130',                          c: '#FFD700' },
+  { d: 'M 1270 445 H 1185 V 495',                                  c: '#C41E3A' },
+  { d: 'M 1350 315 H 1440',                                        c: '#FFD700' },
 
   // ── Bottom-left cluster ──
-  { d: 'M 270 900 V 825 H 390 V 760 H 525 V 825 H 710 V 900',    c: '#00f0ff' },
-  { d: 'M 390 760 H 450 V 715 H 555',                             c: '#9D00FF' },
-  { d: 'M 270 825 H 200 V 860',                                   c: '#9D00FF' },
+  { d: 'M 270 900 V 825 H 390 V 760 H 525 V 825 H 710 V 900',    c: '#FFD700' },
+  { d: 'M 390 760 H 450 V 715 H 555',                             c: '#C41E3A' },
+  { d: 'M 270 825 H 200 V 860',                                   c: '#C41E3A' },
 
   // ── Bottom-right cluster ──
-  { d: 'M 910 900 V 840 H 1030 V 778 H 1130 V 840 H 1210 V 900', c: '#9D00FF' },
-  { d: 'M 1030 778 H 1085 V 735 H 1210 V 755',                   c: '#00f0ff' },
-  { d: 'M 910 840 H 850 V 870',                                   c: '#00f0ff' },
+  { d: 'M 910 900 V 840 H 1030 V 778 H 1130 V 840 H 1210 V 900', c: '#C41E3A' },
+  { d: 'M 1030 778 H 1085 V 735 H 1210 V 755',                   c: '#FFD700' },
+  { d: 'M 910 840 H 850 V 870',                                   c: '#FFD700' },
 ];
 
 /* ─── Animated signal paths ─────────────────────────────────────────────── */
 const SIGNAL_TRACES = [
-  { d: 'M 0 160 H 90 V 290 H 170 V 380 H 90 V 490 H 0',          dur: '6s',   begin: '0s',    c: '#9D00FF' },
-  { d: 'M 360 0 V 75 H 510 V 28 H 670 V 75 H 820 V 0',           dur: '5.5s', begin: '1.2s',  c: '#00f0ff' },
-  { d: 'M 1440 185 H 1350 V 315 H 1270 V 445 H 1350 V 575 H 1440', dur: '7s', begin: '0.6s',  c: '#9D00FF' },
-  { d: 'M 270 900 V 825 H 390 V 760 H 525 V 825 H 710 V 900',    dur: '5s',   begin: '2.0s',  c: '#00f0ff' },
-  { d: 'M 910 900 V 840 H 1030 V 778 H 1130 V 840 H 1210 V 900', dur: '4.8s', begin: '1.5s',  c: '#B44FFF' },
+  { d: 'M 0 160 H 90 V 290 H 170 V 380 H 90 V 490 H 0',          dur: '6s',   begin: '0s',    c: '#C41E3A' },
+  { d: 'M 360 0 V 75 H 510 V 28 H 670 V 75 H 820 V 0',           dur: '5.5s', begin: '1.2s',  c: '#FFD700' },
+  { d: 'M 1440 185 H 1350 V 315 H 1270 V 445 H 1350 V 575 H 1440', dur: '7s', begin: '0.6s',  c: '#C41E3A' },
+  { d: 'M 270 900 V 825 H 390 V 760 H 525 V 825 H 710 V 900',    dur: '5s',   begin: '2.0s',  c: '#FFD700' },
+  { d: 'M 910 900 V 840 H 1030 V 778 H 1130 V 840 H 1210 V 900', dur: '4.8s', begin: '1.5s',  c: '#FF9EBB' },
 ];
 
 /* ─── Junction node dots (every corner / bend) ─────────────────────────── */
@@ -128,7 +128,7 @@ export default function CircuitBoard() {
           <circle
             key={i}
             cx={cx} cy={cy} r={2.8}
-            fill={i % 3 === 0 ? '#00f0ff' : '#9D00FF'}
+            fill={i % 3 === 0 ? '#FFD700' : '#C41E3A'}
             opacity={0.9}
             filter="url(#cb-node-glow)"
           />
@@ -140,7 +140,7 @@ export default function CircuitBoard() {
             key={i}
             x={x} y={y}
             width={4} height={4}
-            fill={i % 2 === 0 ? '#9D00FF' : '#00f0ff'}
+            fill={i % 2 === 0 ? '#C41E3A' : '#FFD700'}
             opacity={0.75}
           />
         ))}

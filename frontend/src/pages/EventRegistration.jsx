@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ALL_EVENTS, CATEGORY_META } from '../data/events';
@@ -20,8 +20,7 @@ function InputField({ label, id, type = 'text', placeholder, value, onChange, re
         onChange={onChange}
         required={required}
         autoCapitalize={isEmail ? 'none' : undefined}
-        spellCheck={isEmail ? false : undefined}
-        className={`w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-vibranium/60 focus:bg-vibranium/5 focus:shadow-[0_0_16px_rgba(157,0,255,0.15)] transition-all duration-300 ${isEmail ? 'font-sans normal-case lowercase tracking-normal' : 'font-body'}`}
+        className={`w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-vibranium/60 focus:bg-vibranium/5 focus:shadow-[0_0_16px_rgba(196,30,58,0.15)] transition-all duration-300 ${isEmail ? 'font-sans normal-case lowercase tracking-normal' : 'font-body'}`}
       />
     </div>
   );
@@ -76,17 +75,26 @@ export default function EventRegistration() {
   const navigate = useNavigate();
   const event = ALL_EVENTS.find((e) => e.id === eventId);
 
+  const SEPARATE_EVENT_PRICES = {
+    kabaddi: 599,
+    'arena-bgmi': 300,
+    'arena-free-fire': 300,
+    'short-film': 300,
+  };
+
   const [form, setForm] = useState({
     name: '', email: '', phone: '', college: '', department: '', yearOfStudy: '', teamName: '', notes: '',
   });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [emailSent, setEmailSent] = useState(null);
   const [error, setError] = useState('');
   const [expandRules, setExpandRules] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState('');
   const [paymentFile, setPaymentFile] = useState(null);
   const [paymentFileName, setPaymentFileName] = useState('');
   const [paymentRef, setPaymentRef] = useState('');
+  const [teamMembers, setTeamMembers] = useState(['', '', '']);
 
   if (!event) {
     return (
@@ -98,9 +106,18 @@ export default function EventRegistration() {
     );
   }
 
+  const isSeparateTeamEvent = Object.prototype.hasOwnProperty.call(SEPARATE_EVENT_PRICES, event.id);
+  const effectiveRegistrationType = isSeparateTeamEvent ? 'team' : 'solo';
+  const effectiveRegistrationPrice = SEPARATE_EVENT_PRICES[event.id] ?? 149;
+
   const set = (key) => (e) => {
     const value = key === 'email' ? e.target.value.toLowerCase() : e.target.value;
     setForm((f) => ({ ...f, [key]: value }));
+  };
+
+  const setTeamMember = (index) => (e) => {
+    const value = e.target.value;
+    setTeamMembers((prev) => prev.map((member, i) => (i === index ? value : member)));
   };
 
   const handlePaymentUpload = async (e) => {
@@ -128,6 +145,7 @@ export default function EventRegistration() {
     setError('');
     const normalizedEmail = form.email.trim().toLowerCase();
     const normalizedPaymentRef = paymentRef.trim();
+    const normalizedTeamMembers = teamMembers.map((name) => name.trim()).filter(Boolean).slice(0, 3);
     if (!normalizedEmail) {
       setError('Please enter your email address.');
       return;
@@ -161,17 +179,20 @@ export default function EventRegistration() {
         throw new Error('Failed to upload payment screenshot to storage.');
       }
 
-      await api.register({
+      const result = await api.register({
         name:     form.name,
         email:    normalizedEmail,
         phone:    form.phone,
         college:  form.college,
         teamName: form.teamName || undefined,
+        teamMembers: isSeparateTeamEvent ? normalizedTeamMembers : undefined,
         event:    event.id,
+        registrationType: effectiveRegistrationType,
         notes:    [form.department, form.yearOfStudy ? `Year ${form.yearOfStudy}` : '', form.notes].filter(Boolean).join(' | ') || undefined,
         paymentScreenshot: signed.storageUrl,
         paymentRef: normalizedPaymentRef,
       });
+      setEmailSent(Boolean(result?.emailSent));
       setSubmitted(true);
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
@@ -187,8 +208,8 @@ export default function EventRegistration() {
       {/* Scanlines */}
       <div className="fixed inset-0 scanlines opacity-5 pointer-events-none z-0" />
       {/* Background glows */}
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(157,0,255,0.12),transparent_60%)] pointer-events-none z-0" />
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_70%_80%,rgba(0,240,255,0.06),transparent_60%)] pointer-events-none z-0" />
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(196,30,58,0.12),transparent_60%)] pointer-events-none z-0" />
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_70%_80%,rgba(255,215,0,0.06),transparent_60%)] pointer-events-none z-0" />
 
       <div className="relative z-10 flex items-center justify-between px-6 py-3 border-b border-vibranium/10 mt-24">
         <div className="flex items-center gap-2 font-mono text-xs text-white/30 tracking-widest uppercase">
@@ -232,6 +253,11 @@ export default function EventRegistration() {
                   <p className="text-vibranium-light/70 font-mono text-xs tracking-widest mt-0.5 italic">{event.tagline}</p>
                 </div>
               </div>
+              {event.poster && (
+                <div className="mb-4 overflow-hidden rounded-2xl border border-white/10 bg-black/20">
+                  <img src={event.poster} alt={`${event.title} poster`} className="h-56 w-full object-cover" loading="lazy" />
+                </div>
+              )}
               <p className="text-white/55 text-sm font-body leading-relaxed">{event.desc}</p>
             </div>
           </div>
@@ -288,7 +314,7 @@ export default function EventRegistration() {
                 >
                   {event.rules.map((r, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-white/55">
-                      <span className="text-holo-cyan shrink-0 mt-0.5">›</span>
+                      <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
                       {r}
                     </li>
                   ))}
@@ -305,7 +331,7 @@ export default function EventRegistration() {
                 <a
                   key={c.phone}
                   href={`tel:${c.phone}`}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 text-sm text-white/60 hover:text-holo-cyan hover:border-holo-cyan/30 transition-all duration-200"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 text-sm text-white/60 hover:text-vibranium-gold hover:border-vibranium-gold/30 transition-all duration-200"
                 >
                   <span>📞</span>
                   <span>{c.name}</span>
@@ -324,10 +350,10 @@ export default function EventRegistration() {
         >
           <div className="holographic-panel p-7 md:p-10 border-vibranium/25 shadow-vibranium-glow relative overflow-hidden sticky top-6">
             {/* Corner brackets */}
-            <span className="absolute top-5 left-5 w-6 h-6 border-t-2 border-l-2 border-holo-cyan/40" />
-            <span className="absolute top-5 right-5 w-6 h-6 border-t-2 border-r-2 border-holo-cyan/40" />
-            <span className="absolute bottom-5 left-5 w-6 h-6 border-b-2 border-l-2 border-holo-cyan/40" />
-            <span className="absolute bottom-5 right-5 w-6 h-6 border-b-2 border-r-2 border-holo-cyan/40" />
+            <span className="absolute top-5 left-5 w-6 h-6 border-t-2 border-l-2 border-vibranium-gold/40" />
+            <span className="absolute top-5 right-5 w-6 h-6 border-t-2 border-r-2 border-vibranium-gold/40" />
+            <span className="absolute bottom-5 left-5 w-6 h-6 border-b-2 border-l-2 border-vibranium-gold/40" />
+            <span className="absolute bottom-5 right-5 w-6 h-6 border-b-2 border-r-2 border-vibranium-gold/40" />
 
             <AnimatePresence mode="wait">
               {submitted ? (
@@ -343,7 +369,7 @@ export default function EventRegistration() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
-                    className="w-20 h-20 rounded-full border-2 border-holo-cyan shadow-[0_0_40px_rgba(0,240,255,0.35)] flex items-center justify-center text-4xl bg-holo-cyan/10"
+                    className="w-20 h-20 rounded-full border-2 border-vibranium-gold shadow-[0_0_40px_rgba(255,215,0,0.35)] flex items-center justify-center text-4xl bg-vibranium-gold/10"
                   >
                     ✓
                   </motion.div>
@@ -353,7 +379,7 @@ export default function EventRegistration() {
                     <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-vibranium/70 mb-1">Registration Received</p>
                     <h3 className="text-3xl font-black font-heading text-white mb-2">You're Registered!</h3>
                     <p className="text-white/45 font-mono text-sm max-w-sm">
-                      Your spot for <span className="text-holo-cyan font-bold">{event.title}</span> has been reserved.
+                      Your spot for <span className="text-vibranium-gold font-bold">{event.title}</span> has been reserved.
                     </p>
                   </div>
 
@@ -374,6 +400,11 @@ export default function EventRegistration() {
                     <p className="mt-3 text-white/35 font-mono text-[11px] text-left leading-relaxed">
                       Important: If any fake/edited payment proof is submitted, the registration will be cancelled.
                     </p>
+                    {emailSent === false && (
+                      <p className="mt-3 text-red-300/85 font-mono text-[11px] text-left leading-relaxed">
+                        Registration saved, but confirmation email could not be sent right now. Please contact organizers if you do not receive an email.
+                      </p>
+                    )}
                   </motion.div>
 
                   {/* What Happens Next Steps */}
@@ -433,15 +464,35 @@ export default function EventRegistration() {
                     <p className="text-white/30 font-mono text-[10px] tracking-widest mt-1 uppercase">08 April 2026 · Payment verification required</p>
                   </div>
 
-                  <div className="rounded-[1.6rem] border border-vibranium/20 bg-[linear-gradient(180deg,rgba(157,0,255,0.08),rgba(255,255,255,0.02))] p-5">
+                  {isSeparateTeamEvent ? (
+                    <div className="rounded-[1.6rem] border border-vibranium/20 bg-[linear-gradient(180deg,rgba(196,30,58,0.08),rgba(255,255,255,0.02))] p-5">
+                      <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-vibranium/80 mb-2">Separate Team Registration</p>
+                      <div className="flex items-center justify-between rounded-2xl border border-white/15 bg-white/[0.03] px-4 py-3">
+                        <p className="font-heading font-bold text-white">Team Registration</p>
+                        <p className="font-heading font-black text-vibranium text-xl">₹ {effectiveRegistrationPrice}</p>
+                      </div>
+                      <p className="mt-3 text-xs text-white/45">This event is registered separately and cannot be bundled with the general pass.</p>
+                    </div>
+                  ) : (
+                    <div className="rounded-[1.6rem] border border-vibranium/20 bg-[linear-gradient(180deg,rgba(196,30,58,0.08),rgba(255,255,255,0.02))] p-5">
+                      <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-vibranium/80 mb-2">Registration Fee</p>
+                      <div className="flex items-center justify-between rounded-2xl border border-white/15 bg-white/[0.03] px-4 py-3">
+                        <p className="font-heading font-bold text-white">Solo Registration</p>
+                        <p className="font-heading font-black text-vibranium text-xl">₹ 149</p>
+                      </div>
+                      <p className="mt-3 text-xs text-white/45">Team registration is available only for Kabaddi.</p>
+                    </div>
+                  )}
+
+                  <div className="rounded-[1.6rem] border border-vibranium/20 bg-[linear-gradient(180deg,rgba(196,30,58,0.08),rgba(255,255,255,0.02))] p-5">
                     <div className="mb-4 flex items-center justify-between gap-4">
                       <div>
                         <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-vibranium/80">Payment Step</p>
-                        <h3 className="mt-2 font-heading text-lg font-black text-white">Scan and pay before submitting</h3>
+                        <h3 className="mt-2 font-heading text-lg font-black text-white">Scan and pay <span className="text-vibranium">₹ {effectiveRegistrationPrice}</span></h3>
                         <p className="mt-1 text-sm text-white/45">Use the payment QR below, then upload your payment screenshot for admin verification.</p>
                       </div>
                       <div className="hidden rounded-2xl border border-vibranium/25 bg-vibranium/10 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.2em] text-vibranium sm:block">
-                        Payment Proof Required
+                        ₹ {effectiveRegistrationPrice}
                       </div>
                     </div>
 
@@ -488,9 +539,30 @@ export default function EventRegistration() {
                     />
                   </div>
 
-                  {/* Team name — only if teamSize allows teams */}
-                  {event.teamSize !== '1' && (
+                  {/* Team name — for separate team registrations */}
+                  {isSeparateTeamEvent && (
                     <InputField label={`Team Name (optional — ${event.teamSize} members max)`} id="reg-team" placeholder="Team name" value={form.teamName} onChange={set('teamName')} />
+                  )}
+
+                  {isSeparateTeamEvent && (
+                    <div className="rounded-2xl border border-vibranium/15 bg-vibranium/[0.04] p-4 space-y-3">
+                      <div>
+                        <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-vibranium/70">Team Members</p>
+                        <p className="text-xs text-white/45 mt-1">Add up to 3 team member names.</p>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {[0, 1, 2].map((index) => (
+                          <InputField
+                            key={index}
+                            label={`Member ${index + 1}`}
+                            id={`reg-member-${index + 1}`}
+                            placeholder={`Team member ${index + 1} name`}
+                            value={teamMembers[index]}
+                            onChange={setTeamMember(index)}
+                          />
+                        ))}
+                      </div>
+                    </div>
                   )}
 
                   <InputField label="Additional Notes" id="reg-notes" placeholder="Anything we should know?" value={form.notes} onChange={set('notes')} />
@@ -523,7 +595,7 @@ export default function EventRegistration() {
                     disabled={loading}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
-                    className="w-full py-4 rounded-full bg-vibranium disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold font-heading tracking-widest uppercase text-sm shadow-vibranium-glow hover:shadow-[0_0_50px_rgba(157,0,255,0.6)] transition-all duration-300 flex items-center justify-center gap-2"
+                    className="w-full py-4 rounded-full bg-vibranium disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold font-heading tracking-widest uppercase text-sm shadow-vibranium-glow hover:shadow-[0_0_50px_rgba(196,30,58,0.6)] transition-all duration-300 flex items-center justify-center gap-2"
                   >
                     {loading ? (
                       <>
@@ -535,12 +607,12 @@ export default function EventRegistration() {
                         Registering…
                       </>
                     ) : (
-                      <>Confirm Registration<span className="text-holo-cyan">⚡</span></>
+                      <>Confirm Registration<span className="text-vibranium-gold">⚡</span></>
                     )}
                   </motion.button>
 
                   <p className="text-center text-white/20 font-mono text-[9px] tracking-widest uppercase">
-                    One registration per email per event · Confirmation happens after admin verifies payment
+                    One registration per email per event · Separate checkout applies for premium events · Confirmation after payment verification
                   </p>
                 </motion.form>
               )}

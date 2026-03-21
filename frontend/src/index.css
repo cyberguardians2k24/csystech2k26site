@@ -16,16 +16,24 @@
 
 /* ─── Root Variables ───────────────────────────────────────────────────── */
 :root {
-  --vibranium: #9D00FF;
-  --vibranium-light: #B44FFF;
-  --vibranium-dark: #6B00BE;
-  --holo-cyan: #00f0ff;
-  --wakanda-dark: #030005;
-  /* ── Vibranium purple palette ── */
-  --kinetic-gold:        #9D00FF;   /* remapped to vibranium purple */
-  --kinetic-gold-bright: #B44FFF;   /* remapped to vibranium light */
-  --kinetic-gold-deep:   #6B00BE;   /* remapped to vibranium dark */
-  --kinetic-gold-warm:   #9D00FF;   /* remapped to vibranium */
+  /* ── Core Crimson (matches logo base glow) ── */
+  --vibranium: #C41E3A;
+  --vibranium-light: #FF8C42;
+  --vibranium-dark: #8B0000;
+  --vibranium-darker: #5a0000;
+  
+  /* ── Molten Gold (matches logo lettering) ── */
+  --vibranium-gold: #FFD700;
+  --gold-bright: #FFD700;
+  --gold-default: #E8A000;
+  --gold-deep: #B8730A;
+  --gold-dark: #7a4800;
+  --gold-ember: #C45000;
+  
+  /* ── Dark Burnt Background (matches logo bg) ── */
+  --wakanda-dark: #120400;
+  --wakanda-darker: #0a0200;
+  --wakanda-mid: #1e0800;
 }
 
 /* ─── Base Reset ────────────────────────────────────────────────────────── */
@@ -44,19 +52,22 @@ html {
 
 body {
   background-color: var(--wakanda-dark);
-  color: #ffffff;
-  font-family: 'Panthera', sans-serif;
+  color: #e8d5b0;  /* warm parchment white matching gold logo */
+  font-family: 'Rajdhani', sans-serif;
   overflow-x: hidden;
-  cursor: none;          /* hidden on desktop — custom cursor used */
+  cursor: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Prevent tap-highlight on mobile */
   -webkit-tap-highlight-color: transparent;
   background-image:
-    radial-gradient(circle at 15% 20%, rgba(157, 0, 255, 0.10), transparent 26%),
-    radial-gradient(circle at 85% 18%, rgba(0, 240, 255, 0.08), transparent 24%),
-    radial-gradient(circle at 50% 100%, rgba(107, 0, 190, 0.12), transparent 38%),
-    linear-gradient(180deg, rgba(1, 0, 2, 0.92) 0%, rgba(3, 0, 5, 1) 100%);
+    /* Deep burnt ember center glow */
+    radial-gradient(ellipse at 50% 100%, rgba(196, 80, 0, 0.18), transparent 55%),
+    radial-gradient(circle at 15% 20%, rgba(196, 30, 58, 0.14), transparent 30%),
+    radial-gradient(circle at 85% 18%, rgba(232, 160, 0, 0.10), transparent 28%),
+    radial-gradient(circle at 50% 100%, rgba(139, 0, 0, 0.18), transparent 42%),
+    /* Subtle floor-fire bounce from logo */
+    radial-gradient(ellipse at 50% 120%, rgba(184, 115, 10, 0.12), transparent 50%),
+    linear-gradient(180deg, #120400 0%, #0a0200 100%);
 }
 
 /* Admin dashboard uses normal cursor instead of the custom hidden cursor system. */
@@ -79,16 +90,18 @@ body::before {
   inset: 0;
   pointer-events: none;
   z-index: -1;
+  /* Fine diagonal circuit-board lines echoing the logo's metallic texture */
   background:
-    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
-  background-size: 60px 60px;
-  mask-image: radial-gradient(circle at center, black 42%, transparent 90%);
-  opacity: 0.28;
+    linear-gradient(rgba(184, 115, 10, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184, 115, 10, 0.018) 1px, transparent 1px),
+    linear-gradient(45deg, rgba(196, 30, 58, 0.012) 1px, transparent 1px);
+  background-size: 60px 60px, 60px 60px, 86px 86px;
+  mask-image: radial-gradient(ellipse at center, black 35%, transparent 85%);
+  opacity: 0.55;
 }
 
 ::selection {
-  background: rgba(157, 0, 255, 0.35);
+  background: rgba(196, 30, 58, 0.35);
   color: #ffffff;
 }
 
@@ -99,13 +112,9 @@ body::before {
   }
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: 'Panthera', sans-serif;
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  color: var(--gold-default, #E8A000);
 }
 
 /* ─── Scroll Progress Bar ──────────────────────────────────────────────── */
@@ -115,7 +124,7 @@ h6 {
   left: 0;
   height: 2px;
   background: linear-gradient(90deg, var(--vibranium-dark), var(--vibranium-light), var(--vibranium));
-  box-shadow: 0 0 10px var(--vibranium), 0 0 20px var(--holo-cyan);
+  box-shadow: 0 0 10px var(--vibranium), 0 0 20px var(--vibranium-gold);
   z-index: 9999;
   transform-origin: left;
   width: 100%;
@@ -125,7 +134,7 @@ h6 {
 .cursor-dot {
   width: 6px;
   height: 6px;
-  background: var(--holo-cyan);
+  background: var(--vibranium-gold);
   border-radius: 50%;
   position: fixed;
   top: 0;
@@ -134,7 +143,7 @@ h6 {
   transform: translate(-50%, -50%);
   z-index: 9999;
   transition: transform 0.1s ease, background 0.2s ease;
-  box-shadow: 0 0 8px var(--holo-cyan), 0 0 16px var(--vibranium);
+  box-shadow: 0 0 8px var(--vibranium-gold), 0 0 16px var(--vibranium);
   mix-blend-mode: screen;
 }
 
@@ -148,7 +157,7 @@ h6 {
   transform: translate(-50%, -50%);
   z-index: 9997;
   border-radius: 9999px;
-  background: radial-gradient(circle, rgba(103,232,249,0.18) 0%, rgba(157,0,255,0.10) 34%, rgba(123,44,255,0.05) 58%, transparent 74%);
+  background: radial-gradient(circle, rgba(255,215,0,0.18) 0%, rgba(196,30,58,0.10) 34%, rgba(139,0,0,0.05) 58%, transparent 74%);
   filter: blur(10px);
   opacity: 0.95;
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease;
@@ -164,7 +173,8 @@ h6 {
 @media (hover: none), (pointer: coarse) {
   .cursor-aura,
   .cursor-dot,
-  .cursor-ring {
+  .cursor-ring,
+  .cursor-claws {
     display: none !important;
   }
 }
@@ -172,7 +182,7 @@ h6 {
 .cursor-ring {
   width: 36px;
   height: 36px;
-  border: 1px solid rgba(0, 240, 255, 0.5);
+  border: 1px solid rgba(255, 215, 0, 0.5);
   border-radius: 50%;
   position: fixed;
   top: 0;
@@ -186,10 +196,32 @@ h6 {
 .cursor-ring.expanded {
   width: 60px;
   height: 60px;
-  border-color: rgba(157, 0, 255, 0.8);
-  background: rgba(157, 0, 255, 0.08);
+  border-color: rgba(196, 30, 58, 0.8);
+  background: rgba(196, 30, 58, 0.08);
   backdrop-filter: blur(2px);
-  box-shadow: 0 0 24px rgba(157,0,255,0.34), 0 0 50px rgba(103,232,249,0.12);
+  box-shadow: 0 0 24px rgba(196,30,58,0.34), 0 0 50px rgba(255,215,0,0.12);
+}
+
+.cursor-claws {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  opacity: 0.6;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196,30,58,0.35) 0%, rgba(255,215,0,0.15) 40%, transparent 70%);
+  filter: blur(6px) drop-shadow(0 0 8px rgba(196, 30, 58, 0.45));
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease, filter 0.2s ease;
+}
+
+.cursor-claws.expanded {
+  transform: translate(-50%, -50%) scale(1.4);
+  opacity: 1;
+  filter: blur(8px) drop-shadow(0 0 16px rgba(196, 30, 58, 0.65)) drop-shadow(0 0 20px rgba(255, 215, 0, 0.35));
 }
 
 .cursor-label {
@@ -201,26 +233,26 @@ h6 {
   z-index: 9999;
   padding: 0.32rem 0.55rem;
   border-radius: 9999px;
-  border: 1px solid rgba(157,0,255,0.28);
-  background: rgba(5, 4, 10, 0.72);
-  color: rgba(180, 79, 255, 0.92);
-  font-family: 'Panthera', sans-serif;
+  border: 1px solid rgba(196,30,58,0.28);
+  background: rgba(15, 5, 5, 0.72);
+  color: rgba(255, 190, 100, 0.92);
+  font-family: 'Rajdhani', sans-serif;
   font-size: 9px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   backdrop-filter: blur(10px);
-  box-shadow: 0 0 20px rgba(157,0,255,0.12);
+  box-shadow: 0 0 20px rgba(196,30,58,0.12);
 }
 
 /* ─── Hero shimmer text (GlitchTitle) ──────────────────────────────────── */
 .hero-shimmer-text {
   background: linear-gradient(
     110deg,
-    #ffffff 0%,
-    #c4b5fd 30%,
-    #9D00FF 50%,
-    #c4b5fd 70%,
-    #ffffff 100%
+    #B8730A 0%,
+    #FFD700 22%,
+    #FFF8DC 45%,
+    #FFD700 68%,
+    #B8730A 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -272,8 +304,8 @@ h6 {
 
 /* ─── Holographic Panel ───────────────────────────────────────────────── */
 .holographic-panel {
-  background: linear-gradient(135deg, rgba(157, 0, 255, 0.08) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(180, 79, 255, 0.05) 100%);
-  border: 1px solid rgba(157, 0, 255, 0.24);
+  background: linear-gradient(135deg, rgba(196, 30, 58, 0.08) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(255, 158, 187, 0.05) 100%);
+  border: 1px solid rgba(196, 30, 58, 0.24);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -297,11 +329,11 @@ h6 {
 
 /* ─── Glow Text ─────────────────────────────────────────────────────────── */
 .text-glow-vibranium {
-  text-shadow: 0 0 20px rgba(157, 0, 255, 0.6), 0 0 40px rgba(157, 0, 255, 0.3);
+  text-shadow: 0 0 20px rgba(196, 30, 58, 0.6), 0 0 40px rgba(196, 30, 58, 0.3);
 }
 
 .text-glow-holo {
-  text-shadow: 0 0 15px rgba(0, 240, 255, 0.7), 0 0 30px rgba(0, 240, 255, 0.4);
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 215, 0, 0.4);
 }
 
 
@@ -317,8 +349,8 @@ h6 {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 25%, rgba(157, 0, 255, 0.08), transparent 26%),
-    radial-gradient(circle at 20% 80%, rgba(0, 240, 255, 0.05), transparent 24%);
+    radial-gradient(circle at 50% 25%, rgba(196, 30, 58, 0.08), transparent 26%),
+    radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.05), transparent 24%);
   filter: blur(30px);
 }
 
@@ -334,7 +366,7 @@ h6 {
   width: 50%;
   height: 300%;
   transform: rotate(18deg);
-  background: linear-gradient(90deg, transparent, rgba(157, 0, 255, 0.10), transparent);
+  background: linear-gradient(90deg, transparent, rgba(196, 30, 58, 0.10), transparent);
   animation: sheen-drift 7s linear infinite;
   pointer-events: none;
 }
@@ -350,9 +382,9 @@ h6 {
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(90deg, transparent, rgba(192,132,252,0.08), transparent),
-    radial-gradient(circle at 15% 50%, rgba(103,232,249,0.08), transparent 22%),
-    radial-gradient(circle at 85% 50%, rgba(168,85,247,0.08), transparent 22%);
+    linear-gradient(90deg, transparent, rgba(196,30,58,0.08), transparent),
+    radial-gradient(circle at 15% 50%, rgba(255,215,0,0.08), transparent 22%),
+    radial-gradient(circle at 85% 50%, rgba(196,30,58,0.08), transparent 22%);
 }
 
 .hero-video-spotlight {
@@ -364,9 +396,9 @@ h6 {
 
 .mesh-fade {
   background-image:
-    radial-gradient(circle at 50% 50%, rgba(157,0,255,0.12), transparent 58%),
-    linear-gradient(rgba(157,0,255,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(157,0,255,0.05) 1px, transparent 1px);
+    radial-gradient(circle at 50% 50%, rgba(196,30,58,0.12), transparent 58%),
+    linear-gradient(rgba(196,30,58,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196,30,58,0.05) 1px, transparent 1px);
   background-size: auto, 34px 34px, 34px 34px;
   mask-image: radial-gradient(circle at center, black 38%, transparent 88%);
 }
@@ -413,11 +445,11 @@ h6 {
 .bp-vibranium-text {
   background: linear-gradient(
     105deg,
-    #6B00BE 0%,
-    #9D00FF 25%,
-    #B44FFF 45%,
-    #9D00FF 65%,
-    #6B00BE 100%
+    #8B0000 0%,
+    #C41E3A 25%,
+    #FF9EBB 45%,
+    #C41E3A 65%,
+    #8B0000 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -434,8 +466,8 @@ h6 {
 
 /* Pulsing vibranium glow for borders / badges */
 @keyframes vibranium-pulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(157,0,255,0.3); }
-  50%       { box-shadow: 0 0 22px rgba(157,0,255,0.8), 0 0 40px rgba(157,0,255,0.3); }
+  0%, 100% { box-shadow: 0 0 8px rgba(196,30,58,0.3); }
+  50%       { box-shadow: 0 0 22px rgba(196,30,58,0.8), 0 0 40px rgba(196,30,58,0.3); }
 }
 .vibranium-glow-pulse {
   animation: vibranium-pulse 2.8s ease-in-out infinite;
@@ -453,7 +485,7 @@ h6 {
 
 /* ─── Vibranium Glow Box ────────────────────────────────────────────────── */
 .vibranium-glow {
-  box-shadow: 0 0 20px rgba(157, 0, 255, 0.4), inset 0 0 15px rgba(157, 0, 255, 0.1);
+  box-shadow: 0 0 20px rgba(196, 30, 58, 0.4), inset 0 0 15px rgba(196, 30, 58, 0.1);
 }
 
 /* ─── Corner Bracket Animation ──────────────────────────────────────────── */
@@ -469,15 +501,15 @@ h6 {
 .bracket-tl {
   top: 12px;
   left: 12px;
-  border-top: 2px solid var(--holo-cyan);
-  border-left: 2px solid var(--holo-cyan);
+  border-top: 2px solid var(--vibranium-gold);
+  border-left: 2px solid var(--vibranium-gold);
 }
 
 .bracket-br {
   bottom: 12px;
   right: 12px;
-  border-bottom: 2px solid var(--holo-cyan);
-  border-right: 2px solid var(--holo-cyan);
+  border-bottom: 2px solid var(--vibranium-gold);
+  border-right: 2px solid var(--vibranium-gold);
 }
 
 .group:hover .bracket-tl,
@@ -607,27 +639,27 @@ select:focus {
   border-radius: 9999px;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
-  border: 1px solid rgba(157, 0, 255, 0.5);
-  color: rgba(157, 0, 255, 1);
+  border: 1px solid rgba(196, 30, 58, 0.5);
+  color: rgba(196, 30, 58, 1);
   background: transparent;
 }
 
 .btn-neon:hover {
-  border-color: rgba(157, 0, 255, 0.9);
-  box-shadow: 0 0 20px rgba(157, 0, 255, 0.4), 0 0 40px rgba(157, 0, 255, 0.2);
+  border-color: rgba(196, 30, 58, 0.9);
+  box-shadow: 0 0 20px rgba(196, 30, 58, 0.4), 0 0 40px rgba(196, 30, 58, 0.2);
   color: #fff;
 }
 
 .btn-neon-fill {
-  background: rgba(157, 0, 255, 0.85);
+  background: rgba(196, 30, 58, 0.85);
   color: #fff;
   border-color: transparent;
-  box-shadow: 0 0 16px rgba(157, 0, 255, 0.35);
+  box-shadow: 0 0 16px rgba(196, 30, 58, 0.35);
 }
 
 .btn-neon-fill:hover {
-  background: rgba(157, 0, 255, 1);
-  box-shadow: 0 0 30px rgba(157, 0, 255, 0.6);
+  background: rgba(196, 30, 58, 1);
+  box-shadow: 0 0 30px rgba(196, 30, 58, 0.6);
 }
 
 /* ─── Holographic shimmer on cards ─────────────────────────────────────── */
@@ -666,6 +698,48 @@ select:focus {
 .stagger-children > *:nth-child(4) { animation-delay: 0.20s; }
 .stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
 .stagger-children > *:nth-child(6) { animation-delay: 0.30s; }
+
+/* ─── Scarlet Witch Animations ─────────────────────────────────────── */
+@keyframes chaos-pulse {
+  0%, 100% { filter: drop-shadow(0 0 15px rgba(196, 30, 58, 0.4)) drop-shadow(0 0 30px rgba(196, 30, 58, 0.2)); opacity: 0.85; transform: scale(1); }
+  50% { filter: drop-shadow(0 0 35px rgba(196, 30, 58, 0.8)) drop-shadow(0 0 60px rgba(196, 30, 58, 0.5)); opacity: 1; transform: scale(1.02); }
+}
+
+.chaos-aura {
+  animation: chaos-pulse 4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes gold-shimmer-sweep {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.gold-metallic-text {
+  background: linear-gradient(
+    110deg,
+    #7a4800 0%,
+    #B8730A 15%,
+    #E8A000 30%,
+    #FFD700 48%,
+    #FFF8DC 58%,
+    #FFD700 68%,
+    #E8A000 80%,
+    #B8730A 92%,
+    #7a4800 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gold-shimmer-sweep 4s linear infinite;
+  filter: drop-shadow(0 2px 8px rgba(184, 115, 10, 0.6));
+}
+
+.chaos-button-hover:hover {
+  box-shadow: 0 0 25px rgba(196, 30, 58, 0.9), 0 0 50px rgba(196, 30, 58, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.3) !important;
+  border-color: rgba(255, 215, 0, 0.8) !important;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+}
 
 /* ─── Mobile Scroll Performance ─────────────────────────────────────────── */
 /* On touch/mobile devices, disable GPU-heavy effects that cause scroll jank  */

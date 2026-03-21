@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState, useCallback } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion'
 import { useMousePosition } from '../hooks/useMousePosition'
 
@@ -156,15 +156,15 @@ export default function HeroCanvas() {
     // Deep vignette â€” cinematic edges, but not crushing blacks
     const vig = ctx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, H * 0.9)
     vig.addColorStop(0,   'rgba(0,0,0,0)')
-    vig.addColorStop(0.6, 'rgba(3,0,8,0.2)')
-    vig.addColorStop(1,   'rgba(5,5,8,0.78)')
+    vig.addColorStop(0.6, 'rgba(3,0,8,0.3)')
+    vig.addColorStop(1,   'rgba(5,5,8,0.85)')
     ctx.fillStyle = vig
     ctx.fillRect(0, 0, W, H)
 
-    // Purple holographic tint (screen blend)
+    // Chaos Magic Red tint (screen blend)
     ctx.globalCompositeOperation = 'screen'
-    ctx.globalAlpha = 0.10
-    ctx.fillStyle   = '#5a0090'
+    ctx.globalAlpha = 0.18
+    ctx.fillStyle   = '#8B0000'
     ctx.fillRect(0, 0, W, H)
 
     // Gentle highlight lift (adds punch without changing palette)
@@ -257,13 +257,13 @@ export default function HeroCanvas() {
                 className="mb-10 holo-flicker"
                 style={{
                   width: 'clamp(200px, 30vw, 340px)',
-                  filter: 'drop-shadow(0 0 20px rgba(191,0,255,0.7))',
+                  filter: 'drop-shadow(0 0 20px rgba(196,30,58,0.7))',
                 }}
                 animate={{ opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
               <div className="font-mono text-vibranium-400 text-xs tracking-[0.5em] mb-5">
-                LOADING VIBRANIUM CORE
+                HARNESSING CHAOS MAGIC
               </div>
               {/* Progress bar */}
               <div className="w-56 h-px bg-wakanda-border overflow-hidden">
@@ -292,8 +292,8 @@ export default function HeroCanvas() {
         />
 
         {!frameReady && loaded && (
-          <div className="absolute inset-0 z-[5] bg-gradient-to-b from-wakanda-black via-[#0a0416] to-wakanda-black">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(191,0,255,0.16),transparent_48%)]" />
+          <div className="absolute inset-0 z-[5] bg-gradient-to-b from-wakanda-black via-[#0f0204] to-wakanda-black">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(196,30,58,0.16),transparent_48%)]" />
           </div>
         )}
 
@@ -319,7 +319,7 @@ export default function HeroCanvas() {
           className="pointer-events-none absolute inset-0 z-10"
           style={{
             background:
-              'linear-gradient(180deg,transparent 0%,rgba(191,0,255,0.04) 48%,rgba(191,0,255,0.10) 50%,rgba(191,0,255,0.04) 52%,transparent 100%)',
+              'linear-gradient(180deg,transparent 0%,rgba(196,30,58,0.04) 48%,rgba(196,30,58,0.10) 50%,rgba(196,30,58,0.04) 52%,transparent 100%)',
             animation: 'scanLine 8s linear infinite',
           }}
         />
@@ -329,7 +329,7 @@ export default function HeroCanvas() {
           className="pointer-events-none absolute z-10 rounded-full"
           style={{
             width: 480, height: 480,
-            background: 'radial-gradient(circle,rgba(191,0,255,0.10) 0%,transparent 65%)',
+            background: 'radial-gradient(circle,rgba(255,215,0,0.10) 0%,transparent 65%)',
             left: `calc(50% + ${normalizedPos.x * 80}px - 240px)`,
             top:  `calc(50% + ${normalizedPos.y * -50}px - 240px)`,
             transition: 'left 0.12s ease, top 0.12s ease',
@@ -349,7 +349,7 @@ export default function HeroCanvas() {
             className="select-none"
             style={{
               width: 'clamp(220px, 34vw, 420px)',
-              filter: 'drop-shadow(0 0 18px rgba(191,0,255,0.55)) drop-shadow(0 0 60px rgba(191,0,255,0.22))',
+              filter: 'drop-shadow(0 0 18px rgba(196,30,58,0.55)) drop-shadow(0 0 60px rgba(196,30,58,0.22))',
             }}
           />
         </motion.div>
@@ -368,13 +368,12 @@ export default function HeroCanvas() {
           <div className="relative flex items-center justify-center">
             {/* Radial glow behind logo */}
             <div
-              className="absolute pointer-events-none"
+              className="absolute pointer-events-none chaos-aura"
               style={{
-                width: '130%', height: '130%',
+                width: '140%', height: '140%',
                 background:
-                  'radial-gradient(ellipse,rgba(191,0,255,0.22) 0%,transparent 65%)',
-                filter: 'blur(32px)',
-                animation: 'pulseSlow 3s ease-in-out infinite',
+                  'radial-gradient(ellipse,rgba(196,30,58,0.35) 0%,rgba(139,0,0,0.15) 30%,transparent 70%)',
+                filter: 'blur(40px)',
               }}
             />
             {/* Chromatic-aberration ghost */}
@@ -398,7 +397,7 @@ export default function HeroCanvas() {
               style={{
                 width: 'clamp(280px, 46vw, 560px)',
                 filter:
-                  'drop-shadow(0 0 24px rgba(191,0,255,0.95)) drop-shadow(0 0 60px rgba(191,0,255,0.55)) drop-shadow(0 0 110px rgba(147,51,234,0.35))',
+                  'drop-shadow(0 0 24px rgba(196,30,58,0.95)) drop-shadow(0 0 60px rgba(196,30,58,0.55)) drop-shadow(0 0 110px rgba(139,0,0,0.35))',
                 animation: 'float 7s ease-in-out infinite',
               }}
             />
@@ -425,13 +424,13 @@ export default function HeroCanvas() {
                   width:   `${s * 100}%`,
                   height:  `${s * 20}px`,
                   opacity: 0.38 - i * 0.08,
-                  boxShadow: `0 0 ${8 - i * 2}px rgba(191,0,255,0.45)`,
+                  boxShadow: `0 0 ${8 - i * 2}px rgba(196,30,58,0.45)`,
                   animation: `energyRing ${3.5 + i * 1.2}s linear infinite`,
                   animationDelay: `${i * 0.4}s`,
                 }}
               />
             ))}
-            <div className="w-1.5 h-1.5 rounded-full bg-plasma shadow-[0_0_10px_#bf00ff] z-10" />
+            <div className="w-1.5 h-1.5 rounded-full bg-plasma shadow-[0_0_10px_#C41E3A] z-10" />
           </div>
 
           {/* Date badge */}
@@ -498,29 +497,29 @@ export default function HeroCanvas() {
 // â”€â”€ HUD corner decorations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function HUDCorners() {
   return (
-    <div className="absolute inset-0 z-20 pointer-events-none">
+      <div className="absolute inset-0 z-20 pointer-events-none">
       {/* TL */}
       <div className="absolute top-20 left-6 flex flex-col gap-1">
-        <div className="w-8 h-px bg-vibranium-500 shadow-[0_0_6px_#9333ea]" />
-        <div className="w-px h-8 bg-vibranium-500 shadow-[0_0_6px_#9333ea]" />
+        <div className="w-8 h-px bg-vibranium-500 shadow-[0_0_6px_#C41E3A]" />
+        <div className="w-px h-8 bg-vibranium-500 shadow-[0_0_6px_#C41E3A]" />
       </div>
       {/* TR */}
       <div className="absolute top-20 right-6 flex flex-col items-end gap-1">
-        <div className="w-8 h-px bg-vibranium-500 shadow-[0_0_6px_#9333ea]" />
-        <div className="w-px h-8 bg-vibranium-500 self-end shadow-[0_0_6px_#9333ea]" />
+        <div className="w-8 h-px bg-vibranium-500 shadow-[0_0_6px_#C41E3A]" />
+        <div className="w-px h-8 bg-vibranium-500 self-end shadow-[0_0_6px_#C41E3A]" />
       </div>
       {/* BL */}
       <div className="absolute bottom-8 left-6 flex flex-col justify-end gap-1">
-        <div className="w-px h-8 bg-vibranium-500 shadow-[0_0_6px_#9333ea]" />
-        <div className="w-8 h-px bg-vibranium-500 shadow-[0_0_6px_#9333ea]" />
+        <div className="w-px h-8 bg-vibranium-500 shadow-[0_0_6px_#C41E3A]" />
+        <div className="w-8 h-px bg-vibranium-500 shadow-[0_0_6px_#C41E3A]" />
       </div>
       {/* BR */}
       <div className="absolute bottom-8 right-6 flex flex-col items-end justify-end gap-1">
-        <div className="w-px h-8 bg-vibranium-500 self-end shadow-[0_0_6px_#9333ea]" />
-        <div className="w-8 h-px bg-vibranium-500 shadow-[0_0_6px_#9333ea]" />
+        <div className="w-px h-8 bg-vibranium-500 self-end shadow-[0_0_6px_#C41E3A]" />
+        <div className="w-8 h-px bg-vibranium-500 shadow-[0_0_6px_#C41E3A]" />
       </div>
       <div className="absolute bottom-8 right-6 font-mono text-vibranium-600 text-xs tracking-widest opacity-55">
-        VIBRANIUM CORE · ONLINE
+                CHAOS MATRIX · UNLEASHED
       </div>
       <div className="absolute top-20 left-1/2 -translate-x-1/2 font-mono text-vibranium-600 text-xs tracking-[0.4em] opacity-45">
         CYSTECH://SYMPOSIUM/2K26

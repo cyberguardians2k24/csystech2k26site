@@ -10,14 +10,17 @@ const HeroParticles = lazy(() => import('./HeroParticles'));
 
 const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
 
+// ─── Event date ──────────────────────────────────────────────────────────────
+const EVENT_DATE = new Date('2026-04-08T09:00:00+05:30');
+
 const GLYPH_TONES = {
   vibranium: {
-    backgroundImage: 'linear-gradient(135deg, #f5f3ff 0%, #c4b5fd 25%, #9D00FF 58%, #5b21b6 100%)',
-    textShadow: '0 0 18px rgba(157,0,255,0.38)',
+    backgroundImage: 'linear-gradient(135deg, #fef2f2 0%, #fca5a5 25%, #C41E3A 58%, #991b1b 100%)',
+    textShadow: '0 0 18px rgba(196, 30, 58,0.38)',
   },
   cyan: {
-    backgroundImage: 'linear-gradient(135deg, #ecfeff 0%, #a5f3fc 35%, #00f0ff 68%, #0891b2 100%)',
-    textShadow: '0 0 18px rgba(0,240,255,0.34)',
+    backgroundImage: 'linear-gradient(135deg, #fffbeb 0%, #fde68a 35%, #FFD700 68%, #b45309 100%)',
+    textShadow: '0 0 18px rgba(255, 215, 0,0.34)',
   },
   silver: {
     backgroundImage: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 35%, #cbd5e1 65%, #94a3b8 100%)',
@@ -31,27 +34,20 @@ function formatCount(value) {
   return String(value);
 }
 
-// floating emoji orbs
-const FLOAT_EMOJIS = [
-  { glyph: '✦', tone: 'cyan', x: '8%',  y: '18%', delay: 0,   dur: 7.2, size: 'text-2xl sm:text-3xl', glow: 'rgba(0,240,255,0.35)', driftX: 18, driftY: 20, rotate: 18, blur: '0px' },
-  { glyph: '⬢', tone: 'vibranium', x: '88%', y: '22%', delay: 0.6, dur: 6.8, size: 'text-2xl sm:text-3xl', glow: 'rgba(157,0,255,0.28)', driftX: -22, driftY: 16, rotate: -16, blur: '0px' },
-  { glyph: '◈', tone: 'silver', x: '5%',  y: '65%', delay: 1.1, dur: 7.5, size: 'text-xl sm:text-2xl', glow: 'rgba(203,213,225,0.30)', driftX: 14, driftY: -18, rotate: 14, blur: '1px' },
-  { glyph: '❖', tone: 'cyan', x: '92%', y: '70%', delay: 0.3, dur: 6.6, size: 'text-2xl sm:text-3xl', glow: 'rgba(0,240,255,0.24)', driftX: -20, driftY: -22, rotate: 15, blur: '0px' },
-  { glyph: '✧', tone: 'silver', x: '50%', y: '8%',  delay: 0.8, dur: 5.8, size: 'text-xl sm:text-2xl', glow: 'rgba(255,255,255,0.28)', driftX: 0, driftY: 18, rotate: 10, blur: '0px' },
-  { glyph: '◬', tone: 'vibranium', x: '18%', y: '88%', delay: 1.4, dur: 7.1, size: 'text-xl sm:text-2xl', glow: 'rgba(157,0,255,0.24)', driftX: 20, driftY: -14, rotate: -18, blur: '0px' },
-  { glyph: '▣', tone: 'cyan', x: '80%', y: '85%', delay: 0.5, dur: 7.4, size: 'text-xl sm:text-2xl', glow: 'rgba(0,240,255,0.24)', driftX: -18, driftY: -12, rotate: -12, blur: '0px' },
-  { glyph: '⬡', tone: 'vibranium', x: '72%', y: '12%', delay: 1.7, dur: 8.1, size: 'text-xl sm:text-2xl', glow: 'rgba(157,0,255,0.26)', driftX: -24, driftY: 18, rotate: 12, blur: '1px' },
-  { glyph: '◉', tone: 'silver', x: '24%', y: '12%', delay: 1.2, dur: 7.9, size: 'text-xl sm:text-2xl', glow: 'rgba(196,181,253,0.30)', driftX: 16, driftY: 24, rotate: -14, blur: '0px' },
-];
-
-const HERO_BURST_EMOJIS = [
-  { glyph: '✦', tone: 'cyan', x: -160, y: -90, delay: 0.05, rotate: -24 },
-  { glyph: '✧', tone: 'silver', x: -90, y: -122, delay: 0.14, rotate: 12 },
-  { glyph: '⬢', tone: 'vibranium', x: 150, y: -82, delay: 0.18, rotate: 26 },
-  { glyph: '❖', tone: 'vibranium', x: 182, y: 24, delay: 0.28, rotate: -18 },
-  { glyph: '◈', tone: 'silver', x: 86, y: 122, delay: 0.36, rotate: 16 },
-  { glyph: '◬', tone: 'cyan', x: -136, y: 92, delay: 0.24, rotate: -12 },
-];
+// ─── Countdown hook ───────────────────────────────────────────────────────────
+function useCountdown(target) {
+  const [timeLeft, setTimeLeft] = useState(() => Math.max(0, target - Date.now()));
+  useEffect(() => {
+    const id = setInterval(() => setTimeLeft(Math.max(0, target - Date.now())), 1000);
+    return () => clearInterval(id);
+  }, [target]);
+  const totalSeconds = Math.floor(timeLeft / 1000);
+  const days    = Math.floor(totalSeconds / 86400);
+  const hours   = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return { days, hours, minutes, seconds };
+}
 
 // Staggered children wrapper
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.10, delayChildren: 0.25 } } };
@@ -61,57 +57,25 @@ const fadeBlurUp = {
 };
 
 function GlitchTitle({ ready }) {
-  const [glitch, setGlitch] = useState(false);
-  useEffect(() => {
-    if (!ready) return;
-    const fire = () => {
-      setGlitch(true);
-      setTimeout(() => setGlitch(false), 180);
-    };
-    fire();
-    const id = setInterval(fire, 3800);
-    return () => clearInterval(id);
-  }, [ready]);
-
   return (
-    <div className="relative overflow-visible py-3">
+    <div className="relative overflow-visible py-3 flex justify-center items-center">
+      {/* Deep red chaos aura behind text */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={ready ? { opacity: 1, scale: 1 } : { opacity: 0 }}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+        className="absolute w-[120%] h-[120%] bg-vibranium/20 blur-[60px] rounded-full chaos-aura z-0 pointer-events-none"
+      />
+      
+      {/* 3D Gold Shimmering Title */}
       <motion.h1
-        initial={{ y: '105%', opacity: 0 }}
+        initial={{ y: '20%', opacity: 0 }}
         animate={ready ? { y: 0, opacity: 1 } : {}}
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-        className="block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight hero-shimmer-text select-none pt-[0.06em] pb-[0.16em]"
+        className="relative z-10 block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight gold-metallic-text select-none pt-[0.06em] pb-[0.16em]"
       >
         CYSTECH2K26
       </motion.h1>
-      {/* glitch layers */}
-      <AnimatePresence>
-        {glitch && (
-          <>
-            <motion.h1
-              key="g1"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 0.7, 0] }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.12 }}
-              className="absolute left-0 top-0 block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight pointer-events-none select-none pt-[0.06em] pb-[0.16em]"
-              style={{ color: '#00f0ff', left: '3px', top: '-2px', clipPath: 'inset(0 0 60% 0)' }}
-            >
-              CYSTECH2K26
-            </motion.h1>
-            <motion.h1
-              key="g2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 0.6, 0] }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.10, delay: 0.04 }}
-              className="absolute left-0 top-0 block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight pointer-events-none select-none pt-[0.06em] pb-[0.16em]"
-              style={{ color: '#FF00AA', left: '-3px', top: '2px', clipPath: 'inset(60% 0 0 0)' }}
-            >
-              CYSTECH2K26
-            </motion.h1>
-          </>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
@@ -134,54 +98,96 @@ function VibraniumGlyph({ glyph, tone = 'vibranium', className = '', style }) {
   );
 }
 
-function FloatingEmoji({ item, index }) {
+// ─── HUD corner brackets ──────────────────────────────────────────────────────
+function HudCorners({ ready }) {
+  const SIZE = 36;
+  const THICKNESS = 2;
+  const COLOR = 'rgba(196,30,58,0.6)';
+  const corner = (pos) => {
+    const [y, x] = pos.split('-');
+    return (
+      <motion.div
+        key={pos}
+        className="absolute"
+        style={{
+          [y]: 24, [x]: 24,
+          width: SIZE, height: SIZE,
+          borderTop: y === 'top' ? `${THICKNESS}px solid ${COLOR}` : 'none',
+          borderBottom: y === 'bottom' ? `${THICKNESS}px solid ${COLOR}` : 'none',
+          borderLeft: x === 'left' ? `${THICKNESS}px solid ${COLOR}` : 'none',
+          borderRight: x === 'right' ? `${THICKNESS}px solid ${COLOR}` : 'none',
+        }}
+        initial={{ opacity: 0, scale: 0.6 }}
+        animate={ready ? { opacity: 1, scale: 1 } : {}}
+        transition={{ duration: 0.8, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
+      />
+    );
+  };
+  return (
+    <div className="absolute inset-0 pointer-events-none z-[6]">
+      {['top-left', 'top-right', 'bottom-left', 'bottom-right'].map(corner)}
+    </div>
+  );
+}
+
+// ─── Countdown unit ───────────────────────────────────────────────────────────
+function CountUnit({ value, label }) {
+  return (
+    <div className="flex flex-col items-center">
+      <motion.span
+        key={value}
+        initial={{ y: -12, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
+        className="font-heading font-black text-white text-xl sm:text-2xl leading-none tabular-nums"
+        style={{ textShadow: '0 0 20px rgba(196,30,58,0.7)' }}
+      >
+        {String(value).padStart(2, '0')}
+      </motion.span>
+      <span className="font-mono text-[7px] tracking-[0.25em] uppercase text-white/35 mt-0.5">{label}</span>
+    </div>
+  );
+}
+
+// ─── Vertical side data column (desktop only) ─────────────────────────────────
+function SideDataColumn({ ready, side = 'left' }) {
+  const lines = side === 'left'
+    ? ['08 APR 2026', 'DEPT. OF C.S.', 'OFFLINE MODE', 'OPEN TO ALL']
+    : ['CYSTECH 2K26', 'EDITION IV', 'TAMBARAM', 'CHENNAI-601301'];
   return (
     <motion.div
-      className="absolute z-[3] pointer-events-none select-none"
-      style={{ left: item.x, top: item.y }}
-      initial={{ opacity: 0, scale: 0.4, rotate: item.rotate * -0.3 }}
-      animate={{
-        opacity: [0, 0.95, 0.72, 0.95],
-        x: [0, item.driftX, item.driftX * -0.45, 0],
-        y: [0, item.driftY * -1, item.driftY, 0],
-        rotate: [item.rotate * -0.4, item.rotate, item.rotate * -0.7, 0],
-        scale: [0.85, 1.16, 0.96, 1.06],
-      }}
-      transition={{
-        duration: item.dur,
-        repeat: Infinity,
-        delay: item.delay + index * 0.04,
-        ease: 'easeInOut',
-      }}
+      className={`absolute top-1/2 -translate-y-1/2 ${side === 'left' ? 'left-5' : 'right-5'} z-[5] hidden lg:flex flex-col items-center gap-3 pointer-events-none`}
+      initial={{ opacity: 0, x: side === 'left' ? -20 : 20 }}
+      animate={ready ? { opacity: 1, x: 0 } : {}}
+      transition={{ duration: 1, delay: 1.6, ease: [0.16, 1, 0.3, 1] }}
     >
-      <motion.div
-        className="relative flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/6 backdrop-blur-md sm:h-16 sm:w-16"
-        animate={{
-          boxShadow: [
-            `0 0 0 rgba(255,255,255,0), 0 0 16px ${item.glow}`,
-            `0 0 24px ${item.glow}, 0 0 44px ${item.glow}`,
-            `0 0 12px ${item.glow}, 0 0 28px ${item.glow}`,
-          ],
-          borderColor: ['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.24)', 'rgba(255,255,255,0.12)'],
-        }}
-        transition={{ duration: item.dur * 0.6, repeat: Infinity, ease: 'easeInOut', delay: item.delay }}
-      >
-        <div
-          className="absolute inset-[6px] rounded-full"
-          style={{ background: `radial-gradient(circle, ${item.glow}, transparent 72%)` }}
-        />
+      <div className="w-px h-16 bg-gradient-to-b from-transparent via-[#C41E3A]/40 to-transparent" />
+      {lines.map((line, i) => (
         <motion.span
-          className={`${item.size} relative z-10 block`}
-          style={{ filter: `blur(${item.blur})` }}
-          animate={{ y: [0, -4, 0, 3, 0], scale: [1, 1.08, 1, 0.98, 1] }}
-          transition={{ duration: item.dur * 0.5, repeat: Infinity, ease: 'easeInOut', delay: item.delay * 0.8 }}
+          key={line}
+          initial={{ opacity: 0 }}
+          animate={ready ? { opacity: 1 } : {}}
+          transition={{ delay: 1.8 + i * 0.1 }}
+          className="font-mono text-[9px] tracking-[0.28em] uppercase text-white/25"
+          style={{ writingMode: 'vertical-lr', letterSpacing: '0.3em' }}
         >
-          <VibraniumGlyph glyph={item.glyph} tone={item.tone} className="block" />
+          {line}
         </motion.span>
-      </motion.div>
+      ))}
+      <div className="w-px h-16 bg-gradient-to-b from-transparent via-[#C41E3A]/40 to-transparent" />
     </motion.div>
   );
 }
+
+// ─── Burst emoji ring ─────────────────────────────────────────────────────────
+const HERO_BURST_EMOJIS = [
+  { glyph: '✦', tone: 'gold', x: -160, y: -90, delay: 0.05, rotate: -24 },
+  { glyph: '✧', tone: 'silver', x: -90, y: -122, delay: 0.14, rotate: 12 },
+  { glyph: '⬢', tone: 'vibranium', x: 150, y: -82, delay: 0.18, rotate: 26 },
+  { glyph: '❖', tone: 'vibranium', x: 182, y: 24, delay: 0.28, rotate: -18 },
+  { glyph: '◈', tone: 'silver', x: 86, y: 122, delay: 0.36, rotate: 16 },
+  { glyph: '◬', tone: 'gold', x: -136, y: 92, delay: 0.24, rotate: -12 },
+];
 
 function EmojiBurst({ ready }) {
   return (
@@ -190,17 +196,17 @@ function EmojiBurst({ ready }) {
         <motion.span
           key={`${item.glyph}-${item.x}-${item.y}`}
           className="absolute left-0 top-0 text-2xl"
-          initial={{ opacity: 0, x: 0, y: 0, scale: 0.2, rotate: 0 }}
+          initial={{ opacity: 0, x: 0, y: 0, scale: 0.5, rotate: 0 }}
           animate={ready ? {
-            opacity: [0, 1, 0.85, 0],
-            x: [0, item.x * 0.3, item.x],
-            y: [0, item.y * 0.3, item.y],
-            scale: [0.2, 1.15, 0.92],
-            rotate: [0, item.rotate, item.rotate * 1.3],
+            opacity: [0, 0.8, 0.2, 0],
+            x: [0, item.x * 0.4, item.x],
+            y: [0, item.y * 0.4, item.y],
+            scale: [0.5, 1.4, 0.8],
+            rotate: [0, item.rotate * 2, item.rotate * 4],
           } : {}}
-          transition={{ duration: 1.55, delay: 0.65 + item.delay, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 2.5, delay: 0.65 + item.delay, ease: "easeOut" }}
         >
-          <VibraniumGlyph glyph={item.glyph} tone={item.tone} className="text-2xl sm:text-3xl" />
+          <span className="text-vibranium-gold drop-shadow-[0_0_12px_rgba(196,30,58,0.8)] blur-[1px]">{item.glyph}</span>
         </motion.span>
       ))}
     </div>
@@ -214,6 +220,7 @@ export default function Hero() {
   const [participantCount, setParticipantCount] = useState(null);
   const navigate = useNavigate();
   const heroRef = useRef(null);
+  const countdown = useCountdown(EVENT_DATE.getTime());
 
   useEffect(() => {
     let mounted = true;
@@ -226,7 +233,10 @@ export default function Hero() {
         if (!mounted) return;
         setParticipantCount(null);
       });
-    return () => { mounted = false; };
+      
+    return () => { 
+      mounted = false; 
+    };
   }, []);
 
   const handleMouseMove = useCallback((e) => {
@@ -242,7 +252,7 @@ export default function Hero() {
 
   const stats = [
     { value: formatCount(EVENT_STATS.totalCount), label: 'Events', glyph: '⬢', tone: 'vibranium' },
-    { value: formatCount(participantCount), label: 'Participants', glyph: '✦', tone: 'cyan' },
+    { value: formatCount(participantCount), label: 'Participants', glyph: '✦', tone: 'gold' },
     { value: formatCount(SPEAKERS.length), label: 'Speakers', glyph: '◈', tone: 'silver' },
     (() => {
       const sponsorCount = countSponsors(SPONSOR_TIERS);
@@ -286,29 +296,49 @@ export default function Hero() {
           )}
         </AnimatePresence>
 
-        {/* Floating emoji orbs */}
-        {videoReady && !isTouch && FLOAT_EMOJIS.map((item, index) => (
-          <FloatingEmoji key={`${item.glyph}-${item.x}-${item.y}`} item={item} index={index} />
-        ))}
+        {/* ── Cinematic vignette ───────────────────────────────────────────── */}
+        <div
+          className="absolute inset-0 pointer-events-none z-[2]"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.55) 80%, rgba(0,0,0,0.85) 100%)',
+          }}
+        />
 
-        {/* Mouse-tracking spotlight */}
+        {/* ── Scanline flicker ─────────────────────────────────────────────── */}
+        <div className="absolute inset-0 scanlines opacity-[0.06] pointer-events-none z-[3]" />
+
+        {/* ── Horizontal crimson light streak (top) ───────────────────────── */}
+        <motion.div
+          animate={{ opacity: [0.0, 0.25, 0.0], scaleX: [0.7, 1.1, 0.7] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+          className="absolute top-[12%] left-1/2 -translate-x-1/2 h-px w-[60vw] max-w-3xl pointer-events-none z-[3]"
+          style={{ background: 'linear-gradient(90deg,transparent,rgba(196,30,58,0.55),rgba(232,160,0,0.4),transparent)' }}
+        />
+
+        {/* ── Mouse spotlight ──────────────────────────────────────────────── */}
         {!isTouch && (
           <div
             className="absolute inset-0 pointer-events-none z-[1]"
             style={{
               background: spotlight.x
-                ? `radial-gradient(800px circle at ${spotlight.x}px ${spotlight.y}px, rgba(157,0,255,0.14), transparent 55%)`
+                ? `radial-gradient(600px circle at ${spotlight.x}px ${spotlight.y}px, rgba(196,30,58,0.10), transparent 55%)`
                 : 'none',
               transition: 'background 60ms linear',
             }}
           />
         )}
 
-        {/* Gradient overlays */}
-        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-[#030005]/95 pointer-events-none" />
+        {/* ── Bottom fade ──────────────────────────────────────────────────── */}
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none z-[3]" />
 
-        {/* Content */}
+        {/* ── HUD corner brackets ──────────────────────────────────────────── */}
+        <HudCorners ready={videoReady} />
+
+        {/* ── Vertical side columns ─────────────────────────────────────────── */}
+        <SideDataColumn ready={videoReady} side="left" />
+        <SideDataColumn ready={videoReady} side="right" />
+
+        {/* ── Main content ─────────────────────────────────────────────────── */}
         <motion.div
           style={{ y: contentY }}
           variants={stagger}
@@ -321,12 +351,12 @@ export default function Hero() {
           {/* Badge */}
           <motion.div
             variants={fadeBlurUp}
-            whileHover={{ scale: 1.07, boxShadow: '0 0 20px rgba(157,0,255,0.4)' }}
-            className="mb-6 rounded-full border border-[#9D00FF]/50 bg-[#9D00FF]/10 px-5 py-2 cursor-default"
+            whileHover={{ scale: 1.07, boxShadow: '0 0 20px rgba(196, 30, 58,0.4)' }}
+            className="mb-16 -translate-y-8 rounded-full border border-[#C41E3A]/50 bg-[#C41E3A]/10 px-5 py-2 cursor-default"
           >
             <div className="flex items-center gap-3">
               <motion.span
-                className="w-2 h-2 rounded-full bg-[#00f0ff]"
+                className="w-2 h-2 rounded-full bg-[#FFD700]"
                 animate={{ scale: [1, 1.6, 1], opacity: [1, 0.4, 1] }}
                 transition={{ duration: 1.2, repeat: Infinity }}
               />
@@ -334,51 +364,29 @@ export default function Hero() {
               <span className="font-mono text-[11px] tracking-[0.25em] uppercase text-white/90 font-bold">
                 Registration Open
               </span>
-              <span className="font-mono text-[9px] text-[#9D00FF]/80 font-bold">2026</span>
+              <span className="font-mono text-[9px] text-[#C41E3A]/80 font-bold">2026</span>
             </div>
           </motion.div>
 
-          {/* Glitch Title */}
-          <motion.div variants={fadeBlurUp}>
+          {/* Mobile-only Glitch Title (Hidden on desktop since video has text) */}
+          <motion.div variants={fadeBlurUp} className="md:hidden">
             <GlitchTitle ready={videoReady} />
           </motion.div>
 
-          {/* Tagline */}
-          <motion.div variants={fadeBlurUp} className="mt-3 flex flex-wrap items-center justify-center gap-2">
-            {[
-              { label: 'Innovation' },
-              { glyph: '✦', tone: 'cyan' },
-              { label: 'Technology' },
-              { glyph: '⬢', tone: 'vibranium' },
-              { label: 'One Stage', accent: true },
-            ].map((item, i) => (
-              <motion.span
-                key={i}
-                initial={{ opacity: 0, y: 12 }}
-                animate={videoReady ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.9 + i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className={`font-mono uppercase tracking-[0.2em] text-[11px] ${
-                  item.glyph ? 'text-lg' :
-                  item.accent ? 'text-[#9D00FF] font-black' : 'text-white/60'
-                }`}
-              >
-                {item.glyph ? <VibraniumGlyph glyph={item.glyph} tone={item.tone} className="text-lg" /> : item.label}
-              </motion.span>
-            ))}
-          </motion.div>
+          {/* Tagline removed as requested */}
 
           {/* CTA buttons */}
-          <motion.div variants={fadeBlurUp} className="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <motion.div variants={fadeBlurUp} className="mt-[38vh] sm:mt-[26rem] flex flex-wrap items-center justify-center gap-4">
             <motion.button
               whileHover={{
                 scale: 1.1,
-                boxShadow: '0 0 40px rgba(157,0,255,0.8), 0 0 80px rgba(157,0,255,0.3)',
+                boxShadow: '0 0 40px rgba(196, 30, 58,0.8), 0 0 80px rgba(196, 30, 58,0.3)',
               }}
               whileTap={{ scale: 0.93 }}
               onHoverStart={() => setBtnHovered(true)}
               onHoverEnd={() => setBtnHovered(false)}
               onClick={() => document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth' })}
-              className="relative rounded-full px-10 py-3.5 font-mono text-[11px] tracking-[0.25em] uppercase font-black overflow-hidden bg-[#9D00FF] text-white shadow-[0_0_28px_rgba(157,0,255,0.5)]"
+              className="relative rounded-full px-10 py-3.5 font-mono text-[11px] tracking-[0.25em] uppercase font-black overflow-hidden bg-[#C41E3A] text-white shadow-[0_0_28px_rgba(196,30,58,0.5)]"
             >
               <AnimatePresence>
                 {btnHovered && (
@@ -398,30 +406,27 @@ export default function Hero() {
                 transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
               />
               <span className="relative z-10 flex items-center gap-2">
-                <VibraniumGlyph glyph="⬢" tone="silver" className="text-sm" />
+                <span className="text-lg">✧</span>
                 <span>Register Now</span>
               </span>
             </motion.button>
             <motion.button
               whileHover={{
-                scale: 1.08,
-                borderColor: 'rgba(0,240,255,0.6)',
-                boxShadow: '0 0 24px rgba(0,240,255,0.2)',
-                color: '#00f0ff',
+                scale: 1.05,
               }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/technical')}
-              className="rounded-full px-10 py-3.5 font-mono text-[11px] tracking-[0.25em] uppercase text-white/80 border border-white/25 bg-white/5 font-bold transition-colors duration-200"
+              className="chaos-button-hover rounded-full px-10 py-3.5 font-mono text-[11px] tracking-[0.25em] uppercase text-vibranium-gold border border-vibranium-gold/30 bg-vibranium/10 font-bold transition-all duration-300"
             >
               <span className="flex items-center gap-2">
-                <VibraniumGlyph glyph="✦" tone="cyan" className="text-sm" />
+                <span className="text-lg">◈</span>
                 <span>Explore Events</span>
               </span>
             </motion.button>
           </motion.div>
 
           {/* Stats — bouncy pop-in */}
-          <motion.div variants={fadeBlurUp} className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-8">
+          <motion.div variants={fadeBlurUp} className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-8">
             {stats.map((s, i) => (
               <React.Fragment key={s.label}>
                 {i > 0 && <span className="hidden sm:block w-px h-8 bg-white/10" />}
@@ -447,30 +452,30 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Bottom "REGISTRATION OPEN" floating pill */}
+        {/* ── Bottom "REGISTRATION OPEN" floating pill ─────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={videoReady ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 1.8, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute bottom-8 right-8 z-[5] hidden md:flex items-center gap-3 px-5 py-2.5 rounded-full border border-[#9D00FF]/50 bg-[#030005]/80 backdrop-blur-md"
+          className="absolute bottom-8 right-8 z-[5] hidden md:flex items-center gap-3 px-5 py-2.5 rounded-full border border-[#C41E3A]/50 bg-[#030005]/80 backdrop-blur-md"
         >
           <motion.div
-            className="w-2 h-2 rounded-full bg-[#00f0ff]"
+            className="w-2 h-2 rounded-full bg-[#FFD700]"
             animate={{ scale: [1, 1.8, 1], opacity: [1, 0.3, 1] }}
             transition={{ duration: 1.2, repeat: Infinity }}
           />
           <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/60">Registration Open</span>
           <motion.button
-            whileHover={{ scale: 1.08, boxShadow: '0 0 20px rgba(157,0,255,0.6)' }}
+            whileHover={{ scale: 1.08, boxShadow: '0 0 20px rgba(196, 30, 58,0.6)' }}
             whileTap={{ scale: 0.95 }}
             onClick={() => document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-4 py-1.5 rounded-full bg-[#9D00FF] text-white font-mono text-[9px] tracking-[0.15em] uppercase font-black"
+            className="px-4 py-1.5 rounded-full bg-[#C41E3A] text-white font-mono text-[9px] tracking-[0.15em] uppercase font-black"
           >
             Register Now
           </motion.button>
         </motion.div>
 
-        {/* Scroll indicator */}
+        {/* ── Scroll indicator ─────────────────────────────────────────────── */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={videoReady ? { opacity: 1 } : {}}
@@ -488,7 +493,7 @@ export default function Hero() {
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-              className="w-1 h-2 rounded-full bg-[#9D00FF]"
+              className="w-1 h-2 rounded-full bg-[#C41E3A]"
             />
           </div>
         </motion.div>

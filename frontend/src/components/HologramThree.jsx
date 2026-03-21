@@ -13,9 +13,9 @@ function makeRadialTexture() {
 
   const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2)
   g.addColorStop(0.0, 'rgba(255,255,255,1)')
-  g.addColorStop(0.18, 'rgba(224,64,251,0.95)')
-  g.addColorStop(0.45, 'rgba(191,0,255,0.35)')
-  g.addColorStop(1.0, 'rgba(191,0,255,0)')
+  g.addColorStop(0.18, 'rgba(255,158,187,0.95)')
+  g.addColorStop(0.45, 'rgba(196,30,58,0.35)')
+  g.addColorStop(1.0, 'rgba(196,30,58,0)')
   ctx.fillStyle = g
   ctx.fillRect(0, 0, size, size)
 
@@ -42,9 +42,9 @@ function LensFlares() {
   return (
     <group ref={group}>
       {[
-        { pos: [2.4, 0.8, 1.2], color: '#bf00ff' },
-        { pos: [-2.2, -0.6, 1.6], color: '#e040fb' },
-        { pos: [0.2, 1.9, 0.9], color: '#da00ff' },
+        { pos: [2.4, 0.8, 1.2], color: '#C41E3A' },
+        { pos: [-2.2, -0.6, 1.6], color: '#FF9EBB' },
+        { pos: [0.2, 1.9, 0.9], color: '#FFD700' },
       ].map((f, i) => (
         <sprite key={i} position={f.pos}>
           <spriteMaterial
@@ -80,8 +80,8 @@ function EnergyRings() {
 
   const ringMat = (opacity = 0.7) => (
     <meshStandardMaterial
-      color="#bf00ff"
-      emissive="#6a0080"
+      color="#C41E3A"
+      emissive="#8B0000"
       emissiveIntensity={2}
       transparent
       opacity={opacity}
@@ -127,8 +127,8 @@ function HologramCore({ mouseNorm }) {
         <mesh ref={meshRef}>
           <icosahedronGeometry args={[1.2, 2]} />
           <MeshDistortMaterial
-            color="#bf00ff"
-            emissive="#4a0080"
+            color="#C41E3A"
+            emissive="#8B0000"
             emissiveIntensity={1.5}
             distort={0.25}
             speed={3}
@@ -140,7 +140,7 @@ function HologramCore({ mouseNorm }) {
 
         <mesh ref={shellRef}>
           <sphereGeometry args={[1.55, 36, 36]} />
-          <meshBasicMaterial color="#da00ff" transparent opacity={0.09} wireframe />
+          <meshBasicMaterial color="#FFD700" transparent opacity={0.09} wireframe />
         </mesh>
       </group>
     </Float>
@@ -172,7 +172,7 @@ function LightPillars() {
             rotation={[0, -angle, 0]}
           >
             <cylinderGeometry args={[0.035, 0.035, 3.6, 8]} />
-            <meshBasicMaterial color="#bf00ff" transparent opacity={0.22} />
+            <meshBasicMaterial color="#C41E3A" transparent opacity={0.22} />
           </mesh>
         )
       })}
@@ -200,7 +200,7 @@ function OrbitShards() {
         return (
           <mesh key={i} position={[Math.cos(angle) * radius, y, Math.sin(angle) * radius]} rotation={[0.6, angle, 0.25]}>
             <octahedronGeometry args={[0.08 + (i % 2) * 0.03, 0]} />
-            <meshStandardMaterial color="#e040fb" emissive="#7a00b0" emissiveIntensity={1.8} metalness={0.2} roughness={0.35} transparent opacity={0.85} />
+            <meshStandardMaterial color="#FF9EBB" emissive="#8B0000" emissiveIntensity={1.8} metalness={0.2} roughness={0.35} transparent opacity={0.85} />
           </mesh>
         )
       })}
@@ -223,10 +223,11 @@ function HoloParticles() {
       pos[i * 3]     = r * Math.sin(phi) * Math.cos(theta)
       pos[i * 3 + 1] = r * Math.cos(phi)
       pos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta)
-      // Purple shades
-      col[i * 3]     = 0.5 + Math.random() * 0.5   // R
-      col[i * 3 + 1] = 0                             // G
-      col[i * 3 + 2] = 0.7 + Math.random() * 0.3   // B
+      // Red/Gold shades
+      const isGold = Math.random() > 0.5;
+      col[i * 3]     = isGold ? 1.0 : (0.7 + Math.random() * 0.3)
+      col[i * 3 + 1] = isGold ? (0.6 + Math.random() * 0.3) : 0.0
+      col[i * 3 + 2] = isGold ? 0.0 : (0.1 + Math.random() * 0.2)
     }
     return { positions: pos, colors: col }
   }, [])
@@ -262,9 +263,9 @@ function HoloScene({ normalizedPos }) {
     <>
       <fog attach="fog" args={['#050508', 7, 15]} />
       <ambientLight intensity={0.24} />
-      <pointLight position={[5, 5, 5]}  color="#bf00ff" intensity={3.4}  />
-      <pointLight position={[-5, -5, 5]} color="#da00ff" intensity={2.3} />
-      <spotLight position={[0, 6, 2]} color="#e040fb" intensity={1.2} angle={0.5} penumbra={0.7} />
+      <pointLight position={[5, 5, 5]}  color="#C41E3A" intensity={3.4}  />
+      <pointLight position={[-5, -5, 5]} color="#FFD700" intensity={2.3} />
+      <spotLight position={[0, 6, 2]} color="#FF9EBB" intensity={1.2} angle={0.5} penumbra={0.7} />
       <HologramCore mouseNorm={normalizedPos} />
       <EnergyRings />
       <LightPillars />

@@ -9,7 +9,7 @@ const EVENTS = [
     title: 'Paper Presentation',
     desc: 'Present your research on cutting-edge topics. Showcase innovations in AI, cybersecurity, blockchain, and emerging technologies.',
     details: ['Individual / Team of 2', '10-min presentation + Q&A', 'Prize: ₹15,000'],
-    color: '#bf00ff',
+    color: '#C41E3A',
     angle: -8,
   },
   {
@@ -19,7 +19,7 @@ const EVENTS = [
     title: 'Hackathon',
     desc: '24-hour coding sprint. Build disruptive solutions to real-world problems. Innovation, execution, and impact all judged.',
     details: ['Teams of 2–4', '24 Hours', 'Prize: ₹30,000'],
-    color: '#7c3aed',
+    color: '#FFD700',
     angle: 4,
   },
   {
@@ -29,7 +29,7 @@ const EVENTS = [
     title: 'Technical Quiz',
     desc: 'Test your tech knowledge across CS fundamentals, current affairs in technology, logical reasoning, and aptitude.',
     details: ['Individual / Pair', '3 Rounds', 'Prize: ₹10,000'],
-    color: '#a855f7',
+    color: '#FF9EBB',
     angle: -4,
   },
   {
@@ -39,7 +39,7 @@ const EVENTS = [
     title: 'Workshops',
     desc: 'Hands-on sessions led by industry experts on AI/ML, Cloud Computing, Cybersecurity, and Web3 technologies.',
     details: ['30 Seats per batch', '3-Hour Sessions', 'Certificate + Kit'],
-    color: '#9333ea',
+    color: '#8B0000',
     angle: 8,
   },
 ]
@@ -65,8 +65,8 @@ export default function EventsSection() {
       className="relative py-24 bg-wakanda-black overflow-hidden"
     >
       {/* Subtle background */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(76,29,149,0.12),transparent_60%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_80%,rgba(191,0,255,0.08),transparent_55%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(196,30,58,0.12),transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_80%,rgba(255,215,0,0.08),transparent_55%)]" />
       <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-vibranium-700/40 to-transparent" />
 
       <div className="relative z-10 container mx-auto px-6 max-w-7xl">
@@ -86,7 +86,7 @@ export default function EventsSection() {
             Choose Your{' '}
             <span
               style={{
-                background: 'linear-gradient(135deg, #bf00ff, #e040fb)',
+                background: 'linear-gradient(135deg, #C41E3A, #FFD700)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -144,7 +144,7 @@ function EventCard({ event, variants }) {
       <div
         className="holo-panel rounded-sm p-7 h-full relative overflow-hidden"
         style={{
-          border: '1px solid rgba(191,0,255,0.22)',
+          border: '1px solid rgba(196,30,58,0.22)',
         }}
       >
         <div className="flex items-start justify-between gap-4">
@@ -158,7 +158,7 @@ function EventCard({ event, variants }) {
           </div>
           <div
             className="flex h-10 w-10 items-center justify-center border border-vibranium-700/40 text-vibranium-300"
-            style={{ boxShadow: 'inset 0 0 18px rgba(191,0,255,0.08)' }}
+            style={{ boxShadow: 'inset 0 0 18px rgba(196,30,58,0.08)' }}
           >
             <span className="text-lg">{event.icon}</span>
           </div>

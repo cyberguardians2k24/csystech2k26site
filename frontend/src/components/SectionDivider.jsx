@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 /**
  * Divider between sections — glowing horizontal rule with optional label.
- * variant: 'vibranium' | 'cyan' | 'gold' | 'subtle'
+ * variant: 'vibranium' | 'gold' | 'gold' | 'subtle'
  */
 export default function SectionDivider({ label, variant = 'vibranium' }) {
   const colors = {
@@ -15,15 +15,15 @@ export default function SectionDivider({ label, variant = 'vibranium' }) {
       ring: 'border-vibranium/40',
     },
     cyan: {
-      line: 'from-transparent via-holo-cyan/40 to-transparent',
-      glow: 'shadow-[0_0_12px_rgba(0,240,255,0.4)]',
-      text: 'text-holo-cyan',
-      dot: 'bg-holo-cyan',
-      ring: 'border-holo-cyan/30',
+      line: 'from-transparent via-vibranium-gold/40 to-transparent',
+      glow: 'shadow-[0_0_12px_rgba(255, 215, 0,0.4)]',
+      text: 'text-vibranium-gold',
+      dot: 'bg-vibranium-gold',
+      ring: 'border-vibranium-gold/30',
     },
     gold: {
       line: 'from-transparent via-vibranium/60 to-transparent',
-      glow: 'shadow-[0_0_18px_rgba(157,0,255,0.55),0_0_35px_rgba(157,0,255,0.2)]',
+      glow: 'shadow-[0_0_18px_rgba(196, 30, 58,0.55),0_0_35px_rgba(196, 30, 58,0.2)]',
       text: 'bp-vibranium-text',
       dot:  'bg-vibranium',
       ring: 'border-vibranium/30',

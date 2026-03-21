@@ -43,7 +43,7 @@ export default function EnergyReveal() {
     <section ref={containerRef} className="section-shell relative py-20 md:py-36 lg:py-40 bg-wakanda-dark overflow-hidden flex items-center justify-center md:min-h-screen">
       <div className="absolute inset-0 mesh-fade opacity-20 pointer-events-none" />
       <div className="absolute left-[8%] top-16 w-72 h-72 rounded-full bg-vibranium/10 blur-[120px] pointer-events-none hidden md:block" />
-      <div className="absolute right-[10%] bottom-12 w-72 h-72 rounded-full bg-holo-cyan/8 blur-[120px] pointer-events-none hidden md:block" />
+      <div className="absolute right-[10%] bottom-12 w-72 h-72 rounded-full bg-vibranium-gold/8 blur-[120px] pointer-events-none hidden md:block" />
 
       {/* SVG Energy Web */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -56,28 +56,28 @@ export default function EnergyReveal() {
           {/* Main sweeping curves */}
           <motion.path
             d="M -100,400 C 200,200 400,700 600,400 C 800,100 1000,600 1300,400"
-            fill="none" stroke="#9D00FF" strokeWidth="3" strokeLinecap="round"
+            fill="none" stroke="#C41E3A" strokeWidth="3" strokeLinecap="round"
             style={{ pathLength: pathLength1 }}
-            className="drop-shadow-[0_0_12px_rgba(157,0,255,0.9)]"
+            className="drop-shadow-[0_0_12px_rgba(196, 30, 58,0.9)]"
           />
           <motion.path
             d="M -100,500 C 300,300 500,700 700,450 C 900,200 1100,650 1300,500"
-            fill="none" stroke="#00f0ff" strokeWidth="1.5" strokeLinecap="round"
+            fill="none" stroke="#FFD700" strokeWidth="1.5" strokeLinecap="round"
             style={{ pathLength: pathLength2 }}
-            className="drop-shadow-[0_0_8px_rgba(0,240,255,0.8)]"
+            className="drop-shadow-[0_0_8px_rgba(255, 215, 0,0.8)]"
             opacity={0.7}
           />
           {/* Diagonal energy strikes */}
           <motion.path
             d="M 0,0 C 200,150 400,50 600,300 C 800,550 1000,200 1200,400"
-            fill="none" stroke="#9D00FF" strokeWidth="1" strokeLinecap="round"
+            fill="none" stroke="#C41E3A" strokeWidth="1" strokeLinecap="round"
             style={{ pathLength: pathLength3 }}
-            className="drop-shadow-[0_0_6px_rgba(157,0,255,0.6)]"
+            className="drop-shadow-[0_0_6px_rgba(196, 30, 58,0.6)]"
             opacity={0.4}
           />
           <motion.path
             d="M 1200,0 C 1000,200 800,100 600,350 C 400,600 200,250 0,450"
-            fill="none" stroke="#6B00BE" strokeWidth="1" strokeLinecap="round"
+            fill="none" stroke="#8B0000" strokeWidth="1" strokeLinecap="round"
             style={{ pathLength: pathLength4 }}
             opacity={0.35}
           />
@@ -87,8 +87,8 @@ export default function EnergyReveal() {
               key={i}
               cx={x} cy={400 + Math.sin(i) * 60}
               r="3"
-              fill="#9D00FF"
-              className="drop-shadow-[0_0_6px_rgba(157,0,255,1)]"
+              fill="#C41E3A"
+              className="drop-shadow-[0_0_6px_rgba(196, 30, 58,1)]"
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: [0, 1, 0.5], scale: [0, 1.5, 1] }}
               transition={{ delay: 1.5 + i * 0.2, duration: 0.8 }}
@@ -104,10 +104,10 @@ export default function EnergyReveal() {
       >
         <div className="absolute inset-0 mesh-fade opacity-30 pointer-events-none" />
         {/* Corner brackets — gold (BP detail) */}
-        <span className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2" style={{ borderColor: 'rgba(157,0,255,0.7)' }} />
-        <span className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2" style={{ borderColor: 'rgba(157,0,255,0.7)' }} />
-        <span className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2" style={{ borderColor: 'rgba(157,0,255,0.7)' }} />
-        <span className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2" style={{ borderColor: 'rgba(157,0,255,0.7)' }} />
+        <span className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2" style={{ borderColor: 'rgba(196, 30, 58,0.7)' }} />
+        <span className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2" style={{ borderColor: 'rgba(196, 30, 58,0.7)' }} />
+        <span className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2" style={{ borderColor: 'rgba(196, 30, 58,0.7)' }} />
+        <span className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2" style={{ borderColor: 'rgba(196, 30, 58,0.7)' }} />
 
         <div className="flex items-center gap-4 justify-center mb-6">
           <div className="h-px w-8 bg-vibranium" />

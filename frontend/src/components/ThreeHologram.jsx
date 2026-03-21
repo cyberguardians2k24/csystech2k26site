@@ -55,7 +55,7 @@ export function WakandaParticles({ count = 800 }) {
         <Points ref={points} positions={particlesPosition} stride={3} frustumCulled={false}>
             <PointMaterial
                 transparent
-                color="#c084fc"
+                color="#C41E3A"
                 size={0.045}
                 sizeAttenuation
                 depthWrite={false}
@@ -118,7 +118,7 @@ export function HolographicLogo() {
                 >
                     CYSTECH
                     <meshBasicMaterial
-                        color="#67e8f9"
+                        color="#FFD700"
                         transparent
                         opacity={0.16}
                         blending={THREE.AdditiveBlending}
@@ -139,7 +139,7 @@ export function HolographicLogo() {
                     CYSTECH
                     <meshPhysicalMaterial
                         color="#f5d0fe"
-                        emissive="#a855f7"
+                        emissive="#8B0000"
                         emissiveIntensity={1.9}
                         transmission={0.55}
                         transparent
@@ -161,7 +161,7 @@ export function HolographicLogo() {
                 >
                     2K26
                     <meshBasicMaterial
-                        color="#c084fc"
+                        color="#C41E3A"
                         transparent
                         opacity={0.76}
                         blending={THREE.AdditiveBlending}
@@ -213,7 +213,7 @@ export function EnergyPlatform() {
 
             <mesh ref={coreGlow} position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
                 <ringGeometry args={[0.6, 1.45, 64]} />
-                <meshBasicMaterial color="#a855f7" transparent opacity={0.2} side={THREE.DoubleSide} blending={THREE.AdditiveBlending} />
+                <meshBasicMaterial color="#8B0000" transparent opacity={0.2} side={THREE.DoubleSide} blending={THREE.AdditiveBlending} />
             </mesh>
 
             <mesh position={[0, 0.62, 0]}>
@@ -223,17 +223,17 @@ export function EnergyPlatform() {
 
             <mesh ref={ringA} position={[0, 0.2, 0]} rotation={[Math.PI / 2, 0, 0]}>
                 <torusGeometry args={[1.62, 0.06, 18, 120]} />
-                <meshStandardMaterial color="#c084fc" emissive="#a855f7" emissiveIntensity={2} metalness={0.4} roughness={0.15} />
+                <meshStandardMaterial color="#C41E3A" emissive="#8B0000" emissiveIntensity={2} metalness={0.4} roughness={0.15} />
             </mesh>
 
             <mesh ref={ringB} position={[0, 0.56, 0]} rotation={[Math.PI / 2, 0, 0]}>
                 <torusGeometry args={[1.1, 0.04, 16, 100]} />
-                <meshBasicMaterial color="#67e8f9" transparent opacity={0.45} blending={THREE.AdditiveBlending} />
+                <meshBasicMaterial color="#FFD700" transparent opacity={0.45} blending={THREE.AdditiveBlending} />
             </mesh>
 
             <mesh ref={ringC} position={[0, 0.78, 0]} rotation={[Math.PI / 2, Math.PI / 2, 0]}>
                 <torusGeometry args={[0.84, 0.03, 16, 100]} />
-                <meshBasicMaterial color="#d8b4fe" transparent opacity={0.34} blending={THREE.AdditiveBlending} />
+                <meshBasicMaterial color="#FFD700" transparent opacity={0.34} blending={THREE.AdditiveBlending} />
             </mesh>
 
             <mesh position={[0, -0.52, 0]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -269,12 +269,12 @@ export function TriangularMeshCage() {
         <group position={[0, 0.65, 0]}>
             <mesh ref={outerRef}>
                 <octahedronGeometry args={[1.6, 0]} />
-                <meshBasicMaterial color="#a855f7" wireframe transparent opacity={0.22} blending={THREE.AdditiveBlending} />
+                <meshBasicMaterial color="#8B0000" wireframe transparent opacity={0.22} blending={THREE.AdditiveBlending} />
             </mesh>
 
             <mesh ref={innerRef} scale={0.78}>
                 <icosahedronGeometry args={[1.22, 0]} />
-                <meshBasicMaterial color="#67e8f9" wireframe transparent opacity={0.14} blending={THREE.AdditiveBlending} />
+                <meshBasicMaterial color="#FFD700" wireframe transparent opacity={0.14} blending={THREE.AdditiveBlending} />
             </mesh>
         </group>
     );

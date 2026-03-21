@@ -9,7 +9,7 @@ export const SPEAKERS = [
       { label: 'Papers', val: '34' },
       { label: 'Patents', val: '7' },
     ],
-    color: 'from-vibranium to-holo-cyan',
+    color: 'from-vibranium to-vibranium-gold',
   },
   {
     name: "T'Challa Vanguard",
@@ -21,7 +21,7 @@ export const SPEAKERS = [
       { label: 'Papers', val: '19' },
       { label: 'Ops', val: '50+' },
     ],
-    color: 'from-holo-cyan to-vibranium-light',
+    color: 'from-vibranium-gold to-vibranium-light',
   },
   {
     name: 'Riri Williams',

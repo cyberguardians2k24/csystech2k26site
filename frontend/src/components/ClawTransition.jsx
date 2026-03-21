@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
  * ClawTransition renders a full-screen Black Panther–style claw-slash reveal
  * that triggers whenever the `trigger` prop becomes `true`.
  */
-export default function ClawTransition({ trigger, color = '#bf00ff' }) {
+export default function ClawTransition({ trigger, color = '#C41E3A' }) {
   const [show, setShow] = useState(false)
 
   useEffect(() => {

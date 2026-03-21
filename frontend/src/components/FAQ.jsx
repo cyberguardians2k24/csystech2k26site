@@ -97,7 +97,7 @@ export default function FAQ() {
   return (
     <section id="faq" className="relative py-16 md:py-32 bg-wakanda-dark overflow-hidden">
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-vibranium/6 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-holo-cyan/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-vibranium-gold/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="container mx-auto px-6 max-w-3xl relative z-10">
         <motion.div
@@ -113,7 +113,7 @@ export default function FAQ() {
           </div>
           <h3 className="text-5xl md:text-7xl font-black font-heading tracking-tighter uppercase">
             <span className="text-white">Frequently</span>{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-vibranium to-holo-cyan">Asked</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-vibranium to-vibranium-gold">Asked</span>
           </h3>
         </motion.div>
 
@@ -131,7 +131,7 @@ export default function FAQ() {
           className="mt-10 text-center text-white/30 font-mono text-xs tracking-widest"
         >
           Still have questions?{' '}
-          <a href="mailto:cystech@college.edu" className="text-holo-cyan hover:text-white transition-colors underline underline-offset-4">
+          <a href="mailto:cystech@college.edu" className="text-vibranium-gold hover:text-white transition-colors underline underline-offset-4">
             cystech@college.edu
           </a>
         </motion.p>

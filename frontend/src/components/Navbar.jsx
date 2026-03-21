@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -79,7 +79,7 @@ export default function Navbar({ nonInteractive = false }) {
   }, [mobileOpen])
 
   const currentPageLabel = useMemo(() => {
-    if (location.pathname.startsWith('/register/')) return 'Event Registration'
+    if (location.pathname.startsWith('/register')) return 'Event Registration'
     return PAGE_LABELS[location.pathname] ?? 'CYSTECH2K26'
   }, [location.pathname])
 
@@ -114,13 +114,13 @@ export default function Navbar({ nonInteractive = false }) {
         transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 ${nonInteractive ? 'pointer-events-none' : ''}`}
       >
-        <div className={`nav-command-shell mx-auto max-w-5xl rounded-[1.2rem] px-3 py-2.5 sm:py-2 flex items-center justify-between gap-2 sm:gap-3 transition-all duration-700 ${scrolled ? 'bg-wakanda-darker/92 shadow-[0_20px_80px_rgba(0,0,0,0.45)] border border-vibranium/16 backdrop-blur-2xl' : 'bg-[#06020d]/74 border border-[#c084fc]/10 backdrop-blur-xl'}`}>
+        <div className={`nav-command-shell mx-auto max-w-5xl rounded-[1.2rem] px-3 py-2.5 sm:py-2 flex items-center justify-between gap-2 sm:gap-3 transition-all duration-700 ${scrolled ? 'bg-wakanda-darker/92 shadow-[0_20px_80px_rgba(0,0,0,0.45)] border border-vibranium/16 backdrop-blur-2xl' : 'bg-wakanda-dark/74 border border-[#B8730A]/20 backdrop-blur-xl'}`}>
           <button
             onClick={() => handleNavClick('#hero')}
-            className="hidden md:flex items-center gap-2 rounded-full border border-[#67e8f9]/14 bg-[#071019]/38 px-3 py-1.5"
+            className="hidden md:flex items-center gap-2 rounded-full border border-[#FFD700]/14 bg-[#071019]/38 px-3 py-1.5"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#67e8f9] animate-pulse" />
-            <span className="font-mono text-[9px] tracking-[0.28em] uppercase text-[#a5f3fc] whitespace-nowrap">{currentPageLabel}</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FFD700] animate-pulse" />
+            <span className="font-mono text-[9px] tracking-[0.28em] uppercase text-[#fde68a] whitespace-nowrap">{currentPageLabel}</span>
           </button>
 
           {/* Mobile-only brand */}
@@ -137,7 +137,7 @@ export default function Navbar({ nonInteractive = false }) {
             </div>
           </button>
 
-          <div className="hidden lg:flex items-center gap-1 rounded-full border border-[#c084fc]/14 bg-[#090311]/70 px-1.5 py-1 mx-auto shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+          <div className="hidden lg:flex items-center gap-1 rounded-full border border-vibranium/30 bg-[#120400]/70 px-1.5 py-1 mx-auto shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
             {NAV_LINKS.map((link, i) => (
               <motion.div
                 key={link.href}
@@ -158,7 +158,7 @@ export default function Navbar({ nonInteractive = false }) {
           <div className="hidden md:flex items-center gap-2 shrink-0">
             <button
               onClick={() => handleNavClick('#events')}
-              className="panel-sheen px-4 py-2 rounded-full border border-[#a855f7]/28 bg-[linear-gradient(135deg,rgba(168,85,247,0.68),rgba(14,165,233,0.26))] text-white font-heading font-bold text-[11px] tracking-[0.18em] uppercase shadow-[0_0_24px_rgba(168,85,247,0.22)] hover:scale-[1.02] transition-all duration-300"
+              className="panel-sheen px-4 py-2 rounded-full border border-vibranium/40 bg-[linear-gradient(135deg,rgba(196,30,58,0.68),rgba(184,115,10,0.26))] text-white font-heading font-bold text-[11px] tracking-[0.18em] uppercase shadow-[0_0_24px_rgba(196,30,58,0.28)] hover:scale-[1.02] transition-all duration-300"
             >
               Register
             </button>
@@ -167,14 +167,14 @@ export default function Navbar({ nonInteractive = false }) {
           <div className="md:hidden flex items-center gap-2 shrink-0">
             <button
               onClick={() => handleNavClick('#events')}
-              className="px-3 py-2 rounded-full border border-[#a855f7]/28 bg-[linear-gradient(135deg,rgba(168,85,247,0.72),rgba(14,165,233,0.22))] text-white font-heading font-bold text-[10px] tracking-[0.18em] uppercase shadow-[0_0_22px_rgba(168,85,247,0.18)] backdrop-blur-xl"
+              className="px-3 py-2 rounded-full border border-vibranium/40 bg-[linear-gradient(135deg,rgba(196,30,58,0.72),rgba(184,115,10,0.22))] text-white font-heading font-bold text-[10px] tracking-[0.18em] uppercase shadow-[0_0_22px_rgba(196,30,58,0.28)] backdrop-blur-xl"
             >
               Register
             </button>
 
             <motion.button
               whileTap={{ scale: 0.92 }}
-              className="lg:hidden flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full border border-[#c084fc]/18 bg-[#08020f]/74 backdrop-blur-xl relative z-50 group shrink-0"
+              className="lg:hidden flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full border border-vibranium/30 bg-[#0a0200]/74 backdrop-blur-xl relative z-50 group shrink-0"
               onClick={() => setMobileOpen((value) => !value)}
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
@@ -182,7 +182,7 @@ export default function Navbar({ nonInteractive = false }) {
               {[0, 1, 2].map((i) => (
                 <span
                   key={i}
-                  className={`block h-[2px] bg-vibranium-light rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(157,0,255,0.8)] ${mobileOpen
+                  className={`block h-[2px] bg-vibranium-light rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(196, 30, 58,0.8)] ${mobileOpen
                     ? i === 0 ? 'w-5 rotate-45 translate-y-[7px]' : i === 1 ? 'opacity-0 w-0' : 'w-5 -rotate-45 -translate-y-[7px]'
                     : i === 1 ? 'w-3 ml-auto' : 'w-5'
                   }`}
@@ -214,12 +214,12 @@ export default function Navbar({ nonInteractive = false }) {
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
               className="fixed left-3 right-3 top-[4.8rem] z-50 rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(10,4,18,0.98),rgba(5,2,10,0.98))] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.55)] backdrop-blur-3xl md:hidden"
             >
-              <div className="absolute inset-0 rounded-[1.75rem] bg-[radial-gradient(circle_at_top,rgba(168,85,247,0.16),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,0.10),transparent_36%)] pointer-events-none" />
+              <div className="absolute inset-0 rounded-[1.75rem] bg-[radial-gradient(circle_at_top,rgba(196,30,58,0.16),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(232,160,0,0.10),transparent_36%)] pointer-events-none" />
 
               <div className="relative z-10 flex flex-col gap-4">
                 <div className="flex items-start justify-between gap-3 rounded-[1.35rem] border border-white/8 bg-white/[0.03] px-4 py-3.5">
                   <div>
-                    <p className="font-mono text-[9px] tracking-[0.28em] uppercase text-[#9D00FF]/75">Current Page</p>
+                    <p className="font-mono text-[9px] tracking-[0.28em] uppercase text-[#C41E3A]/75">Current Page</p>
                     <p className="mt-2 text-white font-heading text-base font-black tracking-[0.08em]">{currentPageLabel}</p>
                   </div>
                   <button
@@ -243,7 +243,7 @@ export default function Navbar({ nonInteractive = false }) {
                         exit={{ opacity: 0, y: 12 }}
                         transition={{ duration: 0.25, delay: i * 0.04 }}
                         onClick={() => handleNavClick(link.href)}
-                        className={`rounded-[1.2rem] border px-4 py-3.5 text-left transition-all duration-300 ${active ? 'border-[#a855f7]/45 bg-[linear-gradient(135deg,rgba(168,85,247,0.18),rgba(14,165,233,0.10))] shadow-[0_0_24px_rgba(168,85,247,0.12)]' : 'border-white/8 bg-white/[0.03] hover:border-white/14 hover:bg-white/[0.05]'}`}
+                        className={`rounded-[1.2rem] border px-4 py-3.5 text-left transition-all duration-300 ${active ? 'border-vibranium/50 bg-[linear-gradient(135deg,rgba(196,30,58,0.22),rgba(184,115,10,0.1))] shadow-[0_0_24px_rgba(196,30,58,0.18)]' : 'border-white/8 bg-white/[0.03] hover:border-white/14 hover:bg-white/[0.05]'}`}
                       >
                         <div className="font-heading text-sm font-black uppercase tracking-[0.16em] text-white/92">{link.label}</div>
                         <div className="mt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/35">
@@ -260,7 +260,7 @@ export default function Navbar({ nonInteractive = false }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.25, delay: 0.22 }}
                     onClick={() => handleNavClick('#events')}
-                    className="panel-sheen rounded-[1.2rem] border border-[#a855f7]/35 bg-[linear-gradient(135deg,rgba(168,85,247,0.78),rgba(14,165,233,0.22))] px-4 py-4 text-left shadow-[0_0_30px_rgba(168,85,247,0.18)]"
+                    className="panel-sheen rounded-[1.2rem] border border-vibranium/40 bg-[linear-gradient(135deg,rgba(196,30,58,0.78),rgba(184,115,10,0.22))] px-4 py-4 text-left shadow-[0_0_30px_rgba(196,30,58,0.22)]"
                   >
                     <div className="font-heading text-sm font-black uppercase tracking-[0.16em] text-white">Register</div>
                     <div className="mt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/65">Go to access form</div>
@@ -271,7 +271,7 @@ export default function Navbar({ nonInteractive = false }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.25, delay: 0.26 }}
                     onClick={() => handleNavClick('#events')}
-                    className="rounded-[1.2rem] border border-[#22d3ee]/16 bg-[linear-gradient(135deg,rgba(34,211,238,0.12),rgba(255,255,255,0.03))] px-4 py-4 text-left"
+                    className="rounded-[1.2rem] border border-gold-default/20 bg-[linear-gradient(135deg,rgba(232,160,0,0.12),rgba(255,255,255,0.03))] px-4 py-4 text-left"
                   >
                     <div className="font-heading text-sm font-black uppercase tracking-[0.16em] text-white">Events</div>
                     <div className="mt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/55">Browse highlights</div>
@@ -293,7 +293,7 @@ function NavLink({ href, label, active, onClick }) {
       onClick={onClick}
       className="relative group px-3 py-2"
     >
-      <span className={`relative z-10 font-orbitron text-[10px] tracking-[0.16em] uppercase font-semibold transition-colors duration-300 ${active ? 'text-vibranium-light drop-shadow-[0_0_8px_rgba(157,0,255,0.8)]' : 'text-white/80 group-hover:text-white'}`}>
+      <span className={`relative z-10 font-orbitron text-[10px] tracking-[0.16em] uppercase font-semibold transition-colors duration-300 ${active ? 'text-vibranium-light drop-shadow-[0_0_8px_rgba(196, 30, 58,0.8)]' : 'text-white/80 group-hover:text-white'}`}>
         {label}
       </span>
 
@@ -301,20 +301,20 @@ function NavLink({ href, label, active, onClick }) {
         variants={{ hover: { width: '100%', opacity: 1 } }}
         initial={{ width: '0%', opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="absolute top-0 left-0 h-px bg-vibranium-light shadow-[0_0_8px_#B44FFF]"
+        className="absolute top-0 left-0 h-px bg-vibranium-light shadow-[0_0_8px_#C41E3A]"
       />
 
       <motion.div
         variants={{ hover: { width: '100%', opacity: 1 } }}
         initial={{ width: '0%', opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="absolute bottom-0 right-0 h-px bg-vibranium-light shadow-[0_0_8px_#B44FFF]"
+        className="absolute bottom-0 right-0 h-px bg-vibranium-light shadow-[0_0_8px_#C41E3A]"
       />
 
       {active && (
         <motion.div
           layoutId="activeNavIndicator"
-          className="absolute inset-0 bg-gradient-to-r from-[#1d0a2d]/80 via-[#33124f]/70 to-[#0b2431]/75 border border-[#c084fc]/22 shadow-[inset_0_0_20px_rgba(192,132,252,0.16),0_0_24px_rgba(103,232,249,0.06)] rounded-full"
+          className="absolute inset-0 bg-gradient-to-r from-vibranium-darker/90 via-vibranium-dark/70 to-wakanda-darker/80 border border-vibranium/40 shadow-[inset_0_0_20px_rgba(196,30,58,0.3),0_0_24px_rgba(255,215,0,0.15)] rounded-full"
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         />
       )}

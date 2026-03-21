@@ -1,6 +1,16 @@
 ﻿// ── Shared event data used across home, pages, registration, and stats ─────
 
 import { SYMPOSIUM_INFO } from './symposium';
+import posterCipherVista from '../../Assets/posters/Poster Presentation.jpeg';
+import posterBugBash from '../../Assets/posters/BUG BASH.jpeg';
+import posterNeuroByte from '../../Assets/posters/Neuro Byte.jpeg';
+import posterPayloadParadise from '../../Assets/posters/Payload Paradise.jpeg';
+import posterDesignDuel from '../../Assets/posters/Design DUEL.jpeg';
+import posterArenaFreeFire from '../../Assets/posters/ARENA(FreeFire) poster.jpeg';
+import posterArenaBgmi from '../../Assets/posters/ARENA(BGMI) poster.jpeg';
+import posterKabaddi from '../../Assets/posters/KABADDI.jpeg';
+import posterLinkLogic from '../../Assets/posters/Link Logic.jpeg';
+import posterShortFilm from '../../Assets/posters/short film.jpeg';
 
 const formatInr = (value) => (value > 0 ? `₹${value.toLocaleString('en-IN')}+` : 'TBA');
 
@@ -8,8 +18,8 @@ export const CATEGORY_META = {
   technical: {
     label: 'Technical',
     shortLabel: 'Tech',
-    accent: 'text-holo-cyan',
-    chip: 'border-holo-cyan/30 bg-holo-cyan/10 text-holo-cyan',
+    accent: 'text-vibranium-gold',
+    chip: 'border-vibranium-gold/30 bg-vibranium-gold/10 text-vibranium-gold',
     route: '/technical',
   },
   'non-technical': {
@@ -28,9 +38,10 @@ export const TECHNICAL_EVENTS = [
     title: 'Cipher Vista',
     tagline: 'Present a sharp cyber-tech idea with clarity and originality.',
     desc: 'A poster-style presentation event where teams present original ideas across cybersecurity and related domains in a short, judge-facing showcase.',
-    color: 'from-holo-cyan to-vibranium-light',
+    color: 'from-vibranium-gold to-vibranium-light',
     span: 'md:col-span-2 md:row-span-1',
     icon: '📄',
+    poster: posterCipherVista,
     tag: 'POSTER PRESENTATION',
     prize: 'TBA',
     prizeValue: 0,
@@ -65,9 +76,10 @@ export const TECHNICAL_EVENTS = [
     title: 'Bug Bash',
     tagline: 'Debug under pressure and outscore the field.',
     desc: 'A multi-round debugging challenge where individuals or pairs identify and fix bugs with speed, accuracy, and strong programming fundamentals.',
-    color: 'from-vibranium to-holo-cyan',
+    color: 'from-vibranium to-vibranium-gold',
     span: 'md:col-span-2 md:row-span-2',
     icon: '🔧',
+    poster: posterBugBash,
     tag: 'DEBUGGING',
     prize: 'TBA',
     prizeValue: 0,
@@ -101,9 +113,10 @@ export const TECHNICAL_EVENTS = [
     title: 'Neuro Byte',
     tagline: 'Fast cyber-tech quiz rounds with online and offline pressure.',
     desc: 'A three-round quiz event featuring jumbled words, online MCQs, and an offline rapid-fire final focused on cybersecurity, networking, programming, and AI topics.',
-    color: 'from-holo-cyan to-vibranium-dark',
+    color: 'from-vibranium-gold to-vibranium-dark',
     span: 'md:col-span-1 md:row-span-1',
     icon: '🧠',
+    poster: posterNeuroByte,
     tag: 'QUIZ',
     prize: 'TBA',
     prizeValue: 0,
@@ -140,6 +153,7 @@ export const TECHNICAL_EVENTS = [
     color: 'from-vibranium to-vibranium',
     span: 'md:col-span-1 md:row-span-1',
     icon: '🛡️',
+    poster: posterPayloadParadise,
     tag: 'WEB SECURITY',
     prize: 'TBA',
     prizeValue: 0,
@@ -173,9 +187,10 @@ export const TECHNICAL_EVENTS = [
     title: 'Design Duel',
     tagline: 'Three rounds of logic, code, and speed.',
     desc: 'A fun coding event that evaluates team coordination, problem-solving depth, and coding ability across three progressively harder rounds.',
-    color: 'from-vibranium-light to-holo-cyan',
+    color: 'from-vibranium-light to-vibranium-gold',
     span: 'md:col-span-1 md:row-span-1',
     icon: '💻',
+    poster: posterDesignDuel,
     tag: 'FUN CODING',
     prize: 'TBA',
     prizeValue: 0,
@@ -212,9 +227,10 @@ export const NON_TECHNICAL_EVENTS = [
     title: 'Arena (Free Fire)',
     tagline: 'Battle royale and clash squad on campus stakes.',
     desc: 'A mobile-only Free Fire tournament with custom-room rules covering battle royale and clash squad formats.',
-    color: 'from-holo-cyan to-vibranium',
+    color: 'from-vibranium-gold to-vibranium',
     span: 'md:col-span-2 md:row-span-1',
     icon: '🎮',
+    poster: posterArenaFreeFire,
     tag: 'ARENA',
     prize: 'TBA',
     prizeValue: 0,
@@ -249,9 +265,10 @@ export const NON_TECHNICAL_EVENTS = [
     title: 'Arena (BGMI)',
     tagline: 'Three matches. Squad mode. Highest points wins.',
     desc: 'A Best-of-3 BGMI squad tournament using Livik or Erangel with placement and kill points to determine the champion.',
-    color: 'from-vibranium-light to-holo-cyan',
+    color: 'from-vibranium-light to-vibranium-gold',
     span: 'md:col-span-2 md:row-span-2',
     icon: '🎮',
+    poster: posterArenaBgmi,
     tag: 'BGMI',
     prize: 'TBA',
     prizeValue: 0,
@@ -288,6 +305,7 @@ export const NON_TECHNICAL_EVENTS = [
     color: 'from-vibranium to-vibranium-light',
     span: 'md:col-span-1 md:row-span-1',
     icon: '🤼',
+    poster: posterKabaddi,
     tag: 'SPORT',
     prize: 'TBA',
     prizeValue: 0,
@@ -317,9 +335,10 @@ export const NON_TECHNICAL_EVENTS = [
     title: 'Link Logic',
     tagline: 'Buzz first, connect faster, score higher.',
     desc: 'A team buzzer event with multiple rounds where players uncover the correct connection or answer before rival teams do.',
-    color: 'from-vibranium to-holo-cyan',
+    color: 'from-vibranium to-vibranium-gold',
     span: 'md:col-span-1 md:row-span-1',
     icon: '🧩',
+    poster: posterLinkLogic,
     tag: 'CONNECTION',
     prize: 'TBA',
     prizeValue: 0,
@@ -356,6 +375,7 @@ export const NON_TECHNICAL_EVENTS = [
     color: 'from-vibranium-light to-vibranium',
     span: 'md:col-span-1 md:row-span-1',
     icon: '🎬',
+    poster: posterShortFilm,
     tag: 'FILMMAKING',
     prize: 'TBA',
     prizeValue: 0,

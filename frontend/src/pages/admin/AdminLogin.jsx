@@ -34,7 +34,7 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen bg-[#050310] flex items-center justify-center overflow-hidden relative px-4 pt-24">
       {/* Background glows */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(157,0,255,0.15),transparent_65%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(196, 30, 58,0.15),transparent_65%)] pointer-events-none" />
       <div className="absolute inset-0 scanlines opacity-5 pointer-events-none" />
 
       {/* Rotating ring bg */}
@@ -49,10 +49,10 @@ export default function AdminLogin() {
       >
         {/* Card */}
         <div className="holographic-panel p-8 md:p-10 border-vibranium/30 shadow-vibranium-glow relative overflow-hidden">
-          <span className="absolute top-5 left-5 w-5 h-5 border-t-2 border-l-2 border-holo-cyan/50" />
-          <span className="absolute top-5 right-5 w-5 h-5 border-t-2 border-r-2 border-holo-cyan/50" />
-          <span className="absolute bottom-5 left-5 w-5 h-5 border-b-2 border-l-2 border-holo-cyan/50" />
-          <span className="absolute bottom-5 right-5 w-5 h-5 border-b-2 border-r-2 border-holo-cyan/50" />
+          <span className="absolute top-5 left-5 w-5 h-5 border-t-2 border-l-2 border-vibranium-gold/50" />
+          <span className="absolute top-5 right-5 w-5 h-5 border-t-2 border-r-2 border-vibranium-gold/50" />
+          <span className="absolute bottom-5 left-5 w-5 h-5 border-b-2 border-l-2 border-vibranium-gold/50" />
+          <span className="absolute bottom-5 right-5 w-5 h-5 border-b-2 border-r-2 border-vibranium-gold/50" />
 
           {/* Brand */}
           <div className="flex flex-col items-center gap-3 mb-8">
@@ -79,7 +79,7 @@ export default function AdminLogin() {
                 onChange={set('email')}
                 required
                 autoComplete="email"
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-vibranium/60 focus:bg-vibranium/5 focus:shadow-[0_0_16px_rgba(157,0,255,0.15)] transition-all duration-300"
+                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-vibranium/60 focus:bg-vibranium/5 focus:shadow-[0_0_16px_rgba(196, 30, 58,0.15)] transition-all duration-300"
               />
             </div>
 
@@ -96,7 +96,7 @@ export default function AdminLogin() {
                 onChange={set('password')}
                 required
                 autoComplete="current-password"
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-vibranium/60 focus:bg-vibranium/5 focus:shadow-[0_0_16px_rgba(157,0,255,0.15)] transition-all duration-300"
+                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-vibranium/60 focus:bg-vibranium/5 focus:shadow-[0_0_16px_rgba(196, 30, 58,0.15)] transition-all duration-300"
               />
             </div>
 
@@ -119,7 +119,7 @@ export default function AdminLogin() {
               disabled={loading}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
-              className="w-full py-3.5 rounded-full bg-vibranium text-white font-bold font-heading tracking-widest uppercase text-sm shadow-vibranium-glow hover:shadow-[0_0_50px_rgba(157,0,255,0.6)] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-40"
+              className="w-full py-3.5 rounded-full bg-vibranium text-white font-bold font-heading tracking-widest uppercase text-sm shadow-vibranium-glow hover:shadow-[0_0_50px_rgba(196, 30, 58,0.6)] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-40"
             >
               {loading ? (
                 <>

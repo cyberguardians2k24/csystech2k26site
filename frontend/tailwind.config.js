@@ -8,41 +8,58 @@ export default {
     extend: {
       colors: {
         wakanda: {
-          dark: '#030005',
-          darker: '#010002',
-          DEFAULT: '#05000A',
+          dark: '#120400',
+          darker: '#0a0200',
+          DEFAULT: '#0f0300',
         },
         vibranium: {
-          light: '#B44FFF',
-          DEFAULT: '#9D00FF',
-          dark: '#6B00BE',
-          glow: 'rgba(157, 0, 255, 0.6)',
+          light: '#FF8C42',
+          DEFAULT: '#C41E3A',
+          dark: '#8B0000',
+          darker: '#5a0000',
+          glow: 'rgba(196, 30, 58, 0.6)',
+        },
+        // Molten Gold palette (from logo)
+        gold: {
+          light: '#FFF0A0',
+          bright: '#FFD700',
+          DEFAULT: '#E8A000',
+          deep: '#B8730A',
+          dark: '#7a4800',
+        },
+        ember: {
+          DEFAULT: '#C45000',
+          bright: '#FF6B00',
+          dark: '#6B2800',
         },
         holo: {
-          cyan: '#00f0ff',
-          blue: '#1d4ed8',
+          cyan: '#FFD700',
+          blue: '#FFA500',
         },
-
+        'vibranium-gold': '#FFD700',
       },
       fontFamily: {
-        heading: ['Panthera', 'sans-serif'],
-        body: ['Panthera', 'sans-serif'],
-        mono: ['Panthera', 'sans-serif'],
+        heading: ['Cinzel Decorative', 'Cinzel', 'serif'],
+        display: ['Cinzel Decorative', 'serif'],
+        subheading: ['Cinzel', 'serif'],
+        body: ['Rajdhani', 'sans-serif'],
+        rajdhani: ['Rajdhani', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       backgroundImage: {
-        'wakanda-gradient': 'linear-gradient(to bottom right, #030005, #0a0014, #030005)',
-        'vibranium-flare': 'radial-gradient(circle at center, rgba(157,0,255,0.2) 0%, transparent 70%)',
-        'holo-grid': 'linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px)',
+        'wakanda-gradient': 'linear-gradient(to bottom right, #1a0a0a, #2d0f15, #1a0a0a)',
+        'vibranium-flare': 'radial-gradient(circle at center, rgba(196,30,58,0.2) 0%, transparent 70%)',
+        'holo-grid': 'linear-gradient(rgba(255, 215, 0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 215, 0, 0.05) 1px, transparent 1px)',
         'glass-gradient': 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)',
       },
       backgroundSize: {
         'grid-sm': '32px 32px',
       },
       boxShadow: {
-        'vibranium-glow': '0 0 20px rgba(157, 0, 255, 0.45), inset 0 0 10px rgba(157, 0, 255, 0.2)',
-        'holo-glow': '0 0 15px rgba(0, 240, 255, 0.3)',
-        'kinetic-glow': '0 0 20px rgba(157,0,255,0.5), 0 0 40px rgba(157,0,255,0.2)',
-        'kinetic-glow-intense': '0 0 30px rgba(157,0,255,0.7), 0 0 60px rgba(157,0,255,0.35), inset 0 0 15px rgba(157,0,255,0.1)',
+        'vibranium-glow': '0 0 20px rgba(196, 30, 58, 0.45), inset 0 0 10px rgba(196, 30, 58, 0.2)',
+        'holo-glow': '0 0 15px rgba(255, 215, 0, 0.3)',
+        'kinetic-glow': '0 0 20px rgba(196,30,58,0.5), 0 0 40px rgba(196,30,58,0.2)',
+        'kinetic-glow-intense': '0 0 30px rgba(196,30,58,0.7), 0 0 60px rgba(196,30,58,0.35), inset 0 0 15px rgba(196,30,58,0.1)',
         'glass-panel': '0 8px 32px 0 rgba(0, 0, 0, 0.5)',
       },
       animation: {
@@ -57,8 +74,8 @@ export default {
       },
       keyframes: {
         'pulse-vibranium': {
-          '0%, 100%': { opacity: '1', boxShadow: '0 0 20px rgba(157,0,255,0.4)' },
-          '50%': { opacity: '.8', boxShadow: '0 0 40px rgba(157,0,255,0.8)' },
+          '0%, 100%': { opacity: '1', boxShadow: '0 0 20px rgba(196,30,58,0.4)' },
+          '50%': { opacity: '.8', boxShadow: '0 0 40px rgba(196,30,58,0.8)' },
         },
         'flicker': {
           '0%': { opacity: '0.9' },

@@ -25,7 +25,7 @@ export default function TimelineSection() {
       className="relative min-h-screen py-28 bg-wakanda-black overflow-hidden"
     >
       {/* BG */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(76,29,149,0.12),transparent_70%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(196,30,58,0.12),transparent_70%)]" />
 
       <div className="relative z-10 container mx-auto px-6 max-w-4xl">
 
@@ -43,10 +43,10 @@ export default function TimelineSection() {
           </div>
           <h2
             className="font-orbitron font-black text-white"
-            style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', textShadow: '0 0 40px rgba(191,0,255,0.3)' }}
+            style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', textShadow: '0 0 40px rgba(196,30,58,0.3)' }}
           >
             DAY{' '}
-            <span style={{ background: 'linear-gradient(135deg, #bf00ff, #e040fb)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+            <span style={{ background: 'linear-gradient(135deg, #C41E3A, #FFD700)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               TIMELINE
             </span>
           </h2>
@@ -61,9 +61,9 @@ export default function TimelineSection() {
             animate={isInView ? { scaleY: 1 } : { scaleY: 0 }}
             transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              background: 'linear-gradient(180deg, transparent, #bf00ff, #da00ff, transparent)',
+              background: 'linear-gradient(180deg, transparent, #C41E3A, #FFD700, transparent)',
               transformOrigin: 'top',
-              boxShadow: '0 0 8px #bf00ff',
+              boxShadow: '0 0 8px #C41E3A',
             }}
           />
 
@@ -102,7 +102,7 @@ function TimelineItem({ item, index, isInView }) {
       >
         <div
           className="w-5 h-5 rounded-full border-2 border-vibranium-500 flex items-center justify-center"
-          style={{ background: '#050508', boxShadow: '0 0 12px #bf00ff, 0 0 24px rgba(191,0,255,0.4)' }}
+          style={{ background: '#050508', boxShadow: '0 0 12px #C41E3A, 0 0 24px rgba(196,30,58,0.4)' }}
         >
           <div className="w-2 h-2 rounded-full bg-vibranium-400 animate-pulse-slow" />
         </div>
@@ -125,14 +125,14 @@ function TimelineCard({ item, index, inView, side }) {
       animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: side === 'left' ? 40 : -40 }}
       transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
       className="holo-panel rounded-sm p-5 max-w-xs group hover:shadow-vibranium transition-all duration-300"
-      style={{ border: '1px solid rgba(191,0,255,0.25)' }}
+      style={{ border: '1px solid rgba(196,30,58,0.25)' }}
       whileHover={{ scale: 1.03 }}
     >
       {/* Tag + time on same row */}
       <div className="flex items-center justify-between mb-2">
         <span
           className="font-mono text-xs px-2 py-0.5 tracking-widest"
-          style={{ background: 'rgba(191,0,255,0.15)', color: '#bf00ff', border: '1px solid rgba(191,0,255,0.3)' }}
+          style={{ background: 'rgba(196,30,58,0.15)', color: '#FFD700', border: '1px solid rgba(196,30,58,0.3)' }}
         >
           {item.tag}
         </span>

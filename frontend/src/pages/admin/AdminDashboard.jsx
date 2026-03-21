@@ -184,26 +184,26 @@ function PosterModal({ event, onClose }) {
     bg.addColorStop(0, '#05001A'); bg.addColorStop(0.45, '#0E0030'); bg.addColorStop(1, '#030008');
     ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
 
-    ctx.strokeStyle = 'rgba(157,0,255,0.07)'; ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(196, 30, 58,0.07)'; ctx.lineWidth = 1;
     for (let x = 0; x < W; x += 36) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
     for (let y = 0; y < H; y += 36) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
 
     const topGlow = ctx.createRadialGradient(W / 2, -40, 0, W / 2, -40, 420);
-    topGlow.addColorStop(0, 'rgba(157,0,255,0.22)'); topGlow.addColorStop(1, 'rgba(0,0,0,0)');
+    topGlow.addColorStop(0, 'rgba(196, 30, 58,0.22)'); topGlow.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = topGlow; ctx.fillRect(0, 0, W, H * 0.5);
 
     const botGlow = ctx.createRadialGradient(W / 2, H + 40, 0, W / 2, H + 40, 360);
-    botGlow.addColorStop(0, 'rgba(0,240,255,0.12)'); botGlow.addColorStop(1, 'rgba(0,0,0,0)');
+    botGlow.addColorStop(0, 'rgba(255, 215, 0,0.12)'); botGlow.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = botGlow; ctx.fillRect(0, H * 0.6, W, H * 0.4);
 
-    ctx.strokeStyle = 'rgba(157,0,255,0.65)'; ctx.lineWidth = 2.5;
+    ctx.strokeStyle = 'rgba(196, 30, 58,0.65)'; ctx.lineWidth = 2.5;
     const bLen = 52, bOff = 28;
     [[bOff, bOff, 1, 1], [W - bOff, bOff, -1, 1], [bOff, H - bOff, 1, -1], [W - bOff, H - bOff, -1, -1]].forEach(([x, y, sx, sy]) => {
       ctx.beginPath(); ctx.moveTo(x + sx * bLen, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * bLen); ctx.stroke();
     });
 
     const makeLineGrad = (c) => { const g = ctx.createLinearGradient(0, 0, W, 0); g.addColorStop(0, 'transparent'); g.addColorStop(0.5, c); g.addColorStop(1, 'transparent'); return g; };
-    ctx.strokeStyle = makeLineGrad('rgba(157,0,255,0.7)'); ctx.lineWidth = 1;
+    ctx.strokeStyle = makeLineGrad('rgba(196, 30, 58,0.7)'); ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(0, 148); ctx.lineTo(W, 148); ctx.stroke();
 
     ctx.fillStyle = 'rgba(180,79,255,0.9)'; ctx.font = 'bold 13px \'Courier New\', monospace'; ctx.textAlign = 'center';
@@ -214,7 +214,7 @@ function PosterModal({ event, onClose }) {
     const catLabel = (event.category || 'EVENT').toUpperCase();
     const catW = ctx.measureText(catLabel).width + 56;
     roundRect(W / 2 - catW / 2, 168, catW, 38, 19);
-    ctx.fillStyle = 'rgba(157,0,255,0.12)'; ctx.fill();
+    ctx.fillStyle = 'rgba(196, 30, 58,0.12)'; ctx.fill();
     ctx.strokeStyle = 'rgba(180,79,255,0.5)'; ctx.lineWidth = 1; ctx.stroke();
     ctx.fillStyle = 'rgba(200,120,255,0.95)'; ctx.font = 'bold 11px \'Courier New\', monospace';
     ctx.fillText(catLabel, W / 2, 192);
@@ -222,7 +222,7 @@ function PosterModal({ event, onClose }) {
     ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 60px \'Arial Black\', \'Arial\', sans-serif'; ctx.textAlign = 'center';
     wrapText(event.name || 'Event', W / 2, 288, W - 110, 68);
 
-    ctx.strokeStyle = makeLineGrad('rgba(0,240,255,0.6)'); ctx.lineWidth = 1;
+    ctx.strokeStyle = makeLineGrad('rgba(255, 215, 0,0.6)'); ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(60, 428); ctx.lineTo(W - 60, 428); ctx.stroke();
 
     let contentY = 468;
@@ -230,7 +230,7 @@ function PosterModal({ event, onClose }) {
       ctx.fillStyle = 'rgba(180,79,255,0.6)'; ctx.font = 'bold 11px \'Courier New\', monospace';
       ctx.fillText('\u2606 TOTAL PRIZE POOL \u2606', W / 2, contentY); contentY += 12;
       const prizeGrad = ctx.createLinearGradient(W / 2 - 120, 0, W / 2 + 120, 0);
-      prizeGrad.addColorStop(0, '#B44FFF'); prizeGrad.addColorStop(0.5, '#FFFFFF'); prizeGrad.addColorStop(1, '#00f0ff');
+      prizeGrad.addColorStop(0, '#C41E3A'); prizeGrad.addColorStop(0.5, '#FFFFFF'); prizeGrad.addColorStop(1, '#FFD700');
       ctx.fillStyle = prizeGrad; ctx.font = 'bold 56px \'Arial Black\', sans-serif';
       ctx.fillText('\u20b9' + event.prizeAmount, W / 2, contentY + 58); contentY += 90;
     }
@@ -246,20 +246,20 @@ function PosterModal({ event, onClose }) {
       const cardY = contentY + i * 78;
       roundRect(70, cardY, W - 140, 60, 14);
       ctx.fillStyle = 'rgba(255,255,255,0.04)'; ctx.fill();
-      ctx.strokeStyle = 'rgba(157,0,255,0.18)'; ctx.lineWidth = 1; ctx.stroke();
-      ctx.textAlign = 'left'; ctx.fillStyle = 'rgba(157,0,255,0.75)'; ctx.font = 'bold 10px \'Courier New\', monospace';
+      ctx.strokeStyle = 'rgba(196, 30, 58,0.18)'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.textAlign = 'left'; ctx.fillStyle = 'rgba(196, 30, 58,0.75)'; ctx.font = 'bold 10px \'Courier New\', monospace';
       ctx.fillText(`${info.icon}  ${info.key}`, 100, cardY + 22);
       ctx.fillStyle = 'rgba(255,255,255,0.88)'; ctx.font = '15px Arial, sans-serif';
       ctx.fillText(info.val, 100, cardY + 44); ctx.textAlign = 'center';
     });
 
-    ctx.strokeStyle = makeLineGrad('rgba(157,0,255,0.55)'); ctx.lineWidth = 1;
+    ctx.strokeStyle = makeLineGrad('rgba(196, 30, 58,0.55)'); ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(0, H - 148); ctx.lineTo(W, H - 148); ctx.stroke();
 
     const ctaText = `REGISTER @ CYSTECH2026 / ${(event.name || 'event').toLowerCase().split(' ').join('-')}`;
     ctx.fillStyle = 'rgba(180,79,255,0.8)'; ctx.font = 'bold 12px \'Courier New\', monospace';
     ctx.fillText(ctaText, W / 2, H - 102);
-    ctx.fillStyle = 'rgba(0,240,255,0.4)'; ctx.font = '11px \'Courier New\', monospace';
+    ctx.fillStyle = 'rgba(255, 215, 0,0.4)'; ctx.font = '11px \'Courier New\', monospace';
     ctx.fillText('Scan QR or visit the registration desk on event day', W / 2, H - 74);
     ctx.fillStyle = 'rgba(255,255,255,0.18)'; ctx.font = '10px \'Courier New\', monospace';
     ctx.fillText('\u00a9 Sympo Organizing Committee \u00b7 All rights reserved', W / 2, H - 48);

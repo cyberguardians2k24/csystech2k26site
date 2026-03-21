@@ -9,7 +9,7 @@ const SPEAKERS = [
     org: 'Tech Wakanda Labs',
     topic: 'Future of Generative AI',
     avatar: 'AM',
-    color: '#bf00ff',
+    color: '#C41E3A',
     socials: { linkedin: '#', twitter: '#' },
   },
   {
@@ -19,7 +19,7 @@ const SPEAKERS = [
     org: 'IIT Chennai',
     topic: 'Quantum Algorithms & Cryptography',
     avatar: 'PN',
-    color: '#7c3aed',
+    color: '#FFD700',
     socials: { linkedin: '#', twitter: '#' },
   },
   {
@@ -29,7 +29,7 @@ const SPEAKERS = [
     org: 'Cybersec Dynamics',
     topic: 'Zero-Trust Security Architecture',
     avatar: 'KS',
-    color: '#a855f7',
+    color: '#FF9EBB',
     socials: { linkedin: '#', twitter: '#' },
   },
   {
@@ -39,7 +39,7 @@ const SPEAKERS = [
     org: 'Google DeepMind India',
     topic: 'Neural Architecture Search',
     avatar: 'AD',
-    color: '#9333ea',
+    color: '#8B0000',
     socials: { linkedin: '#', twitter: '#' },
   },
   {
@@ -49,7 +49,7 @@ const SPEAKERS = [
     org: 'Web3 Ventures',
     topic: 'Decentralized Identity Systems',
     avatar: 'RV',
-    color: '#6d28d9',
+    color: '#FFA500',
     socials: { linkedin: '#', twitter: '#' },
   },
   {
@@ -59,7 +59,7 @@ const SPEAKERS = [
     org: 'Microsoft Azure',
     topic: 'Edge AI & Cloud Continuum',
     avatar: 'MJ',
-    color: '#c084fc',
+    color: '#C41E3A',
     socials: { linkedin: '#', twitter: '#' },
   },
 ]
@@ -76,8 +76,8 @@ export default function SpeakersSection() {
       className="relative min-h-screen py-28 bg-wakanda-dark overflow-hidden"
     >
       {/* Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,rgba(76,29,149,0.12),transparent_60%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_80%,rgba(100,0,150,0.1),transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,rgba(196,30,58,0.12),transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_80%,rgba(255,215,0,0.1),transparent_60%)]" />
 
       <div className="relative z-10 container mx-auto px-6 max-w-7xl">
 
@@ -95,12 +95,12 @@ export default function SpeakersSection() {
           </div>
           <h2
             className="font-orbitron font-black text-white"
-            style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', textShadow: '0 0 40px rgba(191,0,255,0.3)' }}
+            style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', textShadow: '0 0 40px rgba(196,30,58,0.3)' }}
           >
             KEYNOTE{' '}
             <span
               style={{
-                background: 'linear-gradient(135deg, #bf00ff, #e040fb)',
+                background: 'linear-gradient(135deg, #C41E3A, #FFD700)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',

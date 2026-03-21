@@ -14,7 +14,7 @@ export default function Footer() {
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-vibranium-600 to-transparent opacity-60" />
 
       {/* Radial glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(76,29,149,0.1),transparent_60%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(196, 30, 58,0.1),transparent_60%)] pointer-events-none" />
 
       <div className="relative z-10 container mx-auto px-6 max-w-6xl">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">

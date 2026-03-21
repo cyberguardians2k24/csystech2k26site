@@ -59,9 +59,9 @@ export default function CountdownBanner() {
         <section className="section-shell relative py-18 md:py-20 bg-wakanda-dark border-t border-b border-vibranium/10 overflow-hidden">
             <div className="absolute inset-0 mesh-fade opacity-20 pointer-events-none" />
             <div className="absolute -top-20 left-[10%] w-60 h-60 rounded-full bg-vibranium/12 blur-[100px] float-orb pointer-events-none" />
-            <div className="absolute -bottom-24 right-[12%] w-72 h-72 rounded-full bg-holo-cyan/10 blur-[120px] float-orb pointer-events-none" style={{ animationDelay: '1.2s' }} />
+            <div className="absolute -bottom-24 right-[12%] w-72 h-72 rounded-full bg-vibranium-gold/10 blur-[120px] float-orb pointer-events-none" style={{ animationDelay: '1.2s' }} />
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-vibranium/60 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-holo-cyan/25 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-vibranium-gold/25 to-transparent" />
 
             <div className="container mx-auto px-6 max-w-5xl relative z-10">
                 <motion.div
