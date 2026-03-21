@@ -7,6 +7,10 @@ function normalizePaymentRef(value?: string | null) {
   return String(value ?? '').replace(/\s+/g, '').trim().toLowerCase();
 }
 
+function normalizeSlug(value?: string | null) {
+  return String(value ?? '').trim().toLowerCase();
+}
+
 const BASIC_PASS_INR = 149;
 const SEPARATE_EVENT_PRICES_INR: Record<string, number> = {
   kabaddi: 599,
@@ -100,7 +104,7 @@ export class AdminService {
     }
 
     const totalRevenueInr = Array.from(groups.values()).reduce((sum, regs) => {
-      const slugs = regs.map((r) => r.event?.slug).filter(Boolean) as string[];
+      const slugs = regs.map((r) => normalizeSlug(r.event?.slug)).filter(Boolean);
       const uniqueSlugs = new Set(slugs);
 
       let groupTotal = 0;
