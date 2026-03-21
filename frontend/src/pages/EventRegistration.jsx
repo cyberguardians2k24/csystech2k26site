@@ -184,7 +184,14 @@ export default function EventRegistration() {
         throw new Error('Failed to upload payment screenshot to storage.');
       }
 
-      const result = await api.register({
+      const baseNotes = [form.department, form.yearOfStudy ? `Year ${form.yearOfStudy}` : '', form.notes].filter(Boolean).join(' | ') || undefined;
+      const teamDetailsNote = isKabaddiEvent
+        ? [
+            form.teamName ? `Team Name: ${form.teamName}` : '',
+            normalizedTeamMembers.length ? `Team Members: ${normalizedTeamMembers.join(', ')}` : '',
+          ].filter(Boolean).join(' | ')
+        : '';
+      const payload = {
         name:     form.name,
         email:    normalizedEmail,
         phone:    form.phone,
@@ -193,10 +200,28 @@ export default function EventRegistration() {
         teamMembers: isKabaddiEvent ? normalizedTeamMembers : undefined,
         event:    event.id,
         registrationType: isKabaddiEvent ? effectiveRegistrationType : undefined,
-        notes:    [form.department, form.yearOfStudy ? `Year ${form.yearOfStudy}` : '', form.notes].filter(Boolean).join(' | ') || undefined,
+        notes:    [baseNotes, teamDetailsNote].filter(Boolean).join(' | ') || undefined,
         paymentScreenshot: signed.storageUrl,
         paymentRef: normalizedPaymentRef,
-      });
+      };
+
+      let result;
+      try {
+        result = await api.register(payload);
+      } catch (registerError) {
+        const message = String(registerError?.message ?? '');
+        const hasLegacyValidationIssue =
+          message.includes('property teamMembers should not exist') ||
+          message.includes('property registrationType should not exist');
+
+        if (!hasLegacyValidationIssue) throw registerError;
+
+        result = await api.register({
+          ...payload,
+          teamMembers: undefined,
+          registrationType: undefined,
+        });
+      }
       setEmailSent(Boolean(result?.emailSent));
       setSubmitted(true);
     } catch (err) {
