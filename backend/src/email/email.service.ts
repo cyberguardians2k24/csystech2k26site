@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
-import { Resend } from 'resend';
 
 @Injectable()
 export class EmailService {
@@ -10,7 +9,6 @@ export class EmailService {
   private transporter: Transporter | null = null;
   private transporterVerified = false;
   private loggedConfigOnce = false;
-  private resendClient: Resend | null = null;
 
   constructor(private readonly config: ConfigService) {}
 
@@ -84,13 +82,43 @@ export class EmailService {
     );
   }
 
-  private getResendClient() {
-    if (this.resendClient) return this.resendClient;
-    if (!this.hasResendEnabled) {
+  private async sendWithResend(params: {
+    to: string;
+    subject: string;
+    html: string;
+    text?: string;
+  }) {
+    const apiKey = this.resendApiKey;
+    const from = this.resendFrom || this.fromAddress;
+
+    if (!apiKey) {
       throw new Error('Resend is not configured. Set RESEND_API_KEY.');
     }
-    this.resendClient = new Resend(this.resendApiKey);
-    return this.resendClient;
+    if (!from) {
+      throw new Error('Resend sender is missing. Set RESEND_FROM (recommended).');
+    }
+
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from,
+        to: params.to,
+        subject: params.subject,
+        html: params.html,
+        ...(params.text ? { text: params.text } : null),
+      }),
+    });
+
+    if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      throw new Error(`Resend API error ${res.status}: ${body || res.statusText}`);
+    }
+
+    return res.json().catch(() => null);
   }
 
   private getTransporter(): Transporter {
@@ -187,10 +215,7 @@ export class EmailService {
 
     try {
       if (this.hasResendEnabled) {
-        const resend = this.getResendClient();
-        const from = this.resendFrom || this.fromAddress;
-        await resend.emails.send({
-          from,
+        await this.sendWithResend({
           to: params.to,
           subject,
           html,
@@ -241,10 +266,7 @@ export class EmailService {
 
     try {
       if (this.hasResendEnabled) {
-        const resend = this.getResendClient();
-        const from = this.resendFrom || this.fromAddress;
-        await resend.emails.send({
-          from,
+        await this.sendWithResend({
           to: params.to,
           subject,
           html,
@@ -298,10 +320,7 @@ export class EmailService {
 
     try {
       if (this.hasResendEnabled) {
-        const resend = this.getResendClient();
-        const from = this.resendFrom || this.fromAddress;
-        await resend.emails.send({
-          from,
+        await this.sendWithResend({
           to: params.to,
           subject,
           html,
