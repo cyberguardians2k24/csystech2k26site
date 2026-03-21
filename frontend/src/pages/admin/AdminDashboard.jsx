@@ -41,6 +41,12 @@ function normalizeRegistration(reg) {
   return { ...reg, participant, event: eventName, eventName, eventSlug, eventCategory: eventObj?.category ?? reg.eventCategory };
 }
 
+function normalizePaymentRef(value) {
+  const raw = (value ?? '').trim();
+  if (!raw) return '';
+  return raw.replace(/\s+/g, '').toUpperCase();
+}
+
 /* ─── icons (inline SVG) ─── */
 function Icon({ name, className = 'w-5 h-5' }) {
   const paths = {
@@ -460,25 +466,57 @@ export default function AdminDashboard() {
     () => registrations.filter((r) => r.paymentStatus === 'PENDING' || r.status === 'PENDING'),
     [registrations],
   );
-  const pendingCount = pendingApprovals.length;
 
-  const utrCounts = useMemo(() => {
-    const counts = new Map();
+  const utrOwners = useMemo(() => {
+    const owners = new Map();
     for (const r of registrations) {
-      const raw = (r.paymentRef ?? '').trim();
-      if (!raw) continue;
-      const normalized = raw.replace(/\s+/g, '').toUpperCase();
-      counts.set(normalized, (counts.get(normalized) ?? 0) + 1);
+      const normalized = normalizePaymentRef(r.paymentRef);
+      if (!normalized) continue;
+      const participant = r.participant ?? {};
+      const ownerKey = String(participant.id ?? participant.email ?? `reg-${r.id}`);
+      if (!owners.has(normalized)) owners.set(normalized, new Set());
+      owners.get(normalized).add(ownerKey);
     }
-    return counts;
+    return owners;
   }, [registrations]);
 
   const isUtrFlagged = useCallback((reg) => {
-    const raw = (reg?.paymentRef ?? '').trim();
-    if (!raw) return false;
-    const normalized = raw.replace(/\s+/g, '').toUpperCase();
-    return (utrCounts.get(normalized) ?? 0) > 1;
-  }, [utrCounts]);
+    const normalized = normalizePaymentRef(reg?.paymentRef);
+    if (!normalized) return false;
+    return (utrOwners.get(normalized)?.size ?? 0) > 1;
+  }, [utrOwners]);
+
+  const pendingApprovalGroups = useMemo(() => {
+    const groups = new Map();
+    for (const reg of pendingApprovals) {
+      const participant = reg.participant ?? {};
+      const ownerKey = String(participant.id ?? participant.email ?? `reg-${reg.id}`);
+      const normalizedRef = normalizePaymentRef(reg.paymentRef);
+      const groupKey = normalizedRef ? `${ownerKey}::${normalizedRef}` : `${ownerKey}::reg-${reg.id}`;
+
+      if (!groups.has(groupKey)) {
+        groups.set(groupKey, {
+          key: groupKey,
+          participant,
+          paymentRef: reg.paymentRef,
+          createdAt: reg.createdAt,
+          registrations: [],
+          paymentScreenshot: reg.paymentScreenshot,
+          flagged: isUtrFlagged(reg),
+        });
+      }
+
+      const group = groups.get(groupKey);
+      group.registrations.push(reg);
+      if (!group.paymentScreenshot && reg.paymentScreenshot) group.paymentScreenshot = reg.paymentScreenshot;
+      if (new Date(reg.createdAt).getTime() < new Date(group.createdAt).getTime()) group.createdAt = reg.createdAt;
+      if (isUtrFlagged(reg)) group.flagged = true;
+    }
+
+    return Array.from(groups.values()).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }, [pendingApprovals, isUtrFlagged]);
+
+  const pendingCount = pendingApprovalGroups.length;
 
   const registrationEventOptions = useMemo(() => {
     const fromRegs = registrations.map((r) => r.eventName);
@@ -522,20 +560,20 @@ export default function AdminDashboard() {
     if (tab === 'events') await loadEvents();
   };
 
-  const handleQuickApprove = async (id) => {
+  const handleQuickApproveGroup = async (registrationIds) => {
     try {
-      const updated = normalizeRegistration(await api.updatePaymentStatus(id, 'PAID'));
-      setRegistrations((cur) => cur.map((item) => (item.id === id ? { ...updated, status: 'CONFIRMED' } : item)));
-      await api.updateRegistrationStatus(id, 'CONFIRMED');
-      await loadDashboard();
+      await Promise.all(registrationIds.map(async (id) => {
+        await api.updatePaymentStatus(id, 'PAID');
+        await api.updateRegistrationStatus(id, 'CONFIRMED');
+      }));
+      await Promise.all([loadRegistrations(), loadDashboard()]);
     } catch (err) { handleError(err); }
   };
 
-  const handleQuickReject = async (id) => {
+  const handleQuickRejectGroup = async (registrationIds) => {
     try {
-      const updated = normalizeRegistration(await api.updateRegistrationStatus(id, 'CANCELLED'));
-      setRegistrations((cur) => cur.map((item) => (item.id === id ? updated : item)));
-      await loadDashboard();
+      await Promise.all(registrationIds.map((id) => api.updateRegistrationStatus(id, 'CANCELLED')));
+      await Promise.all([loadRegistrations(), loadDashboard()]);
     } catch (err) { handleError(err); }
   };
 
@@ -876,17 +914,20 @@ export default function AdminDashboard() {
           {/* ════ APPROVALS TAB ════ */}
           {tab === 'approvals' && (
             <>
-              {loadingRegs ? <Spinner /> : pendingApprovals.length === 0 ? (
+              {loadingRegs ? <Spinner /> : pendingApprovalGroups.length === 0 ? (
                 <Card>
                   <EmptyState icon="check-circle" message="No pending approvals — all caught up!" />
                 </Card>
               ) : (
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3">
-                  {pendingApprovals.map((reg) => {
-                    const p = reg.participant ?? {};
-                    const flagged = isUtrFlagged(reg);
+                  {pendingApprovalGroups.map((group) => {
+                    const p = group.participant ?? {};
+                    const flagged = group.flagged;
+                    const registrationIds = group.registrations.map((r) => r.id);
+                    const eventNames = [...new Set(group.registrations.map((r) => r.eventName).filter(Boolean))];
+                    const statusSeed = group.registrations[0] ?? {};
                     return (
-                      <Card key={reg.id} className="flex flex-col">
+                      <Card key={group.key} className="flex flex-col">
                         {/* Header */}
                         <div className="mb-4 flex items-start justify-between">
                           <div className="min-w-0">
@@ -895,16 +936,16 @@ export default function AdminDashboard() {
                           </div>
                           <div className="ml-3 flex flex-col items-end gap-1 shrink-0">
                             {flagged && <StatusBadge status="FLAGGED" />}
-                            <StatusBadge status={reg.status} />
-                            <PaymentBadge status={reg.paymentStatus ?? 'UNPAID'} />
+                            <StatusBadge status={statusSeed.status} />
+                            <PaymentBadge status={statusSeed.paymentStatus ?? 'UNPAID'} />
                           </div>
                         </div>
 
                         {/* Details */}
                         <div className="mb-4 grid grid-cols-2 gap-3 text-xs">
                           <div>
-                            <span className="text-slate-500">Event</span>
-                            <p className="mt-0.5 font-medium text-indigo-400">{reg.eventName}</p>
+                            <span className="text-slate-500">Events</span>
+                            <p className="mt-0.5 font-medium text-indigo-400">{eventNames.join(', ')}</p>
                           </div>
                           <div>
                             <span className="text-slate-500">College</span>
@@ -916,17 +957,21 @@ export default function AdminDashboard() {
                           </div>
                           <div>
                             <span className="text-slate-500">Registered</span>
-                            <p className="mt-0.5 text-slate-300">{fmt(reg.createdAt)}</p>
+                            <p className="mt-0.5 text-slate-300">{fmt(group.createdAt)}</p>
                           </div>
                           <div>
                             <span className="text-slate-500">UTR</span>
-                            <p className={`mt-0.5 truncate ${flagged ? 'text-red-400 font-semibold' : 'text-slate-300'}`}>{reg.paymentRef || '—'}</p>
+                            <p className={`mt-0.5 truncate ${flagged ? 'text-red-400 font-semibold' : 'text-slate-300'}`}>{group.paymentRef || '—'}</p>
+                          </div>
+                          <div>
+                            <span className="text-slate-500">Entries</span>
+                            <p className="mt-0.5 text-slate-300">{registrationIds.length}</p>
                           </div>
                         </div>
 
                         {/* Payment proof */}
-                        {reg.paymentScreenshot && (
-                          <button onClick={() => setPreviewImage(reg.paymentScreenshot)}
+                        {group.paymentScreenshot && (
+                          <button onClick={() => setPreviewImage(group.paymentScreenshot)}
                             className="mb-4 flex items-center gap-2 rounded-lg border border-sky-500/25 bg-sky-500/5 px-3 py-2 text-xs text-sky-400 hover:bg-sky-500/10">
                             <Icon name="eye" className="h-3.5 w-3.5" /> View Payment Proof
                           </button>
@@ -934,11 +979,11 @@ export default function AdminDashboard() {
 
                         {/* Actions */}
                         <div className="mt-auto flex gap-2">
-                          <button onClick={() => handleQuickApprove(reg.id)}
+                          <button onClick={() => handleQuickApproveGroup(registrationIds)}
                             className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-500">
                             <Icon name="check" className="h-4 w-4" /> Approve
                           </button>
-                          <button onClick={() => handleQuickReject(reg.id)}
+                          <button onClick={() => handleQuickRejectGroup(registrationIds)}
                             className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-red-500/30 px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-500/10">
                             <Icon name="x" className="h-4 w-4" /> Reject
                           </button>
