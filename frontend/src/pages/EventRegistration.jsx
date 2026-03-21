@@ -159,6 +159,10 @@ export default function EventRegistration() {
       setError('Please upload your payment screenshot before submitting.');
       return;
     }
+    if (isKabaddiEvent && normalizedTeamMembers.length < 7) {
+      setError('Kabaddi requires at least 7 team members.');
+      return;
+    }
     setLoading(true);
     try {
       const signed = await api.createPaymentUploadUrl({
@@ -549,7 +553,7 @@ export default function EventRegistration() {
                     <div className="rounded-2xl border border-vibranium/15 bg-vibranium/[0.04] p-4 space-y-3">
                       <div>
                         <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-vibranium/70">Team Members</p>
-                        <p className="text-xs text-white/45 mt-1">Add up to 15 team member names.</p>
+                        <p className="text-xs text-white/45 mt-1">Add 7 to 15 team member names.</p>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {Array.from({ length: 15 }, (_, index) => (
