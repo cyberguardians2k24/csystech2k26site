@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
+import { Resend } from 'resend';
 
 @Injectable()
 export class EmailService {
@@ -9,6 +10,7 @@ export class EmailService {
   private transporter: Transporter | null = null;
   private transporterVerified = false;
   private loggedConfigOnce = false;
+  private resendClient: Resend | null = null;
 
   constructor(private readonly config: ConfigService) {}
 
@@ -42,13 +44,28 @@ export class EmailService {
     return (this.config.get<string>('SMTP_FROM') || '').trim() || this.smtpUser;
   }
 
+  private get resendApiKey() {
+    return (this.config.get<string>('RESEND_API_KEY') || '').trim();
+  }
+
+  private get resendFrom() {
+    return (this.config.get<string>('RESEND_FROM') || '').trim();
+  }
+
+  private get hasResendEnabled() {
+    return Boolean(this.resendApiKey);
+  }
+
   private get isEnabled() {
-    return Boolean(this.smtpHost && this.fromAddress);
+    return this.hasResendEnabled || Boolean(this.smtpHost && this.fromAddress);
   }
 
   private get safeConfigForLogs() {
     return {
       enabled: this.isEnabled,
+      provider: this.hasResendEnabled ? 'resend' : 'smtp',
+      resendEnabled: this.hasResendEnabled,
+      resendFrom: this.resendFrom || '(missing RESEND_FROM)',
       host: this.smtpHost || '(missing SMTP_HOST)',
       port: this.smtpPort,
       secure: this.smtpSecure,
@@ -62,7 +79,18 @@ export class EmailService {
     if (this.loggedConfigOnce) return;
     this.loggedConfigOnce = true;
     const cfg = this.safeConfigForLogs;
-    this.logger.log(`SMTP config: enabled=${cfg.enabled} host=${cfg.host} port=${cfg.port} secure=${cfg.secure} from=${cfg.from} authUserSet=${cfg.authUserSet} authPassSet=${cfg.authPassSet}`);
+    this.logger.log(
+      `Email config: enabled=${cfg.enabled} provider=${cfg.provider} resendEnabled=${cfg.resendEnabled} resendFrom=${cfg.resendFrom} host=${cfg.host} port=${cfg.port} secure=${cfg.secure} from=${cfg.from} authUserSet=${cfg.authUserSet} authPassSet=${cfg.authPassSet}`,
+    );
+  }
+
+  private getResendClient() {
+    if (this.resendClient) return this.resendClient;
+    if (!this.hasResendEnabled) {
+      throw new Error('Resend is not configured. Set RESEND_API_KEY.');
+    }
+    this.resendClient = new Resend(this.resendApiKey);
+    return this.resendClient;
   }
 
   private getTransporter(): Transporter {
@@ -72,6 +100,11 @@ export class EmailService {
 
     if (!this.isEnabled) {
       throw new Error('Email is not configured. Set SMTP_HOST and SMTP_FROM (or SMTP_USER). For authenticated SMTP also set SMTP_USER and SMTP_PASS.');
+    }
+
+    // If Resend is enabled, we don't need an SMTP transporter.
+    if (this.hasResendEnabled) {
+      throw new Error('SMTP transporter requested but Resend is enabled.');
     }
 
     const hasAnyAuthValue = Boolean(this.smtpUser || this.smtpPass);
@@ -97,6 +130,10 @@ export class EmailService {
   }
 
   private async ensureTransporterReady() {
+    if (this.hasResendEnabled) {
+      throw new Error('SMTP verify called but Resend is enabled.');
+    }
+
     const transporter = this.getTransporter();
     if (this.transporterVerified) return transporter;
 
@@ -125,7 +162,7 @@ export class EmailService {
 
     if (!this.isEnabled) {
       const cfg = this.safeConfigForLogs;
-      this.logger.warn(`SMTP not enabled; skipping registration email (host=${cfg.host}, from=${cfg.from}).`);
+      this.logger.warn(`Email not enabled; skipping registration email (provider=${cfg.provider}).`);
       return false;
     }
 
@@ -149,13 +186,24 @@ export class EmailService {
     `;
 
     try {
-      const transporter = await this.ensureTransporterReady();
-      await transporter.sendMail({
-        from: this.fromAddress,
-        to: params.to,
-        subject,
-        html,
-      });
+      if (this.hasResendEnabled) {
+        const resend = this.getResendClient();
+        const from = this.resendFrom || this.fromAddress;
+        await resend.emails.send({
+          from,
+          to: params.to,
+          subject,
+          html,
+        });
+      } else {
+        const transporter = await this.ensureTransporterReady();
+        await transporter.sendMail({
+          from: this.fromAddress,
+          to: params.to,
+          subject,
+          html,
+        });
+      }
       return true;
     } catch (err: any) {
       this.logger.error(`Failed to send registration email to ${params.to}: ${err?.message || err}`);
@@ -173,7 +221,7 @@ export class EmailService {
 
     if (!this.isEnabled) {
       const cfg = this.safeConfigForLogs;
-      this.logger.warn(`SMTP not enabled; skipping confirmation email (host=${cfg.host}, from=${cfg.from}).`);
+      this.logger.warn(`Email not enabled; skipping confirmation email (provider=${cfg.provider}).`);
       return false;
     }
 
@@ -192,13 +240,24 @@ export class EmailService {
     `;
 
     try {
-      const transporter = await this.ensureTransporterReady();
-      await transporter.sendMail({
-        from: this.fromAddress,
-        to: params.to,
-        subject,
-        html,
-      });
+      if (this.hasResendEnabled) {
+        const resend = this.getResendClient();
+        const from = this.resendFrom || this.fromAddress;
+        await resend.emails.send({
+          from,
+          to: params.to,
+          subject,
+          html,
+        });
+      } else {
+        const transporter = await this.ensureTransporterReady();
+        await transporter.sendMail({
+          from: this.fromAddress,
+          to: params.to,
+          subject,
+          html,
+        });
+      }
       return true;
     } catch (err: any) {
       this.logger.error(`Failed to send confirmation email to ${params.to}: ${err?.message || err}`);
@@ -217,7 +276,7 @@ export class EmailService {
 
     if (!this.isEnabled) {
       const cfg = this.safeConfigForLogs;
-      this.logger.warn(`SMTP not enabled; skipping cancellation email (host=${cfg.host}, from=${cfg.from}).`);
+      this.logger.warn(`Email not enabled; skipping cancellation email (provider=${cfg.provider}).`);
       return false;
     }
 
@@ -238,13 +297,24 @@ export class EmailService {
     `;
 
     try {
-      const transporter = await this.ensureTransporterReady();
-      await transporter.sendMail({
-        from: this.fromAddress,
-        to: params.to,
-        subject,
-        html,
-      });
+      if (this.hasResendEnabled) {
+        const resend = this.getResendClient();
+        const from = this.resendFrom || this.fromAddress;
+        await resend.emails.send({
+          from,
+          to: params.to,
+          subject,
+          html,
+        });
+      } else {
+        const transporter = await this.ensureTransporterReady();
+        await transporter.sendMail({
+          from: this.fromAddress,
+          to: params.to,
+          subject,
+          html,
+        });
+      }
       return true;
     } catch (err: any) {
       this.logger.error(`Failed to send cancellation email to ${params.to}: ${err?.message || err}`);
