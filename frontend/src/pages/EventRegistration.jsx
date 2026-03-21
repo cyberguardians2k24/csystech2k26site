@@ -20,6 +20,7 @@ function InputField({ label, id, type = 'text', placeholder, value, onChange, re
         onChange={onChange}
         required={required}
         autoCapitalize={isEmail ? 'none' : undefined}
+        spellCheck={isEmail ? false : undefined}
         className={`w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-vibranium/60 focus:bg-vibranium/5 focus:shadow-[0_0_16px_rgba(196,30,58,0.15)] transition-all duration-300 ${isEmail ? 'font-sans normal-case lowercase tracking-normal' : 'font-body'}`}
       />
     </div>
@@ -94,7 +95,7 @@ export default function EventRegistration() {
   const [paymentFile, setPaymentFile] = useState(null);
   const [paymentFileName, setPaymentFileName] = useState('');
   const [paymentRef, setPaymentRef] = useState('');
-  const [teamMembers, setTeamMembers] = useState(Array.from({ length: 15 }, () => ''));
+  const [teamSize, setTeamSize] = useState('');
 
   if (!event) {
     return (
@@ -116,9 +117,9 @@ export default function EventRegistration() {
     setForm((f) => ({ ...f, [key]: value }));
   };
 
-  const setTeamMember = (index) => (e) => {
-    const value = e.target.value;
-    setTeamMembers((prev) => prev.map((member, i) => (i === index ? value : member)));
+  const parseTeamSize = (value) => {
+    const parsed = Number.parseInt(String(value ?? '').trim(), 10);
+    return Number.isFinite(parsed) ? parsed : NaN;
   };
 
   const handlePaymentUpload = async (e) => {
@@ -146,7 +147,7 @@ export default function EventRegistration() {
     setError('');
     const normalizedEmail = form.email.trim().toLowerCase();
     const normalizedPaymentRef = paymentRef.trim();
-    const normalizedTeamMembers = teamMembers.map((name) => name.trim()).filter(Boolean).slice(0, 15);
+    const normalizedTeamSize = isSeparateTeamEvent ? parseTeamSize(teamSize) : NaN;
     if (!normalizedEmail) {
       setError('Please enter your email address.');
       return;
@@ -159,9 +160,20 @@ export default function EventRegistration() {
       setError('Please upload your payment screenshot before submitting.');
       return;
     }
-    if (isKabaddiEvent && normalizedTeamMembers.length < 7) {
-      setError('Kabaddi requires at least 7 team members.');
-      return;
+    if (isSeparateTeamEvent) {
+      const maxAllowedTeamSize = isKabaddiEvent ? 15 : (event.teamSize ?? 1);
+      if (!Number.isFinite(normalizedTeamSize) || normalizedTeamSize < 1) {
+        setError('Please enter your team member count.');
+        return;
+      }
+      if (normalizedTeamSize > maxAllowedTeamSize) {
+        setError(`Team member count cannot exceed ${maxAllowedTeamSize}.`);
+        return;
+      }
+      if (isKabaddiEvent && normalizedTeamSize < 7) {
+        setError('Kabaddi requires at least 7 team members.');
+        return;
+      }
     }
     setLoading(true);
     try {
@@ -185,21 +197,26 @@ export default function EventRegistration() {
       }
 
       const baseNotes = [form.department, form.yearOfStudy ? `Year ${form.yearOfStudy}` : '', form.notes].filter(Boolean).join(' | ') || undefined;
-      const teamDetailsNote = isKabaddiEvent
+      const teamDetailsNote = isSeparateTeamEvent
         ? [
             form.teamName ? `Team Name: ${form.teamName}` : '',
-            normalizedTeamMembers.length ? `Team Members: ${normalizedTeamMembers.join(', ')}` : '',
+            Number.isFinite(normalizedTeamSize) ? `Team Members Count: ${normalizedTeamSize}` : '',
           ].filter(Boolean).join(' | ')
         : '';
+
+      const kabaddiTeamMembers = isKabaddiEvent && Number.isFinite(normalizedTeamSize)
+        ? Array.from({ length: Math.min(15, Math.max(0, normalizedTeamSize)) }, (_, index) => `Member ${index + 1}`)
+        : [];
+
       const payload = {
         name:     form.name,
         email:    normalizedEmail,
         phone:    form.phone,
         college:  form.college,
-        teamName: form.teamName || undefined,
-        teamMembers: isKabaddiEvent ? normalizedTeamMembers : undefined,
+        teamName: isSeparateTeamEvent ? (form.teamName || undefined) : undefined,
         event:    event.id,
         registrationType: isKabaddiEvent ? effectiveRegistrationType : undefined,
+        teamMembers: isKabaddiEvent ? kabaddiTeamMembers : undefined,
         notes:    [baseNotes, teamDetailsNote].filter(Boolean).join(' | ') || undefined,
         paymentScreenshot: signed.storageUrl,
         paymentRef: normalizedPaymentRef,
@@ -218,8 +235,10 @@ export default function EventRegistration() {
 
         result = await api.register({
           ...payload,
+          teamName: undefined,
           teamMembers: undefined,
           registrationType: undefined,
+          notes: [payload.notes, teamDetailsNote].filter(Boolean).join(' | ') || payload.notes,
         });
       }
       setEmailSent(Boolean(result?.emailSent));
@@ -464,6 +483,18 @@ export default function EventRegistration() {
                     Registration linked to <span className="text-vibranium/60 font-sans normal-case lowercase tracking-normal">{form.email}</span>
                   </p>
 
+                  {isSeparateTeamEvent && form.teamName && (
+                    <p className="font-mono text-[10px] text-white/25 tracking-widest">
+                      Team name: <span className="text-vibranium/60 font-mono">{form.teamName}</span>
+                    </p>
+                  )}
+
+                  {isSeparateTeamEvent && Number.isFinite(parseTeamSize(teamSize)) && (
+                    <p className="font-mono text-[10px] text-white/25 tracking-widest">
+                      Team members: <span className="text-vibranium/60 font-mono">{parseTeamSize(teamSize)}</span>
+                    </p>
+                  )}
+
                   {/* Action buttons */}
                   <div className="flex gap-3 flex-wrap justify-center">
                     <Link
@@ -569,30 +600,27 @@ export default function EventRegistration() {
                     />
                   </div>
 
-                  {/* Team name — for separate team registrations */}
                   {isSeparateTeamEvent && (
-                    <InputField label={`Team Name (optional — ${isKabaddiEvent ? '15' : event.teamSize} members max)`} id="reg-team" placeholder="Team name" value={form.teamName} onChange={set('teamName')} />
+                    <InputField
+                      label="Team Name"
+                      id="reg-team-name"
+                      placeholder="Enter your team name"
+                      value={form.teamName}
+                      onChange={set('teamName')}
+                      required
+                    />
                   )}
 
-                  {isKabaddiEvent && (
-                    <div className="rounded-2xl border border-vibranium/15 bg-vibranium/[0.04] p-4 space-y-3">
-                      <div>
-                        <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-vibranium/70">Team Members</p>
-                        <p className="text-xs text-white/45 mt-1">Add 7 to 15 team member names.</p>
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {Array.from({ length: 15 }, (_, index) => (
-                          <InputField
-                            key={index}
-                            label={`Member ${index + 1}`}
-                            id={`reg-member-${index + 1}`}
-                            placeholder={`Team member ${index + 1} name`}
-                            value={teamMembers[index]}
-                            onChange={setTeamMember(index)}
-                          />
-                        ))}
-                      </div>
-                    </div>
+                  {isSeparateTeamEvent && (
+                    <InputField
+                      label={`Team Members Count (${isKabaddiEvent ? '7–15' : `1–${event.teamSize ?? 1}`})`}
+                      id="reg-team-size"
+                      type="number"
+                      placeholder={isKabaddiEvent ? 'Enter team size (min 7)' : 'Enter team size'}
+                      value={teamSize}
+                      onChange={(e) => setTeamSize(e.target.value)}
+                      required
+                    />
                   )}
 
                   <InputField label="Additional Notes" id="reg-notes" placeholder="Anything we should know?" value={form.notes} onChange={set('notes')} />
