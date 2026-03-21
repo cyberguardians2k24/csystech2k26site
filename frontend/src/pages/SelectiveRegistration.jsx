@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TECHNICAL_EVENTS, NON_TECHNICAL_EVENTS } from '../data/events';
+import { getWhatsAppGroupLink } from '../data/whatsappGroups';
 import { api } from '../lib/api';
 import paymentImage from '../../Assets/images/paymentimage.jpeg';
 
@@ -201,11 +202,43 @@ export default function SelectiveRegistration() {
   };
 
   if (submitted) {
+    const selectedEvents = [...selectedTechnicalEvents, ...selectedNonTechnicalEvents];
+    const allEvents = [...TECHNICAL_EVENTS, ...NON_TECHNICAL_EVENTS];
+    const whatsAppLinks = selectedEvents
+      .map((eventId) => {
+        const url = getWhatsAppGroupLink(eventId);
+        if (!url) return null;
+        const title = allEvents.find((e) => e.id === eventId)?.title ?? eventId;
+        return { eventId, title, url };
+      })
+      .filter(Boolean);
+
     return (
       <div className="min-h-screen bg-wakanda-dark flex items-center justify-center px-6 text-white">
         <div className="max-w-xl w-full rounded-3xl border border-vibranium/20 bg-black/30 p-8 text-center">
           <h2 className="text-3xl font-heading font-black text-white">Registration Submitted</h2>
           <p className="mt-3 text-white/60">Your selected events were submitted successfully. Admin verification is pending.</p>
+
+          {whatsAppLinks.length > 0 && (
+            <div className="mt-6 rounded-2xl border border-vibranium/20 bg-vibranium/5 p-5 text-left">
+              <p className="font-mono text-[10px] tracking-[0.22em] text-vibranium/80 uppercase mb-3">WhatsApp Groups</p>
+              <div className="space-y-2">
+                {whatsAppLinks.map(({ eventId, title, url }) => (
+                  <a
+                    key={eventId}
+                    href={url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3 hover:border-vibranium/35 transition-all"
+                  >
+                    <span className="text-sm text-white/70 font-body">{title}</span>
+                    <span className="text-[10px] font-mono text-vibranium uppercase tracking-[0.2em]">Join</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="mt-6 flex justify-center gap-3">
             <Link to="/technical" className="px-5 py-2.5 rounded-full border border-vibranium/40 text-vibranium font-mono text-xs tracking-widest uppercase hover:bg-vibranium/20 transition-all">Technical</Link>
             <Link to="/non-technical" className="px-5 py-2.5 rounded-full border border-vibranium/40 text-vibranium font-mono text-xs tracking-widest uppercase hover:bg-vibranium/20 transition-all">Non-Technical</Link>

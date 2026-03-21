@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ALL_EVENTS, CATEGORY_META } from '../data/events';
+import { getWhatsAppGroupLink } from '../data/whatsappGroups';
 import { api } from '../lib/api';
 import paymentImage from '../../Assets/images/paymentimage.jpeg';
 
@@ -111,6 +112,7 @@ export default function EventRegistration() {
   const isKabaddiEvent = event.id === 'kabaddi';
   const effectiveRegistrationType = isSeparateTeamEvent ? 'team' : 'solo';
   const effectiveRegistrationPrice = SEPARATE_EVENT_PRICES[event.id] ?? 149;
+  const whatsAppGroupLink = getWhatsAppGroupLink(event.id);
 
   const set = (key) => (e) => {
     const value = key === 'email' ? e.target.value.toLowerCase() : e.target.value;
@@ -493,6 +495,21 @@ export default function EventRegistration() {
                     <p className="font-mono text-[10px] text-white/25 tracking-widest">
                       Team members: <span className="text-vibranium/60 font-mono">{parseTeamSize(teamSize)}</span>
                     </p>
+                  )}
+
+                  {whatsAppGroupLink && (
+                    <div className="w-full rounded-2xl border border-vibranium/20 bg-vibranium/5 p-5 text-left">
+                      <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-vibranium/70 mb-2">WhatsApp Group</p>
+                      <p className="text-sm text-white/55 font-body">Join the official group for updates and coordination.</p>
+                      <a
+                        href={whatsAppGroupLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-3 inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-vibranium text-white font-mono text-xs tracking-widest uppercase hover:shadow-vibranium-glow transition-all"
+                      >
+                        Join WhatsApp Group
+                      </a>
+                    </div>
                   )}
 
                   {/* Action buttons */}
