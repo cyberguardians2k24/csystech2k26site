@@ -94,7 +94,7 @@ export default function EventRegistration() {
   const [paymentFile, setPaymentFile] = useState(null);
   const [paymentFileName, setPaymentFileName] = useState('');
   const [paymentRef, setPaymentRef] = useState('');
-  const [teamMembers, setTeamMembers] = useState(['', '', '']);
+  const [teamMembers, setTeamMembers] = useState(Array.from({ length: 15 }, () => ''));
 
   if (!event) {
     return (
@@ -107,6 +107,7 @@ export default function EventRegistration() {
   }
 
   const isSeparateTeamEvent = Object.prototype.hasOwnProperty.call(SEPARATE_EVENT_PRICES, event.id);
+  const isKabaddiEvent = event.id === 'kabaddi';
   const effectiveRegistrationType = isSeparateTeamEvent ? 'team' : 'solo';
   const effectiveRegistrationPrice = SEPARATE_EVENT_PRICES[event.id] ?? 149;
 
@@ -145,7 +146,7 @@ export default function EventRegistration() {
     setError('');
     const normalizedEmail = form.email.trim().toLowerCase();
     const normalizedPaymentRef = paymentRef.trim();
-    const normalizedTeamMembers = teamMembers.map((name) => name.trim()).filter(Boolean).slice(0, 3);
+    const normalizedTeamMembers = teamMembers.map((name) => name.trim()).filter(Boolean).slice(0, 15);
     if (!normalizedEmail) {
       setError('Please enter your email address.');
       return;
@@ -185,9 +186,9 @@ export default function EventRegistration() {
         phone:    form.phone,
         college:  form.college,
         teamName: form.teamName || undefined,
-        teamMembers: isSeparateTeamEvent ? normalizedTeamMembers : undefined,
+        teamMembers: isKabaddiEvent ? normalizedTeamMembers : undefined,
         event:    event.id,
-        registrationType: effectiveRegistrationType,
+        registrationType: isKabaddiEvent ? effectiveRegistrationType : undefined,
         notes:    [form.department, form.yearOfStudy ? `Year ${form.yearOfStudy}` : '', form.notes].filter(Boolean).join(' | ') || undefined,
         paymentScreenshot: signed.storageUrl,
         paymentRef: normalizedPaymentRef,
@@ -541,17 +542,17 @@ export default function EventRegistration() {
 
                   {/* Team name — for separate team registrations */}
                   {isSeparateTeamEvent && (
-                    <InputField label={`Team Name (optional — ${event.teamSize} members max)`} id="reg-team" placeholder="Team name" value={form.teamName} onChange={set('teamName')} />
+                    <InputField label={`Team Name (optional — ${isKabaddiEvent ? '15' : event.teamSize} members max)`} id="reg-team" placeholder="Team name" value={form.teamName} onChange={set('teamName')} />
                   )}
 
-                  {isSeparateTeamEvent && (
+                  {isKabaddiEvent && (
                     <div className="rounded-2xl border border-vibranium/15 bg-vibranium/[0.04] p-4 space-y-3">
                       <div>
                         <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-vibranium/70">Team Members</p>
-                        <p className="text-xs text-white/45 mt-1">Add up to 3 team member names.</p>
+                        <p className="text-xs text-white/45 mt-1">Add up to 15 team member names.</p>
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        {[0, 1, 2].map((index) => (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {Array.from({ length: 15 }, (_, index) => (
                           <InputField
                             key={index}
                             label={`Member ${index + 1}`}
