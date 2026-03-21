@@ -1,16 +1,66 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, Logger, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 
+const BASIC_PASS_INR = 149;
+const SEPARATE_EVENT_PRICES_INR: Record<string, number> = {
+  kabaddi: 599,
+  'arena-bgmi': 300,
+  'arena-free-fire': 300,
+  'short-film': 300,
+};
+
+function normalizeSlug(value?: string) {
+  return String(value ?? '').trim().toLowerCase();
+}
+
+function withDefaultFee(dto: CreateEventDto | UpdateEventDto) {
+  const slug = normalizeSlug((dto as any)?.slug);
+  if (!slug) return dto;
+
+  const separateFee = SEPARATE_EVENT_PRICES_INR[slug];
+  if (separateFee) {
+    return {
+      ...dto,
+      registrationFeeInr: separateFee,
+      ...(slug === 'kabaddi' ? { maxTeamSize: 15 } : null),
+    } as any;
+  }
+
+  // Default fee for regular events
+  if ((dto as any).registrationFeeInr === undefined) {
+    return {
+      ...dto,
+      registrationFeeInr: BASIC_PASS_INR,
+    } as any;
+  }
+  return dto;
+}
+
 @Injectable()
-export class EventsService {
+export class EventsService implements OnModuleInit {
+  private readonly logger = new Logger(EventsService.name);
+
   constructor(private prisma: PrismaService) {}
 
+  async onModuleInit() {
+    // Ensure fixed pricing + team limits for special events even if DB was seeded earlier with defaults.
+    try {
+      await this.prisma.event.updateMany({ where: { slug: 'kabaddi' }, data: { registrationFeeInr: 599, maxTeamSize: 15 } });
+      await this.prisma.event.updateMany({ where: { slug: 'arena-bgmi' }, data: { registrationFeeInr: 300 } });
+      await this.prisma.event.updateMany({ where: { slug: 'arena-free-fire' }, data: { registrationFeeInr: 300 } });
+      await this.prisma.event.updateMany({ where: { slug: 'short-film' }, data: { registrationFeeInr: 300 } });
+    } catch (err) {
+      this.logger.warn(`Could not reconcile event fees on startup: ${String((err as any)?.message ?? err)}`);
+    }
+  }
+
   async create(dto: CreateEventDto) {
-    const existing = await this.prisma.event.findUnique({ where: { slug: dto.slug } });
+    const patched = withDefaultFee(dto);
+    const existing = await this.prisma.event.findUnique({ where: { slug: patched.slug } });
     if (existing) throw new ConflictException('Event slug already exists');
-    return this.prisma.event.create({ data: dto as any });
+    return this.prisma.event.create({ data: patched as any });
   }
 
   async findAll(includeInactive = false) {
@@ -39,8 +89,10 @@ export class EventsService {
   async update(id: number, dto: UpdateEventDto) {
     await this.findOne(id);
 
-    if (dto.slug) {
-      const existing = await this.prisma.event.findUnique({ where: { slug: dto.slug } });
+    const patched = withDefaultFee(dto);
+
+    if (patched.slug) {
+      const existing = await this.prisma.event.findUnique({ where: { slug: patched.slug } });
       if (existing && existing.id !== id) {
         throw new ConflictException('Event slug already exists');
       }
@@ -48,7 +100,7 @@ export class EventsService {
 
     return this.prisma.event.update({
       where: { id },
-      data: dto as any,
+      data: patched as any,
       include: { _count: { select: { registrations: true } } },
     });
   }
@@ -66,6 +118,7 @@ export class EventsService {
         description: 'Present a sharp cyber-tech idea with clarity and originality.',
         category: 'TECHNICAL',
         maxTeamSize: 3,
+        registrationFeeInr: BASIC_PASS_INR,
         prizeAmount: 'TBA',
       },
       {
@@ -74,6 +127,7 @@ export class EventsService {
         description: 'Multi-round debugging event focused on speed and accuracy.',
         category: 'CODING',
         maxTeamSize: 2,
+        registrationFeeInr: BASIC_PASS_INR,
         prizeAmount: 'TBA',
       },
       {
@@ -82,6 +136,7 @@ export class EventsService {
         description: 'Cyber-tech quiz rounds with online and offline stages.',
         category: 'KNOWLEDGE',
         maxTeamSize: 1,
+        registrationFeeInr: BASIC_PASS_INR,
         prizeAmount: 'TBA',
       },
       {
@@ -90,6 +145,7 @@ export class EventsService {
         description: 'Web vulnerability assessment in a controlled lab setup.',
         category: 'CODING',
         maxTeamSize: 4,
+        registrationFeeInr: BASIC_PASS_INR,
         prizeAmount: 'TBA',
       },
       {
@@ -98,6 +154,7 @@ export class EventsService {
         description: 'Three-round fun coding and problem solving challenge.',
         category: 'CODING',
         maxTeamSize: 2,
+        registrationFeeInr: BASIC_PASS_INR,
         prizeAmount: 'TBA',
       },
       {
@@ -106,6 +163,7 @@ export class EventsService {
         description: 'Custom-room Free Fire squad tournament.',
         category: 'SKILL',
         maxTeamSize: 4,
+        registrationFeeInr: 300,
         prizeAmount: 'TBA',
       },
       {
@@ -114,6 +172,7 @@ export class EventsService {
         description: 'Best-of-3 BGMI squad competition.',
         category: 'SKILL',
         maxTeamSize: 4,
+        registrationFeeInr: 300,
         prizeAmount: 'TBA',
       },
       {
@@ -121,7 +180,8 @@ export class EventsService {
         slug: 'kabaddi',
         description: 'On-ground kabaddi competition.',
         category: 'SKILL',
-        maxTeamSize: 7,
+        maxTeamSize: 15,
+        registrationFeeInr: 599,
         prizeAmount: 'TBA',
       },
       {
@@ -130,6 +190,7 @@ export class EventsService {
         description: 'Team buzzer event across multiple rounds.',
         category: 'KNOWLEDGE',
         maxTeamSize: 4,
+        registrationFeeInr: BASIC_PASS_INR,
         prizeAmount: 'TBA',
       },
       {
@@ -138,6 +199,7 @@ export class EventsService {
         description: 'Original short film screening competition.',
         category: 'SKILL',
         maxTeamSize: 5,
+        registrationFeeInr: 300,
         prizeAmount: 'TBA',
       },
     ];
@@ -157,6 +219,7 @@ export class EventsService {
           description: e.description,
           category: e.category as any,
           maxTeamSize: e.maxTeamSize,
+          registrationFeeInr: (e as any).registrationFeeInr,
           prizeAmount: e.prizeAmount,
           isActive: true,
         },

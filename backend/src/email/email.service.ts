@@ -7,6 +7,7 @@ export class EmailService {
   private readonly logger = new Logger(EmailService.name);
   private transporter: Transporter | null = null;
   private transporterVerified = false;
+  private loggedConfigOnce = false;
 
   constructor(private readonly config: ConfigService) {}
 
@@ -44,11 +45,32 @@ export class EmailService {
     return Boolean(this.smtpHost && this.fromAddress);
   }
 
+  private get safeConfigForLogs() {
+    return {
+      enabled: this.isEnabled,
+      host: this.smtpHost || '(missing SMTP_HOST)',
+      port: this.smtpPort,
+      secure: this.smtpSecure,
+      from: this.fromAddress || '(missing SMTP_FROM/SMTP_USER)',
+      authUserSet: Boolean(this.smtpUser),
+      authPassSet: Boolean(this.smtpPass),
+    };
+  }
+
+  private logConfigOnce() {
+    if (this.loggedConfigOnce) return;
+    this.loggedConfigOnce = true;
+    const cfg = this.safeConfigForLogs;
+    this.logger.log(`SMTP config: enabled=${cfg.enabled} host=${cfg.host} port=${cfg.port} secure=${cfg.secure} from=${cfg.from} authUserSet=${cfg.authUserSet} authPassSet=${cfg.authPassSet}`);
+  }
+
   private getTransporter(): Transporter {
     if (this.transporter) return this.transporter;
 
+    this.logConfigOnce();
+
     if (!this.isEnabled) {
-      throw new Error('Email is not configured. Set SMTP_HOST and SMTP_FROM (and usually SMTP_USER/SMTP_PASS).');
+      throw new Error('Email is not configured. Set SMTP_HOST and SMTP_FROM (or SMTP_USER). For authenticated SMTP also set SMTP_USER and SMTP_PASS.');
     }
 
     const hasAnyAuthValue = Boolean(this.smtpUser || this.smtpPass);
@@ -63,6 +85,9 @@ export class EmailService {
       port: this.smtpPort,
       secure: this.smtpSecure,
       auth,
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 20_000,
     });
 
     this.transporterVerified = false;
@@ -74,10 +99,18 @@ export class EmailService {
     const transporter = this.getTransporter();
     if (this.transporterVerified) return transporter;
 
-    await transporter.verify();
-    this.transporterVerified = true;
-    this.logger.log(`SMTP verified on ${this.smtpHost}:${this.smtpPort} (secure=${this.smtpSecure})`);
-    return transporter;
+    try {
+      await transporter.verify();
+      this.transporterVerified = true;
+      this.logger.log(`SMTP verified on ${this.smtpHost}:${this.smtpPort} (secure=${this.smtpSecure})`);
+      return transporter;
+    } catch (err: any) {
+      const cfg = this.safeConfigForLogs;
+      this.logger.error(
+        `SMTP verify failed: host=${cfg.host} port=${cfg.port} secure=${cfg.secure} from=${cfg.from} authUserSet=${cfg.authUserSet} authPassSet=${cfg.authPassSet} :: ${err?.message || err}`,
+      );
+      throw err;
+    }
   }
 
   async sendRegistrationReceivedEmail(params: {
@@ -87,8 +120,11 @@ export class EmailService {
     registrationId: number;
     paymentRef?: string | null;
   }): Promise<boolean> {
+    this.logConfigOnce();
+
     if (!this.isEnabled) {
-      this.logger.warn('SMTP not configured; skipping registration email.');
+      const cfg = this.safeConfigForLogs;
+      this.logger.warn(`SMTP not enabled; skipping registration email (host=${cfg.host}, from=${cfg.from}).`);
       return false;
     }
 
@@ -132,8 +168,11 @@ export class EmailService {
     eventName: string;
     registrationId: number;
   }): Promise<boolean> {
+    this.logConfigOnce();
+
     if (!this.isEnabled) {
-      this.logger.warn('SMTP not configured; skipping confirmation email.');
+      const cfg = this.safeConfigForLogs;
+      this.logger.warn(`SMTP not enabled; skipping confirmation email (host=${cfg.host}, from=${cfg.from}).`);
       return false;
     }
 
@@ -173,8 +212,11 @@ export class EmailService {
     registrationId: number;
     reason?: string;
   }): Promise<boolean> {
+    this.logConfigOnce();
+
     if (!this.isEnabled) {
-      this.logger.warn('SMTP not configured; skipping cancellation email.');
+      const cfg = this.safeConfigForLogs;
+      this.logger.warn(`SMTP not enabled; skipping cancellation email (host=${cfg.host}, from=${cfg.from}).`);
       return false;
     }
 
