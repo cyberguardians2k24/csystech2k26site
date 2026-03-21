@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEmail, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsEmail, IsOptional, IsIn, IsArray, ArrayMaxSize } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateRegistrationDto {
@@ -22,6 +22,14 @@ export class CreateRegistrationDto {
   @ApiPropertyOptional()
   @IsString() @IsOptional()
   teamName?: string;
+
+  @ApiPropertyOptional({ type: [String], maxItems: 15, example: ['Member One', 'Member Two'] })
+  @IsArray() @ArrayMaxSize(15) @IsString({ each: true }) @IsOptional()
+  teamMembers?: string[];
+
+  @ApiPropertyOptional({ enum: ['solo', 'team'], default: 'solo' })
+  @IsString() @IsOptional() @IsIn(['solo', 'team'])
+  registrationType?: 'solo' | 'team';
 
   /** Event info */
   @ApiProperty({ example: 'Hackathon' })

@@ -1,0 +1,23 @@
+# dependencies
+**/node_modules/
+
+# build outputs
+**/dist/
+**/build/
+**/.vite/
+**/coverage/
+
+# env files
+**/.env
+**/.env.*
+
+# logs
+**/*.log
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# prisma generated client (if any is tracked outside node_modules)
+**/.prisma/

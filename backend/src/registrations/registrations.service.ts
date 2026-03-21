@@ -1,9 +1,33 @@
 import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
-import { PaymentStatus, RegistrationStatus } from '@prisma/client';
+import { PaymentStatus, RegistrationStatus, RegistrationType } from '@prisma/client';
 import { R2UploadService } from './r2-upload.service';
 import { EmailService } from '../email/email.service';
+
+const TECHNICAL_EVENT_SLUGS = new Set([
+  'cipher-vista',
+  'bug-bash',
+  'neuro-byte',
+  'payload-paradise',
+  'design-duel',
+]);
+
+const NON_TECHNICAL_EVENT_SLUGS = new Set([
+  'arena-free-fire',
+  'arena-bgmi',
+  'kabaddi',
+  'link-logic',
+  'short-film',
+]);
+
+function classifyEventType(event: { slug?: string; category?: string }) {
+  const slug = event?.slug ?? '';
+  if (TECHNICAL_EVENT_SLUGS.has(slug)) return 'technical' as const;
+  if (NON_TECHNICAL_EVENT_SLUGS.has(slug)) return 'non-technical' as const;
+  if (event?.category === 'TECHNICAL' || event?.category === 'CODING') return 'technical' as const;
+  return 'non-technical' as const;
+}
 
 function slugify(value: string) {
   return String(value || '')
@@ -78,7 +102,46 @@ export class RegistrationsService {
     });
     if (existing) throw new ConflictException('Already registered for this event');
 
+    const existingRegistrations = await this.prisma.registration.findMany({
+      where: {
+        participantId: participant.id,
+        status: { not: RegistrationStatus.CANCELLED },
+      },
+      include: { event: { select: { slug: true, category: true } } },
+    });
+
+    const technicalCount = existingRegistrations.filter((registration) => classifyEventType(registration.event) === 'technical').length;
+    const nonTechnicalCount = existingRegistrations.filter((registration) => classifyEventType(registration.event) === 'non-technical').length;
+
+    const currentEventType = classifyEventType(event);
+    const nextTechnicalCount = technicalCount + (currentEventType === 'technical' ? 1 : 0);
+    const nextNonTechnicalCount = nonTechnicalCount + (currentEventType === 'non-technical' ? 1 : 0);
+    const maxNonTechnicalAllowed = Math.max(0, 3 - nextTechnicalCount);
+
+    if (nextTechnicalCount > 2) {
+      throw new BadRequestException('You can register for a maximum of 2 technical events only.');
+    }
+
+    if (nextNonTechnicalCount > maxNonTechnicalAllowed) {
+      throw new BadRequestException('Based on your technical selections, your non-technical limit is exceeded.');
+    }
+
     const normalizedScreenshot = this.normalizeUploadedPaymentUrl(dto.paymentScreenshot);
+    const isKabaddiEvent = event.slug === 'kabaddi';
+    const normalizedTeamMembers = Array.isArray(dto.teamMembers)
+      ? dto.teamMembers.map((name) => String(name ?? '').trim()).filter(Boolean).slice(0, 15)
+      : [];
+
+    if (isKabaddiEvent && normalizedTeamMembers.length < 7) {
+      throw new BadRequestException('Kabaddi team registration requires a minimum of 7 members.');
+    }
+
+    const registrationType = isKabaddiEvent && dto.registrationType === 'team'
+      ? RegistrationType.TEAM
+      : RegistrationType.SOLO;
+    const registrationAmount = isKabaddiEvent
+      ? 599
+      : Number(event.registrationFeeInr ?? 149);
 
     // 4. Create registration
     const registration = await this.prisma.registration.create({
@@ -88,7 +151,9 @@ export class RegistrationsService {
         notes:         dto.notes,
         paymentRef:    dto.paymentRef,
         paymentScreenshot: normalizedScreenshot,
-        amount:        event.registrationFeeInr ?? 0,
+        registrationType,
+        teamMembers:   isKabaddiEvent ? normalizedTeamMembers : [],
+        amount:        registrationAmount,
         paymentStatus: 'PENDING',
         status:        'PENDING',
       },

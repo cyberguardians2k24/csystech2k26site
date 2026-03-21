@@ -6,6 +6,7 @@ import nodemailer, { Transporter } from 'nodemailer';
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
   private transporter: Transporter | null = null;
+  private transporterVerified = false;
 
   constructor(private readonly config: ConfigService) {}
 
@@ -24,7 +25,8 @@ export class EmailService {
   }
 
   private get smtpPass() {
-    return (this.config.get<string>('SMTP_PASS') || '').trim();
+    // App passwords are often copied with spaces (e.g. Gmail). Strip whitespace safely.
+    return (this.config.get<string>('SMTP_PASS') || '').replace(/\s+/g, '').trim();
   }
 
   private get smtpSecure() {
@@ -35,7 +37,7 @@ export class EmailService {
   }
 
   private get fromAddress() {
-    return (this.config.get<string>('SMTP_FROM') || '').trim();
+    return (this.config.get<string>('SMTP_FROM') || '').trim() || this.smtpUser;
   }
 
   private get isEnabled() {
@@ -49,9 +51,12 @@ export class EmailService {
       throw new Error('Email is not configured. Set SMTP_HOST and SMTP_FROM (and usually SMTP_USER/SMTP_PASS).');
     }
 
-    const auth = this.smtpUser
-      ? { user: this.smtpUser, pass: this.smtpPass }
-      : undefined;
+    const hasAnyAuthValue = Boolean(this.smtpUser || this.smtpPass);
+    const auth = hasAnyAuthValue ? { user: this.smtpUser, pass: this.smtpPass } : undefined;
+
+    if (hasAnyAuthValue && (!this.smtpUser || !this.smtpPass)) {
+      this.logger.warn('SMTP auth appears incomplete. Ensure both SMTP_USER and SMTP_PASS are set.');
+    }
 
     this.transporter = nodemailer.createTransport({
       host: this.smtpHost,
@@ -60,7 +65,19 @@ export class EmailService {
       auth,
     });
 
+    this.transporterVerified = false;
+
     return this.transporter;
+  }
+
+  private async ensureTransporterReady() {
+    const transporter = this.getTransporter();
+    if (this.transporterVerified) return transporter;
+
+    await transporter.verify();
+    this.transporterVerified = true;
+    this.logger.log(`SMTP verified on ${this.smtpHost}:${this.smtpPort} (secure=${this.smtpSecure})`);
+    return transporter;
   }
 
   async sendRegistrationReceivedEmail(params: {
@@ -95,7 +112,8 @@ export class EmailService {
     `;
 
     try {
-      await this.getTransporter().sendMail({
+      const transporter = await this.ensureTransporterReady();
+      await transporter.sendMail({
         from: this.fromAddress,
         to: params.to,
         subject,
@@ -134,7 +152,8 @@ export class EmailService {
     `;
 
     try {
-      await this.getTransporter().sendMail({
+      const transporter = await this.ensureTransporterReady();
+      await transporter.sendMail({
         from: this.fromAddress,
         to: params.to,
         subject,
@@ -176,7 +195,8 @@ export class EmailService {
     `;
 
     try {
-      await this.getTransporter().sendMail({
+      const transporter = await this.ensureTransporterReady();
+      await transporter.sendMail({
         from: this.fromAddress,
         to: params.to,
         subject,

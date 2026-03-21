@@ -70,10 +70,12 @@ model Registration {
   id            Int                @id @default(autoincrement())
   participantId Int
   eventId       Int
+  registrationType RegistrationType @default(SOLO)
   status        RegistrationStatus @default(PENDING)
   paymentStatus PaymentStatus      @default(UNPAID)
   paymentRef    String?
   paymentScreenshot String?        @db.Text
+  teamMembers   String[]           @default([])
   amount        Float              @default(0)
   notes         String?
   createdAt     DateTime           @default(now())
@@ -97,4 +99,9 @@ enum PaymentStatus {
   PENDING
   PAID
   REFUNDED
+}
+
+enum RegistrationType {
+  SOLO
+  TEAM
 }
