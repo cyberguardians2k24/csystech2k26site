@@ -79,8 +79,8 @@ export default function EventRegistration() {
 
   const SEPARATE_EVENT_PRICES = {
     kabaddi: 599,
-    'arena-bgmi': 300,
-    'arena-free-fire': 300,
+    'arena-bgmi': 199,
+    'arena-free-fire': 199,
     'short-film': 300,
   };
 

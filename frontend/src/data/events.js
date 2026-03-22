@@ -80,7 +80,7 @@ export const TECHNICAL_EVENTS = [
     span: 'md:col-span-2 md:row-span-2',
     icon: '🔧',
     poster: posterCode2Chaos,
-    tag: 'DEBUGGING',
+    tag: 'CODE 2 CHAOS',
     prize: 'TBA',
     prizeValue: 0,
     firstPrize: 'TBA',

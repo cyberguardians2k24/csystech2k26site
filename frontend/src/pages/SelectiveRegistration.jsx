@@ -63,8 +63,8 @@ export default function SelectiveRegistration() {
 
   const PREMIUM_PRICES = useMemo(() => ({
     'kabaddi': 599,
-    'arena-bgmi': 300,
-    'arena-free-fire': 300,
+    'arena-bgmi': 199,
+    'arena-free-fire': 199,
     'short-film': 300,
   }), []);
   const PREMIUM_IDS = useMemo(() => Object.keys(PREMIUM_PRICES), [PREMIUM_PRICES]);

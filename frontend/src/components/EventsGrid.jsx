@@ -367,7 +367,7 @@ export default function EventsGrid() {
               <div>
                 <p className="font-mono text-[10px] tracking-[0.26em] uppercase text-[#E8A000]">Technical Track</p>
                 <h4 className="mt-2 text-2xl font-heading font-black text-white">Dive into Core Innovation</h4>
-                <p className="mt-2 text-white/45 text-sm">Debugging, research, security, quiz rounds, and skill-based execution modules.</p>
+                <p className="mt-2 text-white/45 text-sm">Code 2 Chaos, research, security, quiz rounds, and skill-based execution modules.</p>
               </div>
               <div className="w-14 h-14 rounded-full border border-[#FFD700]/30 bg-[#FFD700]/10 flex items-center justify-center text-2xl">🔬</div>
             </div>
