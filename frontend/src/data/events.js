@@ -386,7 +386,7 @@ export const NON_TECHNICAL_EVENTS = [
     ],
     teamSize: 'Solo / Team',
     mode: 'Offline',
-    venue: 'EEE Block Auditorium (1st Floor)',
+    venue: 'EEE Auditorium (1st Fl)',
     duration: '1:30 PM to 3:00 PM',
     date: `${SYMPOSIUM_INFO.dateDisplay} — 1:30 PM to 3:00 PM`,
     coordinators: [

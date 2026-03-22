@@ -156,10 +156,10 @@ function EventCard({ ev, i }) {
 
           <div>
             <p className="font-mono text-[10px] tracking-[0.28em] uppercase text-white/30">Featured Protocol</p>
-            <h4 className="mt-2 text-2xl sm:text-3xl md:text-[2.1rem] font-black font-heading tracking-tight text-white">
+            <h4 className="mt-2 text-2xl sm:text-3xl md:text-[2.1rem] font-black font-heading tracking-tight text-white mb-4">
               {ev.title}
             </h4>
-            <p className="mt-2 text-sm font-mono text-[#C41E3A]/80 uppercase tracking-[0.18em]">{ev.tagline}</p>
+            <p className="mt-2 text-sm font-mono text-[#C41E3A]/80 uppercase tracking-[0.18em] leading-relaxed">{ev.tagline}</p>
           </div>
         </div>
 
@@ -218,16 +218,16 @@ function EventCard({ ev, i }) {
 
         <p className="text-sm md:text-[15px] text-white/60 leading-relaxed max-w-lg">{ev.desc}</p>
 
-        <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 items-stretch">
           {[
             { label: 'Prize', value: ev.prize, tone: 'text-[#C41E3A]' },
             { label: 'Team', value: ev.teamSize, tone: 'text-[#FFD700]' },
             { label: 'Mode', value: ev.mode, tone: 'text-[#E8A000]' },
             { label: 'Venue', value: ev.venue.split(',')[0], tone: 'text-white/75' },
           ].map((item) => (
-            <div key={item.label} className="rounded-2xl border border-white/8 bg-white/[0.03] px-3 py-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/30">{item.label}</p>
-              <p className={`mt-2 text-sm font-heading font-bold ${item.tone}`}>{item.value}</p>
+            <div key={item.label} className="flex flex-col rounded-2xl border border-white/8 bg-white/[0.03] p-3 overflow-hidden">
+              <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/30 shrink-0 mb-1.5">{item.label}</p>
+              <p className={`text-sm font-heading font-bold leading-tight break-words whitespace-normal ${item.tone}`}>{item.value}</p>
             </div>
           ))}
         </div>
