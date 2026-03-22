@@ -260,6 +260,29 @@ function EmojiBurst({ ready }) {
   );
 }
 
+function FloatingData({ ready }) {
+  return (
+    <>
+      <motion.div
+         className="absolute top-[25%] left-[8%] font-mono text-[10px] text-[#C41E3A] whitespace-pre mix-blend-screen z-[20] hidden lg:block tracking-widest leading-loose"
+         initial={{ opacity: 0 }}
+         animate={ready ? { opacity: [0, 0.8, 0, 0.5, 0] } : {}}
+         transition={{ duration: 5, repeat: Infinity, repeatDelay: 1 }}
+      >
+         {`INIT_SEQ: 0x8F9A\nSYS_OVR: ENABLED\nNODE // 492: ACTIVE\n[████████░░ 80%]`}
+      </motion.div>
+      <motion.div
+         className="absolute bottom-[35%] right-[8%] font-mono text-[10px] text-[#FFD700] whitespace-pre mix-blend-screen z-[20] hidden lg:block text-right tracking-widest leading-loose"
+         initial={{ opacity: 0 }}
+         animate={ready ? { opacity: [0, 0.6, 0, 0.3, 0] } : {}}
+         transition={{ duration: 7, repeat: Infinity, delay: 2, repeatDelay: 2 }}
+      >
+         {`TARGET: LOCKED\nMATRIX_SYNC: 100%\nWAKANDA_SYS_UP\n[░░░░░░░░░░ OK]`}
+      </motion.div>
+    </>
+  );
+}
+
 export default function Hero() {
   const [videoReady, setVideoReady] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
@@ -395,6 +418,18 @@ export default function Hero() {
           transition={{ duration: 1.8, ease: "easeOut", delay: 0.1 }}
           className="absolute inset-0 bg-white pointer-events-none z-[30] mix-blend-overlay"
         />
+
+        {/* ── Scanning Laser Line ─────────────────────────────────────────── */}
+        {videoReady && (
+          <motion.div
+            className="absolute left-0 right-0 h-[2px] bg-[#C41E3A] z-[25] pointer-events-none mix-blend-screen"
+            style={{ boxShadow: '0 0 30px #C41E3A, 0 0 60px #FFD700' }}
+            animate={{ top: ['0%', '100%'], opacity: [0, 0.6, 0.6, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+          />
+        )}
+
+        <FloatingData ready={videoReady} />
 
         {/* ── Cinematic Letterbox Bars ──────────────────────────────────────── */}
         <motion.div
