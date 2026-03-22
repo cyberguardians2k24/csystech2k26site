@@ -275,7 +275,7 @@ export class RegistrationsService {
 
     let confirmedEmailSent = false;
     if (nextPaymentStatus === PaymentStatus.PAID) {
-      // Find all confirmed, paid registrations for this participant
+      // Find ALL confirmed, paid registrations for this participant (includes the one just approved)
       const allConfirmed = await this.prisma.registration.findMany({
         where: {
           participantId: updatedRegistration.participantId,
@@ -284,14 +284,35 @@ export class RegistrationsService {
         },
         include: { event: true },
       });
+
       if (allConfirmed.length > 0) {
-        confirmedEmailSent = await this.emailService.sendBatchRegistrationConfirmedEmail({
+        // Send one individual confirmation email per confirmed event (in parallel)
+        const individualResults = await Promise.allSettled(
+          allConfirmed.map((reg) =>
+            this.emailService.sendRegistrationConfirmedEmail({
+              to: updatedRegistration.participant.email,
+              participantName: updatedRegistration.participant.name,
+              eventName: reg.event.name,
+              registrationId: reg.id,
+            }),
+          ),
+        );
+
+        const anyIndividualSent = individualResults.some(
+          (r) => r.status === 'fulfilled' && r.value === true,
+        );
+
+        // Send one batch summary email listing all confirmed events
+        const batchSent = await this.emailService.sendBatchRegistrationConfirmedEmail({
           to: updatedRegistration.participant.email,
           participantName: updatedRegistration.participant.name,
-          events: allConfirmed.map(r => ({ name: r.event.name, registrationId: r.id })),
+          events: allConfirmed.map((r) => ({ name: r.event.name, registrationId: r.id })),
         });
+
+        confirmedEmailSent = anyIndividualSent || batchSent;
       }
     }
+
     return { ...updatedRegistration, confirmedEmailSent } as any;
   }
 

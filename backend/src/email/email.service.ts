@@ -1,53 +1,3 @@
-  async sendBatchRegistrationConfirmedEmail(params: {
-    to: string;
-    participantName: string;
-    events: { name: string; registrationId: number }[];
-  }): Promise<boolean> {
-    this.logConfigOnce();
-
-    if (!this.isEnabled) {
-      const cfg = this.safeConfigForLogs;
-      this.logger.warn(`Email not enabled; skipping batch confirmation email (provider=${cfg.provider}).`);
-      return false;
-    }
-
-    const subject = `CYSTECH2K26 — Registrations confirmed (${params.events.length} events)`;
-    const safeName = params.participantName || 'Participant';
-    const eventList = params.events.map(ev => `<li><b>${escapeHtml(ev.name)}</b> (ID: ${ev.registrationId})</li>`).join('');
-
-    const html = `
-      <div style="font-family: Arial, Helvetica, sans-serif; line-height: 1.5; color: #111;">
-        <h2 style="margin: 0 0 10px;">Registrations confirmed</h2>
-        <p>Hi ${escapeHtml(safeName)},</p>
-        <p>Your payment has been verified and your registrations are <b>confirmed</b> for the following events:</p>
-        <ul>${eventList}</ul>
-        <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;" />
-        <p><b>Reminder:</b> Bring your college ID card and keep your payment proof available.</p>
-      </div>
-    `;
-
-    try {
-      if (this.hasResendEnabled) {
-        await this.sendWithResend({
-          to: params.to,
-          subject,
-          html,
-        });
-      } else {
-        const transporter = await this.ensureTransporterReady();
-        await transporter.sendMail({
-          from: this.fromAddress,
-          to: params.to,
-          subject,
-          html,
-        });
-      }
-      return true;
-    } catch (err: any) {
-      this.logger.error(`Failed to send batch confirmation email to ${params.to}: ${err?.message || err}`);
-      return false;
-    }
-  }
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
@@ -229,6 +179,23 @@ export class EmailService {
     }
   }
 
+  private async sendMail(params: { to: string; subject: string; html: string }) {
+    if (this.hasResendEnabled) {
+      await this.sendWithResend(params);
+    } else {
+      const transporter = await this.ensureTransporterReady();
+      await transporter.sendMail({
+        from: this.fromAddress,
+        to: params.to,
+        subject: params.subject,
+        html: params.html,
+      });
+    }
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Registration received (submitted, pending admin approval)
+  // ──────────────────────────────────────────────────────────────────────────
   async sendRegistrationReceivedEmail(params: {
     to: string;
     participantName: string;
@@ -264,21 +231,7 @@ export class EmailService {
     `;
 
     try {
-      if (this.hasResendEnabled) {
-        await this.sendWithResend({
-          to: params.to,
-          subject,
-          html,
-        });
-      } else {
-        const transporter = await this.ensureTransporterReady();
-        await transporter.sendMail({
-          from: this.fromAddress,
-          to: params.to,
-          subject,
-          html,
-        });
-      }
+      await this.sendMail({ to: params.to, subject, html });
       return true;
     } catch (err: any) {
       this.logger.error(`Failed to send registration email to ${params.to}: ${err?.message || err}`);
@@ -286,6 +239,9 @@ export class EmailService {
     }
   }
 
+  // ──────────────────────────────────────────────────────────────────────────
+  // Single-event confirmation (one email per approved event)
+  // ──────────────────────────────────────────────────────────────────────────
   async sendRegistrationConfirmedEmail(params: {
     to: string;
     participantName: string;
@@ -305,7 +261,7 @@ export class EmailService {
 
     const html = `
       <div style="font-family: Arial, Helvetica, sans-serif; line-height: 1.5; color: #111;">
-        <h2 style="margin: 0 0 10px;">Registration confirmed</h2>
+        <h2 style="margin: 0 0 10px;">Registration confirmed ✅</h2>
         <p>Hi ${escapeHtml(safeName)},</p>
         <p>Your payment has been verified and your registration is <b>confirmed</b> for <b>${escapeHtml(params.eventName)}</b>.</p>
         <p><b>Registration ID:</b> ${params.registrationId}</p>
@@ -315,21 +271,7 @@ export class EmailService {
     `;
 
     try {
-      if (this.hasResendEnabled) {
-        await this.sendWithResend({
-          to: params.to,
-          subject,
-          html,
-        });
-      } else {
-        const transporter = await this.ensureTransporterReady();
-        await transporter.sendMail({
-          from: this.fromAddress,
-          to: params.to,
-          subject,
-          html,
-        });
-      }
+      await this.sendMail({ to: params.to, subject, html });
       return true;
     } catch (err: any) {
       this.logger.error(`Failed to send confirmation email to ${params.to}: ${err?.message || err}`);
@@ -337,6 +279,67 @@ export class EmailService {
     }
   }
 
+  // ──────────────────────────────────────────────────────────────────────────
+  // Batch summary email  – lists ALL confirmed events in one mail
+  // Sent after each approval so the participant always sees their full list.
+  // ──────────────────────────────────────────────────────────────────────────
+  async sendBatchRegistrationConfirmedEmail(params: {
+    to: string;
+    participantName: string;
+    events: { name: string; registrationId: number }[];
+  }): Promise<boolean> {
+    this.logConfigOnce();
+
+    if (!this.isEnabled) {
+      const cfg = this.safeConfigForLogs;
+      this.logger.warn(`Email not enabled; skipping batch confirmation email (provider=${cfg.provider}).`);
+      return false;
+    }
+
+    const subject = `CYSTECH2K26 — All your confirmed registrations (${params.events.length} event${params.events.length !== 1 ? 's' : ''})`;
+    const safeName = params.participantName || 'Participant';
+    const eventRows = params.events
+      .map(
+        (ev) =>
+          `<tr>
+            <td style="padding: 6px 12px; border-bottom: 1px solid #eee;">${escapeHtml(ev.name)}</td>
+            <td style="padding: 6px 12px; border-bottom: 1px solid #eee; color: #555;">#${ev.registrationId}</td>
+          </tr>`,
+      )
+      .join('');
+
+    const html = `
+      <div style="font-family: Arial, Helvetica, sans-serif; line-height: 1.5; color: #111; max-width: 560px;">
+        <h2 style="margin: 0 0 10px;">Your confirmed registrations 🎉</h2>
+        <p>Hi ${escapeHtml(safeName)},</p>
+        <p>Here is a summary of all your <b>confirmed</b> registrations for <b>CYSTECH 2K26</b>:</p>
+        <table style="width: 100%; border-collapse: collapse; margin: 12px 0;">
+          <thead>
+            <tr style="background: #f5f5f5;">
+              <th style="padding: 6px 12px; text-align: left; border-bottom: 2px solid #ddd;">Event</th>
+              <th style="padding: 6px 12px; text-align: left; border-bottom: 2px solid #ddd;">Registration ID</th>
+            </tr>
+          </thead>
+          <tbody>${eventRows}</tbody>
+        </table>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;" />
+        <p><b>Reminder:</b> Bring your college ID card and keep your payment proof available on event day.</p>
+        <p style="color: #888; font-size: 12px;">This is an automated summary email from CYSTECH 2K26.</p>
+      </div>
+    `;
+
+    try {
+      await this.sendMail({ to: params.to, subject, html });
+      return true;
+    } catch (err: any) {
+      this.logger.error(`Failed to send batch confirmation email to ${params.to}: ${err?.message || err}`);
+      return false;
+    }
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Cancellation
+  // ──────────────────────────────────────────────────────────────────────────
   async sendRegistrationCancelledEmail(params: {
     to: string;
     participantName: string;
@@ -369,21 +372,7 @@ export class EmailService {
     `;
 
     try {
-      if (this.hasResendEnabled) {
-        await this.sendWithResend({
-          to: params.to,
-          subject,
-          html,
-        });
-      } else {
-        const transporter = await this.ensureTransporterReady();
-        await transporter.sendMail({
-          from: this.fromAddress,
-          to: params.to,
-          subject,
-          html,
-        });
-      }
+      await this.sendMail({ to: params.to, subject, html });
       return true;
     } catch (err: any) {
       this.logger.error(`Failed to send cancellation email to ${params.to}: ${err?.message || err}`);

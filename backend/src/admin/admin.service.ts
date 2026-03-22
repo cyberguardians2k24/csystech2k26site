@@ -14,8 +14,8 @@ function normalizeSlug(value?: string | null) {
 const BASIC_PASS_INR = 149;
 const SEPARATE_EVENT_PRICES_INR: Record<string, number> = {
   kabaddi: 599,
-  'arena-bgmi': 300,
-  'arena-free-fire': 300,
+  'arena-bgmi': 200,
+  'arena-free-fire': 200,
   'short-film': 300,
 };
 
