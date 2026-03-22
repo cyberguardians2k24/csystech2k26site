@@ -407,7 +407,7 @@ export default function Hero() {
           <motion.div
             variants={fadeBlurUp}
             whileHover={{ scale: 1.07, boxShadow: '0 0 20px rgba(196, 30, 58,0.4)' }}
-            className="mb-16 -translate-y-8 rounded-full border border-[#C41E3A]/50 bg-[#C41E3A]/10 px-5 py-2 cursor-default"
+            className="mb-8 rounded-full border border-[#C41E3A]/50 bg-[#C41E3A]/10 px-5 py-2 cursor-default"
           >
             <div className="flex items-center gap-3">
               <motion.span
@@ -423,25 +423,23 @@ export default function Hero() {
             </div>
           </motion.div>
 
-          {/* Mobile-only Glitch Title — shown after video plays once */}
-          <AnimatePresence>
-            {videoEnded && (
-              <motion.div
-                key="mobile-title"
-                initial={{ opacity: 0, scale: 0.92 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="md:hidden absolute inset-0 flex items-center justify-center pointer-events-none z-[2]"
-              >
-                <GlitchTitle ready={true} />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Tagline removed as requested */}
+          <div className="h-32 mb-8 flex items-center justify-center pointer-events-none">
+            <AnimatePresence>
+              {videoEnded && (
+                <motion.div
+                  key="hero-title"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <GlitchTitle ready={true} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* CTA buttons */}
-          <motion.div variants={fadeBlurUp} className="mt-[38vh] sm:mt-[26rem] flex flex-wrap items-center justify-center gap-4">
+          <motion.div variants={fadeBlurUp} className="flex flex-wrap items-center justify-center gap-4">
             <motion.button
               whileHover={{
                 scale: 1.1,
