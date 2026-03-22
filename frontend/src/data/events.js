@@ -277,8 +277,8 @@ export const NON_TECHNICAL_EVENTS = [
     icon: '🤼',
     poster: null,
     tag: 'SPORT',
-    prize: '₹8,000',
-    prizeValue: 8000,
+    prize: '₹5,000',
+    prizeValue: 5000,
     rules: [
       'Participants must be present within campus by 9:00 AM.',
       'Participants should report to the venue at least 10 minutes before the event slot.',
@@ -394,5 +394,5 @@ export const EVENT_STATS = {
   totalPrizePool: TOTAL_PRIZE_POOL,
   technicalPrizePoolLabel: formatInr(TECHNICAL_PRIZE_POOL),
   nonTechnicalPrizePoolLabel: formatInr(NON_TECHNICAL_PRIZE_POOL),
-  totalPrizePoolLabel: formatInr(TOTAL_PRIZE_POOL),
+  totalPrizePoolLabel: '₹40,000+',
 };
