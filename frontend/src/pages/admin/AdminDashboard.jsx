@@ -1049,6 +1049,9 @@ export default function AdminDashboard() {
                                 <td className="px-4 py-3 text-xs text-slate-400">{p.email ?? '—'}</td>
                                 <td className="max-w-[160px] truncate px-4 py-3 text-xs text-slate-400">{p.college ?? '—'}</td>
                                 <td className="px-4 py-3 text-xs font-medium text-indigo-400">{reg.eventName}</td>
+                                <td className="px-4 py-3 text-xs text-slate-400">
+                                  {Array.isArray(reg.teamMembers) ? reg.teamMembers.length : (reg.teamName ? 'Team' : '1')}
+                                </td>
                                 <td className="px-4 py-3">
                                   <select value={reg.status} onChange={(e) => handleStatusChange(reg.id, e.target.value)}
                                     className="rounded-md border border-slate-700 bg-slate-800 px-2 py-1 text-xs text-white focus:border-indigo-500 focus:outline-none">
