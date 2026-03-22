@@ -88,9 +88,39 @@ export default function SelectiveRegistration() {
   const toggleTechnicalEvent = (eventId) => {
     setError('');
     setSelectedTechnicalEvents((current) => {
+      // Uncheck
       if (current.includes(eventId)) return current.filter((id) => id !== eventId);
+      
+      // Enforce Slot/Cipher Vista Logic
+      if (eventId === 'cipher-vista') {
+        if (current.length > 0) {
+          setError('Cipher Vista (Poster Presentation) takes the entire morning block. You cannot select other technical events with it.');
+          return current;
+        }
+        return [eventId];
+      }
+      
+      if (current.includes('cipher-vista')) {
+        setError('You have already selected Cipher Vista, which runs through entire morning block.');
+        return current;
+      }
+
+      const SLOT_1 = ['payload-paradise', 'neuro-byte'];
+      const SLOT_2 = ['code-2-chaos', 'design-duel'];
+      const newEventSlot = SLOT_1.includes(eventId) ? 1 : 2;
+      
+      const hasSlotClash = current.some(id => {
+        const slot = SLOT_1.includes(id) ? 1 : 2;
+        return slot === newEventSlot;
+      });
+
+      if (hasSlotClash) {
+        setError(`You can only select 1 technical event per slot. (Slot ${newEventSlot} clash)`);
+        return current;
+      }
+
       if (current.length >= 2) {
-        setError('You can select a maximum of 2 technical events for the Standard Pass.');
+        setError('You can select a maximum of 2 technical events (1 per slot).');
         return current;
       }
       return [...current, eventId];
@@ -304,15 +334,15 @@ export default function SelectiveRegistration() {
                 <ul className="space-y-3 mb-5">
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
-                    <span><strong className="text-white/90">General Pass (₹149):</strong> Access to mix up to 2 Technical Events + 1 General Non-Tech event (Link Logic).</span>
+                    <span><strong className="text-white/90">General Pass (₹149):</strong> Access to morning Technical Events + afternoon Link Logic.</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
-                    <span><strong className="text-white/90">Separate Registrations (₹199–₹599):</strong> BGMI, Free Fire, Kabaddi, and CINEATAKE must be registered through their individual forms.</span>
+                    <span><strong className="text-white/90">Technical Event Rules:</strong> You can choose <strong className="text-white/90">Cipher Vista (takes full morning)</strong> OR <strong className="text-white/90">pick 2 short events</strong> (1 from Slot 1, 1 from Slot 2).</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
-                    <span>You can select a <strong className="text-white/90">maximum of 2 technical events</strong> and <strong className="text-white/90">1 general non-technical event</strong> per General Pass.</span>
+                    <span><strong className="text-white/90">Separate Registrations:</strong> CINEATAKE, Kabaddi, BGMI, and Free Fire must be registered through their individual forms.</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
@@ -378,7 +408,10 @@ export default function SelectiveRegistration() {
           </div>
 
           <div className="rounded-3xl border border-vibranium/20 bg-white/[0.02] p-6">
-            <p className="font-mono text-[10px] tracking-[0.22em] text-vibranium/80 uppercase mb-4">Choose Technical Events (Max 2 for General Pass)</p>
+            <div className="flex flex-col mb-4">
+               <p className="font-mono text-[10px] tracking-[0.22em] text-vibranium/80 uppercase mb-2">Choose Technical Events</p>
+               <p className="text-xs text-white/50">Pick <strong className="text-vibranium">Cipher Vista</strong> OR up to <strong className="text-white">2 Parallel Events</strong> (One from Slot 1, One from Slot 2).</p>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {TECHNICAL_EVENTS.map((event) => {
                 const checked = selectedTechnicalEvents.includes(event.id);
@@ -388,10 +421,15 @@ export default function SelectiveRegistration() {
                     key={event.id}
                     type="button"
                     onClick={() => toggleTechnicalEvent(event.id)}
-                    disabled={disabled}
-                    className={`text-left p-4 rounded-2xl border transition-all ${checked ? 'border-vibranium bg-vibranium/15 shadow-[0_0_15px_rgba(196,30,58,0.3)]' : 'border-white/10 bg-white/[0.02]'} ${disabled ? 'opacity-40 cursor-not-allowed' : 'hover:border-white/30'}`}
+                    className={`text-left p-4 rounded-2xl border transition-all ${checked ? 'border-vibranium bg-vibranium/15 shadow-[0_0_15px_rgba(196,30,58,0.3)]' : 'border-white/10 bg-white/[0.02]'} hover:border-white/30`}
                   >
-                    <p className="font-heading text-white font-bold">{event.title}</p>
+                    <div className="flex justify-between items-start gap-2">
+                       <p className="font-heading text-white font-bold">{event.title}</p>
+                       {event.id === 'cipher-vista' ? 
+                          <span className="font-mono text-[9px] px-2 py-0.5 rounded border border-vibranium/30 text-vibranium uppercase shrink-0">Full Morning</span> :
+                          <span className="font-mono text-[9px] px-2 py-0.5 rounded border border-white/20 text-white/60 uppercase shrink-0">Slot {['payload-paradise', 'neuro-byte'].includes(event.id) ? 1 : 2}</span>
+                       }
+                    </div>
                     <p className="text-xs text-white/45 mt-1">{event.tagline}</p>
                   </button>
                 );

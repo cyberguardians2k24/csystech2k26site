@@ -26,6 +26,7 @@ const SelectiveRegistration = lazy(() => import('./pages/SelectiveRegistration')
 const EventRegistration = lazy(() => import('./pages/EventRegistration'));
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+const TimelinePage = lazy(() => import('./pages/TimelinePage'));
 const EventsGrid = lazy(() => import('./components/EventsGrid'));
 const Speakers = lazy(() => import('./components/Speakers'));
 const Schedule = lazy(() => import('./components/Schedule'));
@@ -448,6 +449,7 @@ export default function App() {
           <Route path="/register/:eventId" element={<RouteScene routeKey="event-registration"><Suspense fallback={null}><EventRegistration /></Suspense></RouteScene>} />
           <Route path="/admin" element={<RouteScene routeKey="admin-login"><Suspense fallback={null}><AdminLogin /></Suspense></RouteScene>} />
           <Route path="/admin/dashboard" element={<RouteScene routeKey="admin-dashboard"><Suspense fallback={null}><AdminDashboard /></Suspense></RouteScene>} />
+          <Route path="/timeline" element={<RouteScene routeKey="timeline"><Suspense fallback={null}><TimelinePage /></Suspense></RouteScene>} />
           <Route path="/" element={
             <RouteScene routeKey="home">
               <motion.main

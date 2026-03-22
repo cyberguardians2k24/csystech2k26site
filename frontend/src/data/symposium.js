@@ -26,51 +26,15 @@ export const EVENT_DAY_SCHEDULE = {
       tag: 'CEREMONY',
     },
     {
-      time: '09:30 AM',
-      name: 'Morning Technical Events Begin',
-      desc: 'Cipher Vista and Bug Bash begin in the first morning session.',
-      tag: 'COMPETITION',
-    },
-    {
       time: '10:00 AM - 11:15 AM',
-      name: 'Technical Batch 1',
-      desc: 'Cipher Vista, Payload Paradise, Code 2 Chaos, Bug Bash, and Neuro Byte run in parallel.',
+      name: 'Slot 1 Technical Events',
+      desc: 'Payload Paradise & Neuro Byte begin.',
       tag: 'COMPETITION',
     },
     {
-      time: '11:00 AM - 11:15 AM',
-      name: 'Refreshments',
-      desc: 'Refreshments are provided for participants before the second batch.',
-      tag: 'BREAK',
-    },
-    {
-      time: '11:15 AM - 12:15 PM',
-      name: 'Mid-Morning Event Slots',
-      desc: 'Neuro Byte, Payload Paradise, and Code 2 Chaos continue in their dedicated venues.',
-      tag: 'COMPETITION',
-    },
-    {
-      time: '11:30 AM - 12:45 PM',
-      name: 'Technical Batch 2',
-      desc: 'Second technical batch runs with the same morning event lineup for the next set of participants.',
-      tag: 'COMPETITION',
-    },
-    {
-      time: '12:15 PM - 01:00 PM',
-      name: 'Lunch Break',
-      desc: 'Food is provided for all registered participants.',
-      tag: 'BREAK',
-    },
-    {
-      time: '01:00 PM - 02:15 PM',
-      name: 'Arena Sessions',
-      desc: 'Arena (Free Fire) and Arena (BGMI) run in the afternoon gaming slot.',
-      tag: 'COMPETITION',
-    },
-    {
-      time: '01:30 PM - 03:00 PM',
-      name: 'Afternoon Non-Technical Events',
-      desc: 'Free Fire, BGMI, CINEATAKE, and Link Logic are conducted in parallel.',
+      time: '10:00 AM - 12:45 PM',
+      name: 'Poster Presentation',
+      desc: 'Cipher Vista presentations to the judges.',
       tag: 'COMPETITION',
     },
     {
@@ -80,10 +44,41 @@ export const EVENT_DAY_SCHEDULE = {
       tag: 'COMPETITION',
     },
     {
+      time: '11:25 AM - 12:45 PM',
+      name: 'Slot 2 Technical Events',
+      desc: 'Bug Bash & Code 2 Chaos begin.',
+      tag: 'COMPETITION',
+    },
+    {
+      time: '12:45 PM - 01:30 PM',
+      name: 'Lunch Break',
+      desc: 'Food is provided for all registered participants.',
+      tag: 'BREAK',
+    },
+    {
+      time: '01:30 PM - 03:00 PM',
+      name: 'Afternoon Non-Technical Events',
+      desc: 'Link Logic, CINEATAKE, Free Fire, and BGMI are conducted in parallel.',
+      tag: 'COMPETITION',
+    },
+    {
       time: '03:00 PM - 03:30 PM',
       name: 'Prize Distribution',
       desc: 'Certificates and prizes are distributed at the closing ceremony.',
       tag: 'CEREMONY',
     },
   ],
-}
+};
+
+export const TIMELINE_SLOTS = [
+  { event: 'Poster Presentation', slot1: '10:00am – 12:45pm (if possible)', slot2: '' },
+  { event: 'Bug Bash', slot1: '', slot2: '11:25am – 12:45pm' },
+  { event: 'Payload Paradise', slot1: '10:00am – 11:15am', slot2: '' },
+  { event: 'Technical Quiz (Neuro Byte)', slot1: '10:00am – 11:15am', slot2: '' },
+  { event: 'Fun Coding (Code 2 Chaos)', slot1: '', slot2: '11:25am – 12:45pm' },
+  { isBreak: true, text: 'LUNCH BREAK 12:45pm to 1:30pm' },
+  { event: 'Kabaddi', slot1: '10:00am – 3:00pm', slot2: '10:00am – 3:00pm' },
+  { event: 'Link Logic', slot1: '1:30pm – 3:00pm', slot2: '1:30pm – 3:00pm' },
+  { event: 'Short Film', slot1: '1:30pm – 3:00pm', slot2: '1:30pm – 3:00pm' },
+  { event: 'Arena (BGMI & FF)', slot1: '1:30pm – 3:00pm', slot2: '1:30pm – 3:00pm' },
+];
