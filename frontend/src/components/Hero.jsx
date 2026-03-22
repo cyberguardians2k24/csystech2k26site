@@ -368,10 +368,10 @@ export default function Hero() {
             </div>
           </motion.div>
 
-          {/* Mobile-only Glitch Title (Hidden on desktop since video has text) */}
-          <motion.div variants={fadeBlurUp} className="md:hidden">
+          {/* Mobile-only Glitch Title — absolutely centred in viewport */}
+          <div className="md:hidden absolute inset-0 flex items-center justify-center pointer-events-none z-[2]">
             <GlitchTitle ready={videoReady} />
-          </motion.div>
+          </div>
 
           {/* Tagline removed as requested */}
 
