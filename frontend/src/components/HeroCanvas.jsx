@@ -361,7 +361,7 @@ export default function HeroCanvas() {
         >
           {/* Dept label */}
           <div className="font-mono text-vibranium-400 text-xs tracking-[0.5em] mb-8">
-            [ DEPARTMENT OF COMPUTER SCIENCE ]
+            [ CYBER SECURITY DEPARTMENT ]
           </div>
 
           {/* Logo container â€” glow + glitch clone */}

@@ -157,7 +157,7 @@ export default function RegistrationCTA() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <InputField label="Department" id="department" placeholder="e.g. Computer Science" value={form.department} onChange={set('department')} />
+                  <InputField label="Department" id="department" placeholder="e.g. Cyber Security" value={form.department} onChange={set('department')} />
                   <SelectField
                     label="Year of Study"
                     id="yearOfStudy"

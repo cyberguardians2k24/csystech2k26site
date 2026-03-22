@@ -31,7 +31,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="font-rajdhani text-white/40 text-sm leading-relaxed">
-              Department of Computer Science — Annual Technology Symposium.
+              Cyber Security Department — Annual Technology Symposium.
               Where vibranium meets vision.
             </p>
             <div className="font-mono text-vibranium-600 text-xs tracking-widest">

@@ -548,7 +548,7 @@ export default function App() {
                           </div>
                         </div>
                         <p className="text-white/25 text-sm font-body leading-relaxed">
-                          Dept. of Computer Science — Annual Technology Symposium. Where innovation meets vision.
+                          Cyber Security Department — Annual Technology Symposium. Where innovation meets vision.
                         </p>
                         <div className="font-mono text-vibranium/30 text-[10px] tracking-widest uppercase">08 April 2026</div>
                         <div className="flex items-center gap-2.5 pt-1">
@@ -637,7 +637,7 @@ export default function App() {
                     {/* Bottom bar */}
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                       <p className="font-mono text-white/18 text-[10px] tracking-widest uppercase">
-                        © 2026 CYSTECH · Dept. of ECE / Computer Science Symposium · All Rights Reserved
+                        © 2026 CYSTECH · Cyber Security Department Symposium · All Rights Reserved
                       </p>
                       <div className="flex items-center gap-3">
                         <button

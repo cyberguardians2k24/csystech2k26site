@@ -215,7 +215,7 @@ function PosterModal({ event, onClose }) {
     ctx.fillStyle = 'rgba(180,79,255,0.9)'; ctx.font = 'bold 13px \'Courier New\', monospace'; ctx.textAlign = 'center';
     ctx.fillText('CYSTECH 2026  \u00b7  SYMPO SYMPOSIUM', W / 2, 88);
     ctx.fillStyle = 'rgba(255,255,255,0.22)'; ctx.font = '11px \'Courier New\', monospace';
-    ctx.fillText('DEPT. OF COMPUTER SCIENCE', W / 2, 118);
+    ctx.fillText('CYBER SECURITY DEPARTMENT', W / 2, 118);
 
     const catLabel = (event.category || 'EVENT').toUpperCase();
     const catW = ctx.measureText(catLabel).width + 56;

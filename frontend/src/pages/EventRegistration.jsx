@@ -593,7 +593,7 @@ export default function EventRegistration() {
                     <InputField label="College" id="reg-college" placeholder="College name" value={form.college} onChange={set('college')} required />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <InputField label="Department" id="reg-dept" placeholder="e.g. Computer Science" value={form.department} onChange={set('department')} />
+                    <InputField label="Department" id="reg-dept" placeholder="e.g. Cyber Security" value={form.department} onChange={set('department')} />
                     <SelectField
                       label="Year of Study"
                       id="reg-year"
