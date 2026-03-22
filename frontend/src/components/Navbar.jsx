@@ -35,7 +35,7 @@ export default function Navbar({ nonInteractive = false }) {
 
   useEffect(() => {
     if (location.pathname === '/') {
-      const ids = ['hero', 'events', 'speakers', 'schedule', 'sponsors', 'faq', 'register']
+      const ids = ['hero', 'events', 'speakers', 'schedule', 'sponsors', 'register']
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {

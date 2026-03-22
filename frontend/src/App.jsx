@@ -31,7 +31,6 @@ const EventsGrid = lazy(() => import('./components/EventsGrid'));
 const Speakers = lazy(() => import('./components/Speakers'));
 const Schedule = lazy(() => import('./components/Schedule'));
 const Sponsors = lazy(() => import('./components/Sponsors'));
-const FAQ = lazy(() => import('./components/FAQ'));
 
 // ── Scroll Progress Bar ────────────────────────────────────────────────────
 function ScrollProgressBar() {
@@ -573,7 +572,6 @@ export default function App() {
                             { label: 'Speakers', href: '#speakers' },
                             { label: 'Schedule', href: '#schedule' },
                             { label: 'Sponsors', href: '#sponsors' },
-                            { label: 'FAQ', href: '#faq' },
                             { label: 'Register', href: '/register' },
                           ].map(({ label, href }) => (
                             <li key={href}>
