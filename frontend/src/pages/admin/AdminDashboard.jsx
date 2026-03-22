@@ -1037,7 +1037,7 @@ export default function AdminDashboard() {
                         </thead>
                         <tbody className="divide-y divide-slate-700/30">
                           {paginatedRegistrations.length === 0 ? (
-                            <tr><td colSpan={11} className="py-16 text-center text-sm text-slate-500">No registrations found</td></tr>
+                            <tr><td colSpan={12} className="py-16 text-center text-sm text-slate-500">No registrations found</td></tr>
                           ) : paginatedRegistrations.map((reg, idx) => {
                             const p = reg.participant ?? {};
                             const globalIdx = (currentPage - 1) * PER_PAGE + idx + 1;
