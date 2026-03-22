@@ -7,7 +7,7 @@ export const WHATSAPP_GROUPS = {
   'cipher-vista': 'https://chat.whatsapp.com/HwC2EjzL6TpFajaGpx38y1?mode=gi_t',
   'payload-paradise': 'https://chat.whatsapp.com/FL6fr97E2ASKDpYT2Kwfgb?mode=gi_t',
   'arena-free-fire': 'https://chat.whatsapp.com/Lssq5SgUQitJ14caKCivyD?mode=gi_t',
-  'design-duel': 'https://chat.whatsapp.com/D2E8ZxC3eKdBnAz48zw4kS',
+  'design-duel': 'https://chat.whatsapp.com/DoKlbMsZTMxB39DmAzubJR?mode=gi_t',
   'code-2-chaos': 'https://chat.whatsapp.com/DoKlbMsZTMxB39DmAzubJR?mode=gi_t',
   'kabaddi': 'https://chat.whatsapp.com/LhE9Byp2YIiBTffJIioSlg?mode=gi_t',
   'link-logic': 'https://chat.whatsapp.com/DUHqjOXE7qY7Ksevpj6STd?mode=gi_t',
