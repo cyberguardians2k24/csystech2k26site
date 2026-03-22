@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, lazy, Suspense, useEffect } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import heroVideo from '../../Assets/hero/cystek cdo 2 selected.mp4';
 import { EVENT_STATS } from '../data/events';
@@ -180,6 +180,45 @@ function SideDataColumn({ ready, side = 'left' }) {
 }
 
 // ─── Burst emoji ring ─────────────────────────────────────────────────────────
+function HexagonGrid({ ready }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={ready ? { opacity: 0.15 } : {}}
+      transition={{ duration: 2, delay: 1 }}
+      className="absolute inset-0 pointer-events-none z-[1] overflow-hidden"
+    >
+      <div 
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='103.923' viewBox='0 0 60 103.923' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l30 17.32v34.641L30 69.282 0 51.961V17.32z' fill='none' stroke='%23C41E3A' stroke-opacity='0.2' stroke-width='1'/%3E%3C/svg%3E")`,
+          backgroundSize: '80px 138.56px',
+        }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
+    </motion.div>
+  );
+}
+
+function RadarSweep({ ready }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={ready ? { opacity: 1 } : {}}
+      transition={{ duration: 1, delay: 2 }}
+      className="absolute inset-0 pointer-events-none z-[2] flex items-center justify-center overflow-hidden"
+    >
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+        className="w-[150vw] h-[150vw] max-w-[1200px] max-h-[1200px] rounded-full"
+        style={{
+          background: 'conic-gradient(from 0deg, transparent 70%, rgba(196,30,58,0.1) 95%, rgba(196,30,58,0.4) 100%)',
+        }}
+      />
+    </motion.div>
+  );
+}
 const HERO_BURST_EMOJIS = [
   { glyph: '✦', tone: 'gold', x: -160, y: -90, delay: 0.05, rotate: -24 },
   { glyph: '✧', tone: 'silver', x: -90, y: -122, delay: 0.14, rotate: 12 },
@@ -235,16 +274,23 @@ export default function Hero() {
         setParticipantCount(null);
       });
       
-    return () => { 
-      mounted = false; 
-    };
+    return () => { mounted = false; };
   }, []);
+
+  const mouseX = useSpring(0, { stiffness: 100, damping: 30 });
+  const mouseY = useSpring(0, { stiffness: 100, damping: 30 });
 
   const handleMouseMove = useCallback((e) => {
     const rect = heroRef.current?.getBoundingClientRect();
     if (!rect) return;
     setSpotlight({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  }, []);
+    
+    // Calculate normalized 3D tilt coordinates (-1 to 1)
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    mouseX.set(x * 20); // max 10 degrees tilt
+    mouseY.set(y * -20);
+  }, [mouseX, mouseY]);
 
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
   const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.18]);
@@ -292,22 +338,29 @@ export default function Hero() {
         <AnimatePresence>
           {!videoReady && (
             <motion.div exit={{ opacity: 0 }} transition={{ duration: 0.4 }}
-              className="absolute inset-0 flex items-center justify-center bg-black z-50">
-              <div className="w-10 h-10 rounded-full border-2 border-white/10 border-t-white/80 animate-spin" />
+              className="absolute inset-0 flex flex-col items-center justify-center bg-black z-50">
+              <div className="relative w-16 h-16">
+                 <div className="absolute inset-0 border-[3px] border-t-[#C41E3A] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-[spin_1s_linear_infinite]" />
+                 <div className="absolute inset-2 border-[2px] border-t-vibranium border-r-transparent border-b-transparent border-l-transparent rounded-full animate-[spin_1.5s_linear_infinite_reverse]" />
+              </div>
+              <p className="mt-4 font-mono text-[9px] tracking-[0.4em] text-[#C41E3A] uppercase animate-pulse">Initializing Chaos Engine...</p>
             </motion.div>
           )}
         </AnimatePresence>
 
+        <HexagonGrid ready={videoReady} />
+        <RadarSweep ready={videoReady} />
+
         {/* ── Cinematic vignette ───────────────────────────────────────────── */}
         <div
-          className="absolute inset-0 pointer-events-none z-[2]"
+          className="absolute inset-0 pointer-events-none z-[3]"
           style={{
-            background: 'radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.55) 80%, rgba(0,0,0,0.85) 100%)',
+            background: 'radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(0,0,0,0.65) 80%, rgba(0,0,0,0.95) 100%)',
           }}
         />
 
         {/* ── Scanline flicker ─────────────────────────────────────────────── */}
-        <div className="absolute inset-0 scanlines opacity-[0.06] pointer-events-none z-[3]" />
+        <div className="absolute inset-0 scanlines opacity-[0.08] pointer-events-none z-[4]" />
 
         {/* ── Horizontal crimson light streak (top) ───────────────────────── */}
         <motion.div
@@ -437,25 +490,29 @@ export default function Hero() {
             </motion.button>
           </motion.div>
 
-          {/* Stats — bouncy pop-in */}
-          <motion.div variants={fadeBlurUp} className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-8">
+          {/* Stats — 3D Tilt pop-in */}
+          <motion.div 
+            variants={fadeBlurUp} 
+            style={{ rotateX: mouseY, rotateY: mouseX, transformPerspective: 1000 }}
+            className="mt-12 flex flex-wrap items-center justify-center gap-4 sm:gap-8 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-md px-8 py-5 shadow-[0_0_50px_rgba(196,30,58,0.15)]"
+          >
             {stats.map((s, i) => (
               <React.Fragment key={s.label}>
-                {i > 0 && <span className="hidden sm:block w-px h-8 bg-white/10" />}
+                {i > 0 && <span className="hidden sm:block w-px h-12 bg-gradient-to-b from-transparent via-[#C41E3A]/40 to-transparent" />}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.5, y: 20 }}
                   animate={videoReady ? { opacity: 1, scale: 1, y: 0 } : {}}
                   transition={{ delay: 1.0 + i * 0.1, duration: 0.6, type: 'spring', stiffness: 300, damping: 18 }}
-                  whileHover={{ scale: 1.15, y: -4 }}
-                  className="text-center cursor-default"
+                  whileHover={{ scale: 1.15, y: -4, filter: 'brightness(1.5)' }}
+                  className="text-center cursor-default min-w-[80px]"
                 >
                   <div className="mb-0.5">
-                    <VibraniumGlyph glyph={s.glyph} tone={s.tone} className="text-lg" />
+                    <VibraniumGlyph glyph={s.glyph} tone={s.tone} className="text-xl drop-shadow-[0_0_8px_currentColor]" />
                   </div>
-                  <div className="font-heading text-2xl sm:text-3xl font-black text-white">
+                  <div className="font-heading text-2xl sm:text-4xl font-black text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.3)]">
                     {s.value}
                   </div>
-                  <div className="font-mono text-[8.5px] tracking-[0.2em] uppercase text-white/40 mt-0.5">
+                  <div className="font-mono text-[9px] tracking-[0.25em] uppercase text-white/50 mt-1">
                     {s.label}
                   </div>
                 </motion.div>
