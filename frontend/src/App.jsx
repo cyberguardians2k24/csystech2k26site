@@ -499,14 +499,6 @@ export default function App() {
                   </Suspense>
                 </div>
 
-                <SectionDivider label="FAQ" variant="subtle" />
-
-                <div id="faq">
-                  <Suspense fallback={<div className="h-40 bg-wakanda-dark" />}>
-                    <FAQ />
-                  </Suspense>
-                </div>
-
                 {/* ── Footer ───────────────────────────────────────────────────── */}
                 <footer className="section-shell relative border-t border-vibranium/10 bg-wakanda-dark overflow-hidden">
                   <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-vibranium/40 to-transparent" />
