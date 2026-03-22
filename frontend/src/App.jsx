@@ -656,7 +656,7 @@ export default function App() {
                           <span className="font-mono text-white/18 text-[10px] tracking-widest uppercase">Systems Online</span>
                         </div>
                         <span className="text-white/10 text-xs">·</span>
-                        <span className="font-mono text-white/18 text-[10px] tracking-widest uppercase">Built for the Future</span>
+                        <span className="font-mono text-vibranium-gold/70 text-[10px] tracking-widest uppercase font-bold text-glow-holo">Built By ISQUARE TECH SOLUTIONS</span>
                       </div>
                     </div>
                   </div>

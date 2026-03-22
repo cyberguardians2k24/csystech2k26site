@@ -65,12 +65,15 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="font-mono text-white/25 text-xs tracking-widest text-center">
+          <p className="font-mono text-white/25 text-[10px] tracking-widest text-center md:text-left">
             © 2026 CYSTECH — SYMPOSIUM TEAM · ALL RIGHTS RESERVED
           </p>
+          <div className="font-mono text-vibranium-gold/70 text-[10px] tracking-widest text-center text-glow-holo font-bold uppercase">
+            Built By ISQUARE TECH SOLUTIONS
+          </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse-slow" />
-            <span className="font-mono text-white/30 text-xs tracking-widest">SYSTEMS ONLINE</span>
+            <span className="font-mono text-white/30 text-[10px] tracking-widest">SYSTEMS ONLINE</span>
           </div>
         </div>
       </div>
