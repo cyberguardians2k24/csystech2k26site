@@ -10,7 +10,7 @@ import posterArenaFreeFire from '../../Assets/posters/ARENA(FreeFire) poster.jpe
 import posterArenaBgmi from '../../Assets/posters/ARENA(BGMI) poster.jpeg';
 import posterKabaddi from '../../Assets/posters/KABADDI.jpeg';
 import posterLinkLogic from '../../Assets/posters/Link Logic.jpeg';
-import posterShortFilm from '../../Assets/posters/short film.jpeg';
+import posterCineatake from '../../Assets/posters/short film.jpeg';
 
 const formatInr = (value) => (value > 0 ? `₹${value.toLocaleString('en-IN')}+` : 'TBA');
 
@@ -369,13 +369,13 @@ export const NON_TECHNICAL_EVENTS = [
   {
     id: 'short-film',
     category: 'non-technical',
-    title: 'Short Film',
+    title: 'CINEATAKE',
     tagline: 'Three minutes to land a story that stays.',
-    desc: 'A short-film competition where students submit original three-minute films for screening and judging during the symposium.',
+    desc: 'A short film competition where students submit original three-minute films for screening and judging during the symposium.',
     color: 'from-vibranium-light to-vibranium',
     span: 'md:col-span-1 md:row-span-1',
     icon: '🎬',
-    poster: posterShortFilm,
+    poster: posterCineatake,
     tag: 'FILMMAKING',
     prize: 'TBA',
     prizeValue: 0,

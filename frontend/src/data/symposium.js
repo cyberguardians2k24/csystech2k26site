@@ -70,7 +70,7 @@ export const EVENT_DAY_SCHEDULE = {
     {
       time: '01:30 PM - 03:00 PM',
       name: 'Afternoon Non-Technical Events',
-      desc: 'Free Fire, BGMI, Short Film, and Link Logic are conducted in parallel.',
+      desc: 'Free Fire, BGMI, CINEATAKE, and Link Logic are conducted in parallel.',
       tag: 'COMPETITION',
     },
     {

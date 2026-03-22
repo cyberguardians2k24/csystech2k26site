@@ -262,7 +262,7 @@ export default function SelectiveRegistration() {
             <p className="font-mono text-[10px] tracking-[0.22em] text-vibranium/80 uppercase mb-3">Registration Guidelines</p>
             <ul className="text-sm text-white/60 space-y-2">
               <li><strong className="text-white/90">General Pass (₹149):</strong> Access to mix up to 2 Technical Events + 1 General Non-Tech event (Link Logic).</li>
-              <li><strong className="text-white/90">Separate Registrations (₹300 - ₹599):</strong> BGMI, Free Fire, Kabaddi, and Short Film must be registered only through their individual forms.</li>
+              <li><strong className="text-white/90">Separate Registrations (₹300 - ₹599):</strong> BGMI, Free Fire, Kabaddi, and CINEATAKE must be registered only through their individual forms.</li>
               <li><span className="text-vibranium-gold font-bold tracking-widest uppercase text-[11px] mt-2 block">General Pass Mode Active</span></li>
             </ul>
           </div>

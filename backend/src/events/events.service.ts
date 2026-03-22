@@ -213,7 +213,7 @@ export class EventsService implements OnModuleInit {
         prizeAmount: 'TBA',
       },
       {
-        name: 'Short Film',
+        name: 'CINEATAKE',
         slug: 'short-film',
         description: 'Original short film screening competition.',
         category: 'SKILL',
