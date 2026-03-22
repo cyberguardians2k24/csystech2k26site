@@ -80,6 +80,7 @@ export class AdminService {
         select: {
           id: true,
           participantId: true,
+          eventId: true,
           paymentRef: true,
           amount: true,
           event: { select: { slug: true, registrationFeeInr: true } },
@@ -104,26 +105,38 @@ export class AdminService {
     }
 
     const totalRevenueInr = Array.from(groups.values()).reduce((sum, regs) => {
-      const slugs = regs.map((r) => normalizeSlug(r.event?.slug)).filter(Boolean);
-      const uniqueSlugs = new Set(slugs);
-
-      let groupTotal = 0;
-
-      // Add separate event fees per event in this payment.
-      for (const slug of uniqueSlugs) {
-        const separateFee = SEPARATE_EVENT_PRICES_INR[slug];
-        if (separateFee) groupTotal += separateFee;
+      // Prefer DB-defined fees over slug-based mapping.
+      // This avoids missing revenue when the event slug/name differs (e.g., typos like "kabbadi").
+      const uniqueByEvent = new Map<number, { slug: string; feeInr: number }>();
+      for (const r of regs) {
+        if (uniqueByEvent.has(r.eventId)) continue;
+        const slug = normalizeSlug(r.event?.slug);
+        const feeInr = Number(r.event?.registrationFeeInr ?? 0);
+        uniqueByEvent.set(r.eventId, { slug, feeInr });
       }
 
-      // If there are any non-separate events in this payment, count one basic pass.
-      const hasNonSeparate = Array.from(uniqueSlugs).some((slug) => !SEPARATE_EVENT_PRICES_INR[slug]);
-      if (hasNonSeparate) groupTotal += BASIC_PASS_INR;
+      let groupTotal = 0;
+      let hasBasicPassEvent = false;
 
-      // Fallback: if we still got 0 (unknown slugs), use stored amount/fee once.
+      for (const { slug, feeInr } of uniqueByEvent.values()) {
+        const separateFeeFromSlug = slug ? (SEPARATE_EVENT_PRICES_INR[slug] ?? 0) : 0;
+        const effectiveFee = Math.max(separateFeeFromSlug, Number.isFinite(feeInr) ? feeInr : 0);
+
+        if (effectiveFee > BASIC_PASS_INR) {
+          groupTotal += effectiveFee;
+        } else if (effectiveFee > 0) {
+          // Any non-premium event in the payment implies one bundled basic pass.
+          hasBasicPassEvent = true;
+        }
+      }
+
+      if (hasBasicPassEvent) groupTotal += BASIC_PASS_INR;
+
+      // Fallback: if we still got 0 (unknown fees), use stored amount once.
       if (groupTotal === 0) {
         const first = regs[0];
-        const amount = (first?.amount ?? 0) > 0 ? (first?.amount ?? 0) : (first?.event?.registrationFeeInr ?? 0);
-        groupTotal = Number(amount) || 0;
+        const amount = Number(first?.amount ?? 0);
+        groupTotal = Number.isFinite(amount) && amount > 0 ? amount : 0;
       }
 
       return sum + groupTotal;
