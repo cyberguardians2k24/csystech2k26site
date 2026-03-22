@@ -34,8 +34,8 @@ export const TECHNICAL_EVENTS = [
     icon: '📄',
     poster: null,
     tag: 'POSTER PRESENTATION',
-    prize: '₹3,000',
-    prizeValue: 3000,
+    prize: '₹4,000',
+    prizeValue: 4000,
     rules: [
       'Open to all college students.',
       'Each team can have 2 or 3 participants.',
@@ -277,8 +277,8 @@ export const NON_TECHNICAL_EVENTS = [
     icon: '🤼',
     poster: null,
     tag: 'SPORT',
-    prize: '₹5,000',
-    prizeValue: 5000,
+    prize: '₹8,000',
+    prizeValue: 8000,
     rules: [
       'Participants must be present within campus by 9:00 AM.',
       'Participants should report to the venue at least 10 minutes before the event slot.',
