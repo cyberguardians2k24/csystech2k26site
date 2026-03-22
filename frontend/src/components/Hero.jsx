@@ -75,12 +75,12 @@ function GlitchTitle({ ready }) {
         className="absolute w-[100%] h-[120%] bg-[#C41E3A]/30 blur-[50px] rounded-full z-0 pointer-events-none"
       />
       
-      {/* High Contrast Bright Metallic Title */}
+      {/* High Contrast Bright Metallic Title with RGB Glitch */}
       <motion.h1
         initial={{ y: '20%', opacity: 0 }}
         animate={ready ? { y: 0, opacity: 1 } : {}}
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-        className="relative z-10 block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] [text-shadow:0_0_25px_rgba(196,30,58,0.7)] select-none pt-[0.06em] pb-[0.16em]"
+        className="cyber-glitch-text relative z-10 block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] [text-shadow:0_0_25px_rgba(196,30,58,0.7)] select-none pt-[0.06em] pb-[0.16em]"
       >
         CYSTECH2K26
       </motion.h1>
@@ -305,6 +305,10 @@ export default function Hero() {
   const videoOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
+  // Global Parallax for the entire center content
+  const parallaxX = useTransform(mouseX, [-10, 10], [15, -15]);
+  const parallaxY = useTransform(mouseY, [-10, 10], [-15, 15]);
+
   const stats = [
     { value: formatCount(EVENT_STATS.totalCount), label: 'Events', glyph: '⬢', tone: 'vibranium' },
     { value: formatCount(participantCount), label: 'Participants', glyph: '✦', tone: 'gold' },
@@ -384,6 +388,28 @@ export default function Hero() {
           }}
         />
 
+        {/* ── EMP Screen Flash on Load ──────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={videoReady ? { opacity: [1, 0] } : {}}
+          transition={{ duration: 1.8, ease: "easeOut", delay: 0.1 }}
+          className="absolute inset-0 bg-white pointer-events-none z-[30] mix-blend-overlay"
+        />
+
+        {/* ── Cinematic Letterbox Bars ──────────────────────────────────────── */}
+        <motion.div
+          initial={{ height: '50vh' }}
+          animate={videoReady ? { height: 0 } : {}}
+          transition={{ duration: 1.6, ease: [0.77, 0, 0.175, 1], delay: 0.2 }}
+          className="absolute top-0 left-0 right-0 bg-black z-[40] pointer-events-none origin-top"
+        />
+        <motion.div
+          initial={{ height: '50vh' }}
+          animate={videoReady ? { height: 0 } : {}}
+          transition={{ duration: 1.6, ease: [0.77, 0, 0.175, 1], delay: 0.2 }}
+          className="absolute bottom-0 left-0 right-0 bg-black z-[40] pointer-events-none origin-bottom"
+        />
+
         {/* ── Scanline flicker ─────────────────────────────────────────────── */}
         <div className="absolute inset-0 scanlines opacity-[0.08] pointer-events-none z-[4]" />
 
@@ -420,7 +446,7 @@ export default function Hero() {
 
         {/* ── Main content ─────────────────────────────────────────────────── */}
         <motion.div
-          style={{ y: contentY }}
+          style={{ y: contentY, x: parallaxX, translateY: parallaxY }}
           variants={stagger}
           initial="hidden"
           animate={videoReady ? 'visible' : 'hidden'}
@@ -431,8 +457,8 @@ export default function Hero() {
           {/* Badge */}
           <motion.div
             variants={fadeBlurUp}
-            whileHover={{ scale: 1.07, boxShadow: '0 0 20px rgba(196, 30, 58,0.4)' }}
-            className="mb-8 rounded-full border border-[#C41E3A]/50 bg-[#C41E3A]/10 px-5 py-2 cursor-default"
+            whileHover={{ scale: 1.07, boxShadow: '0 0 20px rgba(196, 30, 58,0.4)', rotate: -2 }}
+            className="mb-8 mt-12 md:mt-24 rounded-full border border-[#C41E3A]/50 bg-[#C41E3A]/10 px-5 py-2 cursor-default"
           >
             <div className="flex items-center gap-3">
               <motion.span
