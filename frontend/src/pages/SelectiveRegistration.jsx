@@ -60,6 +60,7 @@ export default function SelectiveRegistration() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [guidelinesOpen, setGuidelinesOpen] = useState(true);
 
   const PREMIUM_PRICES = useMemo(() => ({
     'kabaddi': 599,
@@ -251,6 +252,106 @@ export default function SelectiveRegistration() {
 
   return (
     <div className="min-h-screen bg-wakanda-dark text-white overflow-x-hidden">
+
+      {/* ── Registration Guidelines Modal ─────────────────────────────────── */}
+      <AnimatePresence>
+        {guidelinesOpen && (
+          <motion.div
+            key="guidelines-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          >
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/75 backdrop-blur-md"
+              onClick={() => setGuidelinesOpen(false)}
+            />
+
+            {/* Modal card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="relative z-10 w-full max-w-md rounded-3xl border border-vibranium/30 bg-[#0a0410] shadow-[0_0_60px_rgba(196,30,58,0.25)] overflow-hidden"
+            >
+              {/* Header glow */}
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-vibranium to-transparent" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-20 bg-vibranium/15 blur-3xl pointer-events-none" />
+
+              <div className="p-6">
+                {/* Title row */}
+                <div className="flex items-start justify-between mb-5">
+                  <div>
+                    <p className="font-mono text-[9px] tracking-[0.35em] uppercase text-vibranium/70 mb-1">Before You Proceed</p>
+                    <h3 className="font-heading font-black text-white text-xl tracking-tight">Registration Guidelines</h3>
+                  </div>
+                  <button
+                    onClick={() => setGuidelinesOpen(false)}
+                    className="text-white/30 hover:text-white text-lg leading-none transition-colors ml-4 mt-1"
+                    aria-label="Close"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Guidelines list */}
+                <ul className="space-y-3 mb-5">
+                  <li className="flex items-start gap-3 text-sm text-white/65">
+                    <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
+                    <span><strong className="text-white/90">General Pass (₹149):</strong> Access to mix up to 2 Technical Events + 1 General Non-Tech event (Link Logic).</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm text-white/65">
+                    <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
+                    <span><strong className="text-white/90">Separate Registrations (₹199–₹599):</strong> BGMI, Free Fire, Kabaddi, and CINEATAKE must be registered through their individual forms.</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm text-white/65">
+                    <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
+                    <span>You can select a <strong className="text-white/90">maximum of 2 technical events</strong> and <strong className="text-white/90">1 general non-technical event</strong> per General Pass.</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm text-white/65">
+                    <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
+                    <span>Payment must be completed before submitting the form. Keep your UTR / reference number handy.</span>
+                  </li>
+                </ul>
+
+                {/* Timeline note */}
+                <div className="rounded-2xl border border-vibranium-gold/30 bg-vibranium-gold/8 p-4 mb-5">
+                  <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-vibranium-gold mb-1">📅 Note</p>
+                  <p className="text-sm text-white/75 leading-relaxed">
+                    Check the event timeline before registering to make sure your preferred events don't clash.
+                  </p>
+                  <button
+                    onClick={() => { setGuidelinesOpen(false); navigate('/#schedule'); }}
+                    className="mt-3 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-vibranium-gold/40 bg-vibranium-gold/10 text-vibranium-gold font-mono text-[10px] tracking-[0.2em] uppercase hover:bg-vibranium-gold/20 transition-all duration-300"
+                  >
+                    See Timeline →
+                  </button>
+                </div>
+
+                {/* CTA */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setGuidelinesOpen(false)}
+                  className="w-full py-3.5 rounded-full bg-vibranium text-white font-heading font-bold tracking-widest uppercase text-sm shadow-[0_0_24px_rgba(196,30,58,0.4)] hover:shadow-[0_0_36px_rgba(196,30,58,0.6)] transition-all duration-300"
+                >
+                  Got it — Proceed to Register
+                </motion.button>
+              </div>
+
+              {/* Footer glow */}
+              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-vibranium/40 to-transparent" />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="relative z-10 flex items-center justify-between px-6 py-3 border-b border-vibranium/10 mt-24">
         <div className="font-mono text-xs text-white/40 tracking-widest uppercase">Overall Selective Registration</div>
         <button onClick={() => navigate(-1)} className="text-white/30 hover:text-white font-mono text-xs tracking-widest uppercase transition-colors">← Back</button>
@@ -258,14 +359,6 @@ export default function SelectiveRegistration() {
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-10">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="rounded-3xl border border-vibranium/20 bg-white/[0.02] p-6">
-            <p className="font-mono text-[10px] tracking-[0.22em] text-vibranium/80 uppercase mb-3">Registration Guidelines</p>
-            <ul className="text-sm text-white/60 space-y-2">
-              <li><strong className="text-white/90">General Pass (₹149):</strong> Access to mix up to 2 Technical Events + 1 General Non-Tech event (Link Logic).</li>
-              <li><strong className="text-white/90">Separate Registrations (₹300 - ₹599):</strong> BGMI, Free Fire, Kabaddi, and CINEATAKE must be registered only through their individual forms.</li>
-              <li><span className="text-vibranium-gold font-bold tracking-widest uppercase text-[11px] mt-2 block">General Pass Mode Active</span></li>
-            </ul>
-          </div>
 
           <div className="rounded-3xl border border-vibranium/20 bg-white/[0.02] p-6">
             <p className="font-mono text-[10px] tracking-[0.22em] text-vibranium/80 uppercase mb-4">Separate Team Registration Events</p>
