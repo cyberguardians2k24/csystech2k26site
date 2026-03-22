@@ -39,12 +39,12 @@ export default {
         'vibranium-gold': '#FFD700',
       },
       fontFamily: {
-        heading: ['Awakenning', 'Cinzel Decorative', 'Cinzel', 'serif'],
-        display: ['Awakenning', 'Cinzel Decorative', 'serif'],
-        subheading: ['Awakenning', 'Cinzel', 'serif'],
-        body: ['Awakenning', 'Rajdhani', 'sans-serif'],
-        rajdhani: ['Awakenning', 'Rajdhani', 'sans-serif'],
-        mono: ['Awakenning', 'JetBrains Mono', 'monospace'],
+        heading: ['Panthera', 'Cinzel Decorative', 'Cinzel', 'serif'],
+        display: ['Panthera', 'Cinzel Decorative', 'serif'],
+        subheading: ['Panthera', 'Cinzel', 'serif'],
+        body: ['Panthera', 'Rajdhani', 'sans-serif'],
+        rajdhani: ['Rajdhani', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       backgroundImage: {
         'wakanda-gradient': 'linear-gradient(to bottom right, #1a0a0a, #2d0f15, #1a0a0a)',

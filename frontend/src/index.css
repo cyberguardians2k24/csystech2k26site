@@ -2,17 +2,7 @@
 
 @font-face {
   font-family: 'Panthera';
-  src: local('Panthera'),
-       local('Panthera Regular'),
-       url('../Assets/panthera-font/PantheraRegular-MVZ9J.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Awakenning';
-  src: url('/fonts/Awakenning.ttf') format('truetype');
+  src: url('/fonts/panthera-font/PantheraRegular-MVZ9J.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -61,7 +51,7 @@ html {
 body {
   background-color: var(--wakanda-dark);
   color: #e8d5b0;  /* warm parchment white matching gold logo */
-  font-family: 'Awakenning', 'Rajdhani', sans-serif;
+  font-family: 'Panthera', 'Rajdhani', sans-serif;
   overflow-x: hidden;
   cursor: none;
   -webkit-font-smoothing: antialiased;
