@@ -17,6 +17,7 @@ const NON_TECHNICAL_EVENT_SLUGS = new Set([
   'arena-free-fire',
   'arena-bgmi',
   'kabaddi',
+  'kabbadi',
   'link-logic',
   'short-film',
 ]);
@@ -127,7 +128,7 @@ export class RegistrationsService {
     }
 
     const normalizedScreenshot = this.normalizeUploadedPaymentUrl(dto.paymentScreenshot);
-    const isKabaddiEvent = event.slug === 'kabaddi';
+    const isKabaddiEvent = event.slug === 'kabaddi' || event.slug === 'kabbadi';
     const normalizedTeamMembers = Array.isArray(dto.teamMembers)
       ? dto.teamMembers.map((name) => String(name ?? '').trim()).filter(Boolean).slice(0, 15)
       : [];

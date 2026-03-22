@@ -15,14 +15,21 @@ function normalizeSlug(value?: string) {
   return String(value ?? '').trim().toLowerCase();
 }
 
+function canonicalEventSlug(value?: string) {
+  const slug = normalizeSlug(value);
+  if (slug === 'kabbadi') return 'kabaddi';
+  return slug;
+}
+
 function withDefaultFee(dto: CreateEventDto | UpdateEventDto) {
-  const slug = normalizeSlug((dto as any)?.slug);
+  const slug = canonicalEventSlug((dto as any)?.slug);
   if (!slug) return dto;
 
   const separateFee = SEPARATE_EVENT_PRICES_INR[slug];
   if (separateFee) {
     return {
       ...dto,
+      slug,
       registrationFeeInr: separateFee,
       ...(slug === 'kabaddi' ? { maxTeamSize: 15 } : null),
     } as any;
@@ -46,8 +53,20 @@ export class EventsService implements OnModuleInit {
 
   async onModuleInit() {
     // Ensure fixed pricing + team limits for special events even if DB was seeded earlier with defaults.
+    // Also reconcile common legacy typos (e.g., "kabbadi" -> "kabaddi") to keep registration + revenue correct.
     try {
-      await this.prisma.event.updateMany({ where: { slug: 'kabaddi' }, data: { registrationFeeInr: 599, maxTeamSize: 15 } });
+      const kabaddi = await this.prisma.event.findUnique({ where: { slug: 'kabaddi' } });
+      const kabbadi = await this.prisma.event.findUnique({ where: { slug: 'kabbadi' } });
+
+      if (!kabaddi && kabbadi) {
+        await this.prisma.event.update({
+          where: { id: kabbadi.id },
+          data: { slug: 'kabaddi', registrationFeeInr: 599, maxTeamSize: 15 },
+        });
+      } else {
+        await this.prisma.event.updateMany({ where: { slug: { in: ['kabaddi', 'kabbadi'] } }, data: { registrationFeeInr: 599, maxTeamSize: 15 } });
+      }
+
       await this.prisma.event.updateMany({ where: { slug: 'arena-bgmi' }, data: { registrationFeeInr: 300 } });
       await this.prisma.event.updateMany({ where: { slug: 'arena-free-fire' }, data: { registrationFeeInr: 300 } });
       await this.prisma.event.updateMany({ where: { slug: 'short-film' }, data: { registrationFeeInr: 300 } });
