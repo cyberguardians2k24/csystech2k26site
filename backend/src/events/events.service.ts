@@ -71,9 +71,9 @@ export class EventsService implements OnModuleInit {
       await this.prisma.event.updateMany({ where: { slug: 'arena-free-fire' }, data: { registrationFeeInr: 199 } });
       await this.prisma.event.updateMany({ where: { slug: 'short-film' }, data: { registrationFeeInr: 300 } });
 
-      // Rename legacy display names to the new official names
-      await this.prisma.event.updateMany({ where: { slug: 'code-2-chaos', name: { in: ['Bug Bash', 'bug bash', 'BUG BASH'] } }, data: { name: 'Code 2 Chaos' } });
-      await this.prisma.event.updateMany({ where: { slug: 'bug-bash' }, data: { name: 'Code 2 Chaos', slug: 'code-2-chaos' } });
+      // Rename: code-2-chaos slug → Bug Bash, design-duel → Code 2 Chaos
+      await this.prisma.event.updateMany({ where: { slug: 'code-2-chaos' }, data: { name: 'Bug Bash' } });
+      await this.prisma.event.updateMany({ where: { slug: 'design-duel' }, data: { name: 'Code 2 Chaos' } });
       await this.prisma.event.updateMany({ where: { slug: 'short-film', name: { in: ['Short Film', 'short film', 'SHORT FILM'] } }, data: { name: 'CINEATAKE' } });
     } catch (err) {
       this.logger.warn(`Could not reconcile event fees on startup: ${String((err as any)?.message ?? err)}`);
@@ -146,7 +146,7 @@ export class EventsService implements OnModuleInit {
         prizeAmount: 'TBA',
       },
       {
-        name: 'Code 2 Chaos',
+        name: 'Bug Bash',
         slug: 'code-2-chaos',
         description: 'Multi-round debugging event focused on speed and accuracy.',
         category: 'CODING',
@@ -173,7 +173,7 @@ export class EventsService implements OnModuleInit {
         prizeAmount: 'TBA',
       },
       {
-        name: 'Design Duel',
+        name: 'Code 2 Chaos',
         slug: 'design-duel',
         description: 'Three-round fun coding and problem solving challenge.',
         category: 'CODING',

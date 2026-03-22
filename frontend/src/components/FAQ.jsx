@@ -16,11 +16,11 @@ const FAQS = [
   },
   {
     q: "Do I need to bring my own laptop?",
-    a: "Yes for Code 2 Chaos, Payload Paradise, and Design Duel. Paper Presentation participants must also bring their own device for presenting the poster."
+    a: "Yes for Bug Bash, Payload Paradise, and Code 2 Chaos. Paper Presentation participants must also bring their own device for presenting the poster."
   },
   {
     q: "Can I participate as a team?",
-    a: "Yes. Team sizes vary by event: Paper Presentation allows 2 to 3 members, Code 2 Chaos allows solo or duo participation, Payload Paradise allows teams of 3 to 4, Design Duel needs exactly 2 members, and Link Logic needs 4 members."
+    a: "Yes. Team sizes vary by event: Paper Presentation allows 2 to 3 members, Bug Bash allows solo or duo participation, Payload Paradise allows teams of 3 to 4, Code 2 Chaos needs exactly 2 members, and Link Logic needs 4 members."
   },
   {
     q: "Will accommodation be provided?",

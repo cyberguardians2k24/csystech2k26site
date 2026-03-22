@@ -28,13 +28,13 @@ export const EVENT_DAY_SCHEDULE = {
     {
       time: '09:30 AM',
       name: 'Morning Technical Events Begin',
-      desc: 'Cipher Vista and Code 2 Chaos begin in the first morning session.',
+      desc: 'Cipher Vista and Bug Bash begin in the first morning session.',
       tag: 'COMPETITION',
     },
     {
       time: '10:00 AM - 11:15 AM',
       name: 'Technical Batch 1',
-      desc: 'Cipher Vista, Payload Paradise, Design Duel, Code 2 Chaos, and Neuro Byte run in parallel.',
+      desc: 'Cipher Vista, Payload Paradise, Code 2 Chaos, Bug Bash, and Neuro Byte run in parallel.',
       tag: 'COMPETITION',
     },
     {
@@ -46,7 +46,7 @@ export const EVENT_DAY_SCHEDULE = {
     {
       time: '11:15 AM - 12:15 PM',
       name: 'Mid-Morning Event Slots',
-      desc: 'Neuro Byte, Payload Paradise, and Design Duel continue in their dedicated venues.',
+      desc: 'Neuro Byte, Payload Paradise, and Code 2 Chaos continue in their dedicated venues.',
       tag: 'COMPETITION',
     },
     {

@@ -592,7 +592,7 @@ export default function App() {
                             { label: 'All Events', href: '#events' },
                             { label: 'Technical Events', href: '/technical' },
                             { label: 'Non-Technical', href: '/non-technical' },
-                            { label: 'Code 2 Chaos', href: '/technical' },
+                            { label: 'Bug Bash', href: '/technical' },
                             { label: 'Cipher Vista', href: '/technical' },
                             { label: 'E-Sports', href: '/non-technical' },
                           ].map(({ label, href }) => (
