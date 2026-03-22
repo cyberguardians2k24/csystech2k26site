@@ -1030,7 +1030,7 @@ export default function AdminDashboard() {
                       <table className="w-full min-w-[1100px]">
                         <thead>
                           <tr className="border-b border-slate-700/50 bg-slate-800/50">
-                            {['#', 'Name', 'Email', 'College', 'Event', 'Status', 'Payment', 'UTR', 'Proof', 'Date', 'Actions'].map((h) => (
+                            {['#', 'Name', 'Email', 'College', 'Event', 'Size', 'Status', 'Payment', 'UTR', 'Proof', 'Date', 'Actions'].map((h) => (
                               <th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">{h}</th>
                             ))}
                           </tr>
