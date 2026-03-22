@@ -157,7 +157,7 @@ export default function Navbar({ nonInteractive = false }) {
 
           <div className="hidden md:flex items-center gap-2 shrink-0">
             <button
-              onClick={() => handleNavClick('#events')}
+              onClick={() => handleNavClick('/register')}
               className="panel-sheen px-4 py-2 rounded-full border border-vibranium/40 bg-[linear-gradient(135deg,rgba(196,30,58,0.68),rgba(184,115,10,0.26))] text-white font-heading font-bold text-[11px] tracking-[0.18em] uppercase shadow-[0_0_24px_rgba(196,30,58,0.28)] hover:scale-[1.02] transition-all duration-300"
             >
               Register
@@ -166,7 +166,7 @@ export default function Navbar({ nonInteractive = false }) {
 
           <div className="md:hidden flex items-center gap-2 shrink-0">
             <button
-              onClick={() => handleNavClick('#events')}
+              onClick={() => handleNavClick('/register')}
               className="px-3 py-2 rounded-full border border-vibranium/40 bg-[linear-gradient(135deg,rgba(196,30,58,0.72),rgba(184,115,10,0.22))] text-white font-heading font-bold text-[10px] tracking-[0.18em] uppercase shadow-[0_0_22px_rgba(196,30,58,0.28)] backdrop-blur-xl"
             >
               Register
@@ -259,11 +259,11 @@ export default function Navbar({ nonInteractive = false }) {
                     initial={{ opacity: 0, y: 14 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.25, delay: 0.22 }}
-                    onClick={() => handleNavClick('#events')}
+                    onClick={() => handleNavClick('/register')}
                     className="panel-sheen rounded-[1.2rem] border border-vibranium/40 bg-[linear-gradient(135deg,rgba(196,30,58,0.78),rgba(184,115,10,0.22))] px-4 py-4 text-left shadow-[0_0_30px_rgba(196,30,58,0.22)]"
                   >
                     <div className="font-heading text-sm font-black uppercase tracking-[0.16em] text-white">Register</div>
-                    <div className="mt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/65">Go to access form</div>
+                    <div className="mt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/65">₹149 — General Pass</div>
                   </motion.button>
 
                   <motion.button
