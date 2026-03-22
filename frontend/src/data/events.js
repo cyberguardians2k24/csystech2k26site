@@ -1,16 +1,7 @@
 // ── Shared event data used across home, pages, registration, and stats ─────
 
 import { SYMPOSIUM_INFO } from './symposium';
-import posterCipherVista from '../../Assets/posters/Poster Presentation.jpeg';
-import posterCode2Chaos from '../../Assets/posters/BUG BASH.jpeg';
-import posterNeuroByte from '../../Assets/posters/Neuro Byte.jpeg';
-import posterPayloadParadise from '../../Assets/posters/Payload Paradise.jpeg';
-import posterDesignDuel from '../../Assets/posters/Design DUEL.jpeg';
-import posterArenaFreeFire from '../../Assets/posters/ARENA(FreeFire) poster.jpeg';
-import posterArenaBgmi from '../../Assets/posters/ARENA(BGMI) poster.jpeg';
-import posterKabaddi from '../../Assets/posters/KABADDI.jpeg';
-import posterLinkLogic from '../../Assets/posters/Link Logic.jpeg';
-import posterCineatake from '../../Assets/posters/short film.jpeg';
+
 
 const formatInr = (value) => (value > 0 ? `₹${value.toLocaleString('en-IN')}+` : 'TBA');
 
@@ -41,7 +32,7 @@ export const TECHNICAL_EVENTS = [
     color: 'from-vibranium-gold to-vibranium-light',
     span: 'md:col-span-2 md:row-span-1',
     icon: '📄',
-    poster: posterCipherVista,
+    poster: null,
     tag: 'POSTER PRESENTATION',
     prize: 'TBA',
     prizeValue: 0,
@@ -79,7 +70,7 @@ export const TECHNICAL_EVENTS = [
     color: 'from-vibranium to-vibranium-gold',
     span: 'md:col-span-2 md:row-span-2',
     icon: '🔧',
-    poster: posterCode2Chaos,
+    poster: null,
     tag: 'DEBUGGING',
     prize: 'TBA',
     prizeValue: 0,
@@ -104,7 +95,7 @@ export const TECHNICAL_EVENTS = [
     date: `${SYMPOSIUM_INFO.dateDisplay} — 9:30 AM to 11:00 AM`,
     coordinators: [
       { name: 'Shyam (III Year)', phone: '6382185856' },
-      { name: 'Bharath S (II Year)', phone: '8940529078' },
+      { name: 'Bharath .SS(II Year)', phone: '8940529078' },
     ],
   },
   {
@@ -116,7 +107,7 @@ export const TECHNICAL_EVENTS = [
     color: 'from-vibranium-gold to-vibranium-dark',
     span: 'md:col-span-1 md:row-span-1',
     icon: '🧠',
-    poster: posterNeuroByte,
+    poster: null,
     tag: 'QUIZ',
     prize: 'TBA',
     prizeValue: 0,
@@ -153,7 +144,7 @@ export const TECHNICAL_EVENTS = [
     color: 'from-vibranium to-vibranium',
     span: 'md:col-span-1 md:row-span-1',
     icon: '🛡️',
-    poster: posterPayloadParadise,
+    poster: null,
     tag: 'WEB SECURITY',
     prize: 'TBA',
     prizeValue: 0,
@@ -190,7 +181,7 @@ export const TECHNICAL_EVENTS = [
     color: 'from-vibranium-light to-vibranium-gold',
     span: 'md:col-span-1 md:row-span-1',
     icon: '💻',
-    poster: posterDesignDuel,
+    poster: null,
     tag: 'FUN CODING',
     prize: 'TBA',
     prizeValue: 0,
@@ -230,7 +221,7 @@ export const NON_TECHNICAL_EVENTS = [
     color: 'from-vibranium-gold to-vibranium',
     span: 'md:col-span-2 md:row-span-1',
     icon: '🎮',
-    poster: posterArenaFreeFire,
+    poster: null,
     tag: 'ARENA',
     prize: 'TBA',
     prizeValue: 0,
@@ -268,7 +259,7 @@ export const NON_TECHNICAL_EVENTS = [
     color: 'from-vibranium-light to-vibranium-gold',
     span: 'md:col-span-2 md:row-span-2',
     icon: '🎮',
-    poster: posterArenaBgmi,
+    poster: null,
     tag: 'BGMI',
     prize: 'TBA',
     prizeValue: 0,
@@ -305,7 +296,7 @@ export const NON_TECHNICAL_EVENTS = [
     color: 'from-vibranium to-vibranium-light',
     span: 'md:col-span-1 md:row-span-1',
     icon: '🤼',
-    poster: posterKabaddi,
+    poster: null,
     tag: 'SPORT',
     prize: 'TBA',
     prizeValue: 0,
@@ -338,7 +329,7 @@ export const NON_TECHNICAL_EVENTS = [
     color: 'from-vibranium to-vibranium-gold',
     span: 'md:col-span-1 md:row-span-1',
     icon: '🧩',
-    poster: posterLinkLogic,
+    poster: null,
     tag: 'CONNECTION',
     prize: 'TBA',
     prizeValue: 0,
@@ -375,7 +366,7 @@ export const NON_TECHNICAL_EVENTS = [
     color: 'from-vibranium-light to-vibranium',
     span: 'md:col-span-1 md:row-span-1',
     icon: '🎬',
-    poster: posterCineatake,
+    poster: null,
     tag: 'FILMMAKING',
     prize: 'TBA',
     prizeValue: 0,
