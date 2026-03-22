@@ -115,18 +115,10 @@ function EventCard({ event, index }) {
             <p><span className="text-white/30">Date:</span> {event.date}</p>
           </div>
 
-          {/* Prize breakdown */}
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              { place: '1st', amount: event.firstPrize, color: 'text-vibranium border-vibranium/30' },
-              { place: '2nd', amount: event.secondPrize, color: 'text-white/70 border-white/20' },
-              { place: '3rd', amount: event.thirdPrize, color: 'text-vibranium-light border-vibranium-light/30' },
-            ].map(({ place, amount, color }) => (
-              <div key={place} className={`rounded-xl border p-2 text-center ${color} bg-white/[0.02]`}>
-                <p className="text-[10px] opacity-60">{place} Place</p>
-                <p className="font-bold text-sm">{amount}</p>
-              </div>
-            ))}
+          {/* Prize pool */}
+          <div className="rounded-xl border border-[#C41E3A]/30 bg-[#C41E3A]/10 p-3 text-center">
+            <p className="text-[10px] tracking-[0.2em] font-mono uppercase text-[#FFD700]/90 mb-1">Total Prize Pool</p>
+            <p className="font-black font-heading text-lg text-white drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">{event.prize}</p>
           </div>
 
           {/* Coordinators */}

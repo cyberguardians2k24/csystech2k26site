@@ -328,21 +328,10 @@ export default function EventRegistration() {
             ))}
           </div>
 
-          {/* Prize breakdown */}
-          <div className="holographic-panel p-5 border-vibranium/20">
-            <p className="font-mono text-[9px] tracking-[0.25em] text-vibranium/60 uppercase mb-4">🏆 Prize Pool — {event.prize}</p>
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { place: '1st', amount: event.firstPrize, cls: 'text-vibranium border-vibranium/40 bg-vibranium/5' },
-                { place: '2nd', amount: event.secondPrize, cls: 'text-white/70 border-white/15 bg-white/[0.02]' },
-                { place: '3rd', amount: event.thirdPrize, cls: 'text-vibranium-light border-vibranium-light/30 bg-vibranium/5' },
-              ].map(({ place, amount, cls }) => (
-                <div key={place} className={`rounded-xl border p-3 text-center ${cls}`}>
-                  <p className="font-mono text-[9px] opacity-50 uppercase">{place} Place</p>
-                  <p className="font-heading font-black text-lg mt-0.5">{amount}</p>
-                </div>
-              ))}
-            </div>
+          {/* Prize pool */}
+          <div className="holographic-panel p-5 border-[#C41E3A]/30 bg-[#C41E3A]/5 text-center">
+            <p className="font-mono text-[10px] tracking-[0.25em] text-[#FFD700]/90 uppercase mb-2">🏆 Total Prize Pool</p>
+            <p className="font-black font-heading text-3xl text-white drop-shadow-[0_0_15px_rgba(255,215,0,0.4)]">{event.prize}</p>
           </div>
 
           {/* Rules accordion */}
