@@ -10,6 +10,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Awakenning';
+  src: url('../Assets/AWAKENNING Personal Use.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -53,7 +61,7 @@ html {
 body {
   background-color: var(--wakanda-dark);
   color: #e8d5b0;  /* warm parchment white matching gold logo */
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Awakenning', 'Rajdhani', sans-serif;
   overflow-x: hidden;
   cursor: none;
   -webkit-font-smoothing: antialiased;
@@ -644,7 +652,7 @@ select:focus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Panthera', sans-serif;
+  font-family: 'Awakenning', 'Panthera', sans-serif;
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
