@@ -59,20 +59,28 @@ const fadeBlurUp = {
 function GlitchTitle({ ready }) {
   return (
     <div className="relative overflow-visible py-3 flex justify-center items-center">
-      {/* Deep red chaos aura behind text */}
+      {/* Deep dark aura behind text to guarantee contrast */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={ready ? { opacity: 1, scale: 1 } : { opacity: 0 }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
-        className="absolute w-[120%] h-[120%] bg-vibranium/20 blur-[60px] rounded-full chaos-aura z-0 pointer-events-none"
+        className="absolute w-[130%] h-[180%] bg-black/50 blur-[40px] rounded-full z-0 pointer-events-none"
       />
       
-      {/* 3D Gold Shimmering Title */}
+      {/* Red chaotic bloom */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={ready ? { opacity: 1, scale: 1 } : { opacity: 0 }}
+        transition={{ duration: 1.5, ease: "easeInOut", delay: 0.2 }}
+        className="absolute w-[100%] h-[120%] bg-[#C41E3A]/30 blur-[50px] rounded-full z-0 pointer-events-none"
+      />
+      
+      {/* High Contrast Bright Metallic Title */}
       <motion.h1
         initial={{ y: '20%', opacity: 0 }}
         animate={ready ? { y: 0, opacity: 1 } : {}}
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-        className="relative z-10 block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight gold-metallic-text select-none pt-[0.06em] pb-[0.16em]"
+        className="relative z-10 block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] [text-shadow:0_0_25px_rgba(196,30,58,0.7)] select-none pt-[0.06em] pb-[0.16em]"
       >
         CYSTECH2K26
       </motion.h1>
