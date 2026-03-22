@@ -351,6 +351,23 @@ export default function Hero() {
         <HexagonGrid ready={videoReady} />
         <RadarSweep ready={videoReady} />
 
+        {/* ── Cinematic light leaks ─────────────────────────────────────────── */}
+        <motion.div
+          animate={{ opacity: [0, 0.4, 0.2, 0.4], scale: [1, 1.3, 1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+          className="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full bg-[#C41E3A]/20 blur-[130px] pointer-events-none mix-blend-screen z-[2]"
+        />
+        <motion.div
+          animate={{ opacity: [0, 0.3, 0.5, 0.3], scale: [1, 1.4, 1.1] }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'linear', delay: 2 }}
+          className="absolute -bottom-[20%] -right-[10%] w-[70vw] h-[70vw] rounded-full bg-[#FFD700]/15 blur-[160px] pointer-events-none mix-blend-screen z-[2]"
+        />
+        <motion.div
+          animate={{ opacity: [0, 0.25, 0.1, 0.25] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'linear', delay: 4 }}
+          className="absolute top-[30%] left-[40%] w-[40vw] h-[40vw] rounded-full bg-[#E8A000]/10 blur-[140px] pointer-events-none mix-blend-screen z-[3]"
+        />
+
         {/* ── Cinematic vignette ───────────────────────────────────────────── */}
         <div
           className="absolute inset-0 pointer-events-none z-[3]"

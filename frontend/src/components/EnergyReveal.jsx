@@ -1,6 +1,7 @@
-﻿import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { EVENT_STATS } from '../data/events';
+import { api } from '../lib/api';
 
 // ── Animated Counter ────────────────────────────────────────────────────────
 function AnimatedCounter({ target, suffix = '' }) {
@@ -38,6 +39,17 @@ export default function EnergyReveal() {
   const pathLength4 = useTransform(scrollYProgress, [0.15, 0.85], [0, 1]);
   const opacity = useTransform(scrollYProgress, [0.4, 1], [0, 1]);
   const y = useTransform(scrollYProgress, [0.4, 1], [40, 0]);
+
+  const [participantCount, setParticipantCount] = useState(0);
+  useEffect(() => {
+    let mounted = true;
+    api.getStats().then((stats) => {
+      if (mounted && stats?.totalParticipants) {
+        setParticipantCount(stats.totalParticipants);
+      }
+    }).catch(() => {});
+    return () => { mounted = false; };
+  }, []);
 
   return (
     <section ref={containerRef} className="section-shell relative py-20 md:py-36 lg:py-40 bg-wakanda-dark overflow-hidden flex items-center justify-center md:min-h-screen">
@@ -127,8 +139,8 @@ export default function EnergyReveal() {
           {[
             { target: EVENT_STATS.totalCount, suffix: '', label: 'Events', gold: false },
             { target: EVENT_STATS.technicalCount, suffix: '', label: 'Technical', gold: false },
-            { target: 99, suffix: 'K+', label: 'Prize Pool ₹', gold: true },
-            { target: 700, suffix: '+', label: 'Participants', gold: false },
+            { target: 20, suffix: 'K', label: 'Prize Pool ₹', gold: true },
+            { target: participantCount, suffix: '+', label: 'Participants', gold: false },
           ].map(({ target, suffix, label, gold }, i) => (
             <motion.div
               key={i}
