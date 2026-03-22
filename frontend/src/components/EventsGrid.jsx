@@ -3,6 +3,10 @@ import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from
 import { Link, useNavigate } from 'react-router-dom';
 import { ALL_EVENTS, CATEGORY_META, EVENT_STATS, FEATURED_HOME_EVENTS } from '../data/events';
 
+const getRegistrationPath = (event) => (
+  event?.category === 'technical' ? '/register' : `/register/${event.id}`
+);
+
 function PosterModal({ ev, isOpen, onClose }) {
   if (!isOpen || !ev.poster) return null;
 
@@ -49,7 +53,7 @@ function PosterModal({ ev, isOpen, onClose }) {
               <p className="text-white/70 text-sm md:text-base mb-4">{ev.tagline}</p>
 
               <Link
-                to={`/register/${ev.id}`}
+                to={getRegistrationPath(ev)}
                 onClick={(e) => {
                   e.stopPropagation();
                   onClose();
@@ -201,7 +205,7 @@ function EventCard({ ev, i }) {
                 <p className="text-white font-heading font-bold text-lg mb-2">Expand View</p>
                 <p className="text-white/70 text-xs font-mono tracking-widest">CLICK TO ENLARGE</p>
                 <Link
-                  to={`/register/${ev.id}`}
+                  to={getRegistrationPath(ev)}
                   onClick={(e) => e.stopPropagation()}
                   className="mt-3 inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full border border-[#C41E3A]/40 bg-[linear-gradient(135deg,rgba(255,215,0,0.24),rgba(139,0,0,0.22))] text-white font-heading font-bold tracking-[0.12em] uppercase text-[10px] shadow-[0_0_24px_rgba(255,215,0,0.18)]"
                 >
@@ -272,7 +276,7 @@ function EventCard({ ev, i }) {
                 </div>
               </div>
 
-              <Link to={`/register/${ev.id}`} onClick={(e) => e.stopPropagation()} className="mt-5 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-[#C41E3A]/30 bg-[linear-gradient(135deg,rgba(255,215,0,0.20),rgba(139,0,0,0.18))] text-white font-heading font-bold tracking-[0.18em] uppercase text-xs shadow-[0_0_30px_rgba(255,215,0,0.16)] md:hover:scale-[1.02] transition-all duration-300">
+              <Link to={getRegistrationPath(ev)} onClick={(e) => e.stopPropagation()} className="mt-5 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-[#C41E3A]/30 bg-[linear-gradient(135deg,rgba(255,215,0,0.20),rgba(139,0,0,0.18))] text-white font-heading font-bold tracking-[0.18em] uppercase text-xs shadow-[0_0_30px_rgba(255,215,0,0.16)] md:hover:scale-[1.02] transition-all duration-300">
                 Register Now
               </Link>
             </div>

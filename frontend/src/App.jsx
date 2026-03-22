@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import Lenis from 'lenis';
 
@@ -46,6 +46,7 @@ function ScrollProgressBar() {
 
 // ── Floating Register Bar ──────────────────────────────────────────────────
 function FloatingRegisterBar() {
+  const navigate = useNavigate();
   const { scrollY } = useScroll();
   const [visible, setVisible] = React.useState(false);
 
@@ -68,7 +69,7 @@ function FloatingRegisterBar() {
             <span className="w-2 h-2 rounded-full bg-vibranium-gold animate-pulse shadow-[0_0_8px_#FFD700]" />
             <span className="text-xs font-mono text-vibranium/60 tracking-widest uppercase hidden sm:block">Registration Open</span>
             <button
-              onClick={() => document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => navigate('/register')}
               className="px-5 py-1.5 rounded-full bg-vibranium text-wakanda-dark text-xs font-bold font-heading tracking-widest uppercase hover:shadow-vibranium-glow transition-all duration-200 hover:scale-105"
             >
               Register Now
@@ -571,7 +572,7 @@ export default function App() {
                             { label: 'Schedule', href: '#schedule' },
                             { label: 'Sponsors', href: '#sponsors' },
                             { label: 'FAQ', href: '#faq' },
-                            { label: 'Register', href: '#events' },
+                            { label: 'Register', href: '/register' },
                           ].map(({ label, href }) => (
                             <li key={href}>
                               <a href={href} className="group flex items-center gap-1.5 text-white/25 text-sm font-body hover:text-vibranium-light transition-colors duration-200">
