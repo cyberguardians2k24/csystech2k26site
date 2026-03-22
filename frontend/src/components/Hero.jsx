@@ -75,14 +75,14 @@ function GlitchTitle({ ready }) {
         className="absolute w-[100%] h-[120%] bg-[#C41E3A]/30 blur-[50px] rounded-full z-0 pointer-events-none"
       />
       
-      {/* High Contrast Bright Metallic Title with RGB Glitch */}
+      {/* High Contrast Bright Metallic Title (No Glitch) */}
       <motion.h1
         initial={{ y: '20%', opacity: 0 }}
         animate={ready ? { y: 0, opacity: 1 } : {}}
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-        className="cyber-glitch-text relative z-10 block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] [text-shadow:0_0_25px_rgba(196,30,58,0.7)] select-none pt-[0.06em] pb-[0.16em]"
+        className="relative z-10 block text-[13vw] sm:text-[9.5vw] md:text-[7vw] lg:text-[6vw] font-heading font-black uppercase leading-[1.16] tracking-tight drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] [text-shadow:0_0_25px_rgba(255,215,0,0.3)] select-none pt-[0.06em] pb-[0.16em]"
       >
-        CYSTECH2K26
+        <span className="wakanda-gold-text block">CYSTECH2K26</span>
       </motion.h1>
     </div>
   );
