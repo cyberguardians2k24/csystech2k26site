@@ -307,8 +307,8 @@ export const NON_TECHNICAL_EVENTS = [
     icon: '🧩',
     poster: null,
     tag: 'CONNECTION',
-    prize: '₹3,000',
-    prizeValue: 3000,
+    prize: 'Exciting Gift Only',
+    prizeValue: 0,
     rules: [
       'Each team must consist of 4 members.',
       'Only one mobile phone is allowed for the buzzer.',
