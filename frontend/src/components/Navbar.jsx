@@ -126,14 +126,14 @@ export default function Navbar({ nonInteractive = false }) {
           {/* Mobile-only brand */}
           <button
             onClick={() => handleNavClick('#hero')}
-            className="md:hidden flex min-w-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1.5 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+            className="md:hidden flex flex-1 min-w-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1.5 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] overflow-hidden"
           >
-            <div className="w-8 h-8 rounded-full bg-vibranium/20 border border-vibranium/40 flex items-center justify-center shadow-vibranium-glow shrink-0">
-              <span className="font-heading font-black text-white text-xs">C</span>
+            <div className="w-7 h-7 rounded-full bg-vibranium/20 border border-vibranium/40 flex items-center justify-center shadow-vibranium-glow shrink-0">
+              <span className="font-heading font-black text-white text-[10px]">C</span>
             </div>
-            <div className="min-w-0 text-left">
-              <div className="font-heading font-black text-white text-sm tracking-[0.22em] leading-none">CYSTECH</div>
-              <div className="font-mono text-[8px] tracking-[0.22em] uppercase text-white/45 truncate">{currentPageLabel}</div>
+            <div className="min-w-0 text-left overflow-hidden">
+              <div className="font-heading font-black text-white text-[11px] tracking-[0.18em] leading-none truncate">CYSTECH 2K26</div>
+              <div className="font-mono text-[7px] tracking-[0.18em] uppercase text-white/45 truncate mt-0.5">SYMPOSIUM</div>
             </div>
           </button>
 
