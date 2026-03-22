@@ -215,6 +215,7 @@ function EmojiBurst({ ready }) {
 
 export default function Hero() {
   const [videoReady, setVideoReady] = useState(false);
+  const [videoEnded, setVideoEnded] = useState(false);
   const [spotlight, setSpotlight] = useState({ x: 0, y: 0 });
   const [btnHovered, setBtnHovered] = useState(false);
   const [participantCount, setParticipantCount] = useState(null);
@@ -280,8 +281,9 @@ export default function Hero() {
         <motion.div style={{ scale: videoScale, opacity: videoOpacity }} className="absolute inset-0">
           <video
             src={heroVideo}
-            autoPlay loop muted playsInline preload="auto"
+            autoPlay muted playsInline preload="auto"
             onLoadedData={() => setVideoReady(true)}
+            onEnded={() => setVideoEnded(true)}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${videoReady ? 'opacity-100' : 'opacity-0'}`}
           />
         </motion.div>
@@ -368,10 +370,20 @@ export default function Hero() {
             </div>
           </motion.div>
 
-          {/* Mobile-only Glitch Title — absolutely centred in viewport */}
-          <div className="md:hidden absolute inset-0 flex items-center justify-center pointer-events-none z-[2]">
-            <GlitchTitle ready={videoReady} />
-          </div>
+          {/* Mobile-only Glitch Title — shown after video plays once */}
+          <AnimatePresence>
+            {videoEnded && (
+              <motion.div
+                key="mobile-title"
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                className="md:hidden absolute inset-0 flex items-center justify-center pointer-events-none z-[2]"
+              >
+                <GlitchTitle ready={true} />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Tagline removed as requested */}
 
