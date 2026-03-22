@@ -187,7 +187,7 @@ export default function TechnicalEvents() {
             Events
           </h1>
           <p className="text-white/50 text-lg max-w-xl mx-auto">
-            Cipher Vista, Bug Bash, Neuro Byte, Payload Paradise, and Design Duel form the technical track for {SYMPOSIUM_INFO.eventName}.
+            Cipher Vista, Code 2 Chaos, Neuro Byte, Payload Paradise, and Design Duel form the technical track for {SYMPOSIUM_INFO.eventName}.
           </p>
         </motion.div>
 

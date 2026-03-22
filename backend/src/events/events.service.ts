@@ -141,8 +141,8 @@ export class EventsService implements OnModuleInit {
         prizeAmount: 'TBA',
       },
       {
-        name: 'Bug Bash',
-        slug: 'bug-bash',
+        name: 'Code 2 Chaos',
+        slug: 'code-2-chaos',
         description: 'Multi-round debugging event focused on speed and accuracy.',
         category: 'CODING',
         maxTeamSize: 2,

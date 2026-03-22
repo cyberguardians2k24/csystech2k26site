@@ -1,8 +1,8 @@
-﻿// ── Shared event data used across home, pages, registration, and stats ─────
+// ── Shared event data used across home, pages, registration, and stats ─────
 
 import { SYMPOSIUM_INFO } from './symposium';
 import posterCipherVista from '../../Assets/posters/Poster Presentation.jpeg';
-import posterBugBash from '../../Assets/posters/BUG BASH.jpeg';
+import posterCode2Chaos from '../../Assets/posters/BUG BASH.jpeg';
 import posterNeuroByte from '../../Assets/posters/Neuro Byte.jpeg';
 import posterPayloadParadise from '../../Assets/posters/Payload Paradise.jpeg';
 import posterDesignDuel from '../../Assets/posters/Design DUEL.jpeg';
@@ -71,15 +71,15 @@ export const TECHNICAL_EVENTS = [
     ],
   },
   {
-    id: 'bug-bash',
+    id: 'code-2-chaos',
     category: 'technical',
-    title: 'Bug Bash',
+    title: 'Code 2 Chaos',
     tagline: 'Debug under pressure and outscore the field.',
     desc: 'A multi-round debugging challenge where individuals or pairs identify and fix bugs with speed, accuracy, and strong programming fundamentals.',
     color: 'from-vibranium to-vibranium-gold',
     span: 'md:col-span-2 md:row-span-2',
     icon: '🔧',
-    poster: posterBugBash,
+    poster: posterCode2Chaos,
     tag: 'DEBUGGING',
     prize: 'TBA',
     prizeValue: 0,

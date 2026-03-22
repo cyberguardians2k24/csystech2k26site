@@ -7,7 +7,7 @@ import { EmailService } from '../email/email.service';
 
 const TECHNICAL_EVENT_SLUGS = new Set([
   'cipher-vista',
-  'bug-bash',
+  'code-2-chaos',
   'neuro-byte',
   'payload-paradise',
   'design-duel',
