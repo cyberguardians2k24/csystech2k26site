@@ -139,7 +139,7 @@ export default function EnergyReveal() {
           {[
             { target: EVENT_STATS.totalCount, suffix: '', label: 'Events', gold: false },
             { target: EVENT_STATS.technicalCount, suffix: '', label: 'Technical', gold: false },
-            { target: 20, suffix: 'K', label: 'Prize Pool ₹', gold: true },
+            { target: 40, suffix: 'K', label: 'Prize Pool ₹', gold: true },
             { target: participantCount, suffix: '+', label: 'Participants', gold: false },
           ].map(({ target, suffix, label, gold }, i) => (
             <motion.div
