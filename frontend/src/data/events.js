@@ -34,8 +34,8 @@ export const TECHNICAL_EVENTS = [
     icon: '📄',
     poster: null,
     tag: 'POSTER PRESENTATION',
-    prize: '₹4,000',
-    prizeValue: 4000,
+    prize: '₹3,000',
+    prizeValue: 3000,
     rules: [
       'Open to all college students.',
       'Each team can have 2 or 3 participants.',
