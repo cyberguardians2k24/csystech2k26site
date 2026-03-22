@@ -273,15 +273,25 @@ export class RegistrationsService {
       include: { participant: true, event: true },
     });
 
-    const confirmedEmailSent = nextPaymentStatus === PaymentStatus.PAID
-      ? await this.emailService.sendRegistrationConfirmedEmail({
-        to: updatedRegistration.participant.email,
-        participantName: updatedRegistration.participant.name,
-        eventName: updatedRegistration.event.name,
-        registrationId: updatedRegistration.id,
-      })
-      : false;
-
+    let confirmedEmailSent = false;
+    if (nextPaymentStatus === PaymentStatus.PAID) {
+      // Find all confirmed, paid registrations for this participant
+      const allConfirmed = await this.prisma.registration.findMany({
+        where: {
+          participantId: updatedRegistration.participantId,
+          paymentStatus: PaymentStatus.PAID,
+          status: RegistrationStatus.CONFIRMED,
+        },
+        include: { event: true },
+      });
+      if (allConfirmed.length > 0) {
+        confirmedEmailSent = await this.emailService.sendBatchRegistrationConfirmedEmail({
+          to: updatedRegistration.participant.email,
+          participantName: updatedRegistration.participant.name,
+          events: allConfirmed.map(r => ({ name: r.event.name, registrationId: r.id })),
+        });
+      }
+    }
     return { ...updatedRegistration, confirmedEmailSent } as any;
   }
 

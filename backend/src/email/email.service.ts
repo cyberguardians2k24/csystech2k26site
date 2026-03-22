@@ -1,3 +1,53 @@
+  async sendBatchRegistrationConfirmedEmail(params: {
+    to: string;
+    participantName: string;
+    events: { name: string; registrationId: number }[];
+  }): Promise<boolean> {
+    this.logConfigOnce();
+
+    if (!this.isEnabled) {
+      const cfg = this.safeConfigForLogs;
+      this.logger.warn(`Email not enabled; skipping batch confirmation email (provider=${cfg.provider}).`);
+      return false;
+    }
+
+    const subject = `CYSTECH2K26 — Registrations confirmed (${params.events.length} events)`;
+    const safeName = params.participantName || 'Participant';
+    const eventList = params.events.map(ev => `<li><b>${escapeHtml(ev.name)}</b> (ID: ${ev.registrationId})</li>`).join('');
+
+    const html = `
+      <div style="font-family: Arial, Helvetica, sans-serif; line-height: 1.5; color: #111;">
+        <h2 style="margin: 0 0 10px;">Registrations confirmed</h2>
+        <p>Hi ${escapeHtml(safeName)},</p>
+        <p>Your payment has been verified and your registrations are <b>confirmed</b> for the following events:</p>
+        <ul>${eventList}</ul>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;" />
+        <p><b>Reminder:</b> Bring your college ID card and keep your payment proof available.</p>
+      </div>
+    `;
+
+    try {
+      if (this.hasResendEnabled) {
+        await this.sendWithResend({
+          to: params.to,
+          subject,
+          html,
+        });
+      } else {
+        const transporter = await this.ensureTransporterReady();
+        await transporter.sendMail({
+          from: this.fromAddress,
+          to: params.to,
+          subject,
+          html,
+        });
+      }
+      return true;
+    } catch (err: any) {
+      this.logger.error(`Failed to send batch confirmation email to ${params.to}: ${err?.message || err}`);
+      return false;
+    }
+  }
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';

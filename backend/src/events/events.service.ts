@@ -6,8 +6,8 @@ import { UpdateEventDto } from './dto/update-event.dto';
 const BASIC_PASS_INR = 149;
 const SEPARATE_EVENT_PRICES_INR: Record<string, number> = {
   kabaddi: 599,
-  'arena-bgmi': 300,
-  'arena-free-fire': 300,
+  'arena-bgmi': 200,
+  'arena-free-fire': 200,
   'short-film': 300,
 };
 
@@ -67,8 +67,8 @@ export class EventsService implements OnModuleInit {
         await this.prisma.event.updateMany({ where: { slug: { in: ['kabaddi', 'kabbadi'] } }, data: { registrationFeeInr: 599, maxTeamSize: 15 } });
       }
 
-      await this.prisma.event.updateMany({ where: { slug: 'arena-bgmi' }, data: { registrationFeeInr: 300 } });
-      await this.prisma.event.updateMany({ where: { slug: 'arena-free-fire' }, data: { registrationFeeInr: 300 } });
+      await this.prisma.event.updateMany({ where: { slug: 'arena-bgmi' }, data: { registrationFeeInr: 200 } });
+      await this.prisma.event.updateMany({ where: { slug: 'arena-free-fire' }, data: { registrationFeeInr: 200 } });
       await this.prisma.event.updateMany({ where: { slug: 'short-film' }, data: { registrationFeeInr: 300 } });
     } catch (err) {
       this.logger.warn(`Could not reconcile event fees on startup: ${String((err as any)?.message ?? err)}`);
@@ -182,7 +182,7 @@ export class EventsService implements OnModuleInit {
         description: 'Custom-room Free Fire squad tournament.',
         category: 'SKILL',
         maxTeamSize: 4,
-        registrationFeeInr: 300,
+        registrationFeeInr: 200,
         prizeAmount: 'TBA',
       },
       {
@@ -191,7 +191,7 @@ export class EventsService implements OnModuleInit {
         description: 'Best-of-3 BGMI squad competition.',
         category: 'SKILL',
         maxTeamSize: 4,
-        registrationFeeInr: 300,
+        registrationFeeInr: 200,
         prizeAmount: 'TBA',
       },
       {
