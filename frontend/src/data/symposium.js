@@ -38,7 +38,7 @@ export const EVENT_DAY_SCHEDULE = {
       tag: 'COMPETITION',
     },
     {
-      time: '10:00 AM - 03:00 PM',
+      time: '08:30 AM - 03:00 PM',
       name: 'Kabaddi',
       desc: 'Kabaddi runs as an extended non-technical event block through the day.',
       tag: 'COMPETITION',
@@ -77,7 +77,7 @@ export const TIMELINE_SLOTS = [
   { event: 'Technical Quiz (Neuro Byte)', slot1: '10:00am – 11:15am', slot2: '' },
   { event: 'Fun Coding (Code 2 Chaos)', slot1: '', slot2: '11:25am – 12:45pm' },
   { isBreak: true, text: 'LUNCH BREAK 12:45pm to 1:30pm' },
-  { event: 'Kabaddi', slot1: '10:00am – 3:00pm', slot2: '10:00am – 3:00pm' },
+  { event: 'Kabaddi', slot1: '8:30am – 3:00pm', slot2: '8:30am – 3:00pm' },
   { event: 'Link Logic', slot1: '1:30pm – 3:00pm', slot2: '1:30pm – 3:00pm' },
   { event: 'Short Film', slot1: '1:30pm – 3:00pm', slot2: '1:30pm – 3:00pm' },
   { event: 'Arena (BGMI & FF)', slot1: '1:30pm – 3:00pm', slot2: '1:30pm – 3:00pm' },
