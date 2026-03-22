@@ -1,5 +1,5 @@
 export const SYMPOSIUM_INFO = {
-  theme: 'Purple Shield',
+  theme: 'Gold Flare',
   eventName: 'CYSTECH2K26',
   edition: '2K26',
   year: '2026',
