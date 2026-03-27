@@ -1,8 +1,8 @@
-﻿import React from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { SPONSOR_TIERS } from '../data/sponsors';
 
-function SponsorCard({ name, abbr, color, border, glow, text, delay }) {
+function SponsorCard({ name, abbr, image, color, border, glow, text, delay }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -10,13 +10,23 @@ function SponsorCard({ name, abbr, color, border, glow, text, delay }) {
       viewport={{ once: true, margin: '-30px' }}
       transition={{ delay, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ scale: 1.04 }}
-      className={`group relative flex flex-col items-center justify-center gap-2 p-5 rounded-2xl border bg-gradient-to-br ${color} ${border} ${glow} transition-all duration-300 cursor-pointer min-h-[90px]`}
+      className={`group relative flex flex-col items-center justify-center ${image ? 'p-1' : 'gap-2 p-5'} rounded-2xl border bg-gradient-to-br ${color} ${border} ${glow} transition-all duration-300 cursor-pointer min-h-[110px] overflow-hidden`}
     >
-      {/* Abbr logo placeholder */}
-      <span className={`font-heading font-black text-xl tracking-wider ${text} group-hover:opacity-100 transition-all duration-300`}>
-        {abbr}
-      </span>
-      <span className="font-mono text-[10px] tracking-widest text-white/30 uppercase">{name}</span>
+      {/* Logo or Abbr placeholder */}
+      {image ? (
+        <img
+          src={image}
+          alt={name}
+          className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300 max-h-[100px]"
+        />
+      ) : (
+        <>
+          <span className={`font-heading font-black text-xl tracking-wider ${text} group-hover:opacity-100 transition-all duration-300`}>
+            {abbr}
+          </span>
+          <span className="font-mono text-[10px] tracking-widest text-white/30 uppercase">{name}</span>
+        </>
+      )}
     </motion.div>
   );
 }

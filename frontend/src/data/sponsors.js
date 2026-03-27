@@ -1,3 +1,5 @@
+import i2techLogo from '../../Assets/images/i2tech_solutions.png';
+
 export const SPONSOR_TIERS = [
   {
     tier: 'Title Sponsor',
@@ -24,12 +26,18 @@ export const SPONSOR_TIERS = [
     sponsors: [],
   },
   {
-    tier: 'Community Partners',
+    tier: 'Website Sponsor',
     color: 'from-white/5 to-white/[0.02]',
     border: 'border-white/10',
     glow: '',
     text: 'text-white/40',
-    sponsors: [],
+    sponsors: [
+      {
+        name: 'I^2 Tech Solutions',
+        abbr: 'I²',
+        image: i2techLogo,
+      },
+    ],
   },
 ];
 

@@ -51,9 +51,16 @@ function FloatingRegisterBar() {
   const [visible, setVisible] = React.useState(false);
 
   React.useEffect(() => {
-    const unsub = scrollY.on('change', (v) => setVisible(v > 500));
-    return unsub;
-  }, [scrollY]);
+    const handleScroll = () => {
+      const v = window.scrollY;
+      const height = document.documentElement.scrollHeight;
+      const windowHeight = window.innerHeight;
+      const isBottom = v + windowHeight > height - 300; // Hide when 300px from bottom
+      setVisible(v > 500 && !isBottom);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <AnimatePresence>
@@ -625,28 +632,19 @@ export default function App() {
                     <div className="h-px bg-gradient-to-r from-transparent via-vibranium/15 to-transparent mb-7" />
 
                     {/* Bottom bar */}
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                      <p className="font-mono text-white/18 text-[10px] tracking-widest uppercase">
-                        © 2026 CYSTECH · Cyber Security Department Symposium · All Rights Reserved
-                      </p>
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                          className="group flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/8 text-white/20 hover:text-vibranium hover:border-vibranium/30 font-mono text-[9px] tracking-widest uppercase transition-all duration-300"
-                        >
-                          <svg className="w-2.5 h-2.5 group-hover:-translate-y-0.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg>
-                          Top
-                        </button>
-                        <div className="flex items-center gap-1.5">
-                          <motion.div
-                            animate={{ opacity: [1, 0.3, 1] }}
-                            transition={{ duration: 1.5, repeat: Infinity }}
-                            className="w-1.5 h-1.5 rounded-full bg-green-400"
-                          />
-                          <span className="font-mono text-white/18 text-[10px] tracking-widest uppercase">Systems Online</span>
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6 border-t border-white/5 pt-8">
+                      <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+                        <p className="font-mono text-white/20 text-[9px] tracking-[0.3em] uppercase">
+                          © 2026 CYSTECH · ALL RIGHTS RESERVED
+                        </p>
+                        <div className="flex items-center gap-2 opacity-50">
+                          <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                          <span className="font-mono text-white text-[9px] tracking-[0.2em] uppercase">SYSTEMS ONLINE</span>
                         </div>
-                        <span className="text-white/10 text-xs">·</span>
-                        <span className="font-mono text-vibranium-gold/70 text-[10px] tracking-widest uppercase font-bold text-glow-holo">Built By ISQUARE TECH SOLUTIONS</span>
+                      </div>
+                      
+                      <div className="font-mono text-vibranium-gold/80 text-[10px] tracking-[0.35em] uppercase font-black text-glow-holo text-center md:text-right">
+                        Built by <span className="text-white">ISQUARE TECH SOLUTIONS</span>
                       </div>
                     </div>
                   </div>

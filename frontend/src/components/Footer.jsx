@@ -61,19 +61,19 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-vibranium-900 to-transparent mb-8" />
-
-        {/* Bottom bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="font-mono text-white/25 text-[10px] tracking-widest text-center md:text-left">
-            © 2026 CYSTECH — SYMPOSIUM TEAM · ALL RIGHTS RESERVED
-          </p>
-          <div className="font-mono text-vibranium-gold/70 text-[10px] tracking-widest text-center text-glow-holo font-bold uppercase">
-            Built By ISQUARE TECH SOLUTIONS
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 border-t border-white/5 pt-8">
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+            <p className="font-mono text-white/20 text-[9px] tracking-[0.3em] uppercase">
+              © 2026 CYSTECH · ALL RIGHTS RESERVED
+            </p>
+            <div className="flex items-center gap-2 opacity-50">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="font-mono text-white text-[9px] tracking-[0.2em] uppercase">SYSTEMS ONLINE</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse-slow" />
-            <span className="font-mono text-white/30 text-[10px] tracking-widest">SYSTEMS ONLINE</span>
+          
+          <div className="font-mono text-vibranium-gold/80 text-[10px] tracking-[0.35em] uppercase font-black text-glow-holo text-center md:text-right">
+            Built by <span className="text-white">ISQUARE TECH SOLUTIONS</span>
           </div>
         </div>
       </div>
