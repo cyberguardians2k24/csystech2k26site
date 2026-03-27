@@ -34,7 +34,7 @@ export const TECHNICAL_EVENTS = [
     icon: '📄',
     poster: null,
     tag: 'POSTER PRESENTATION',
-    prize: '₹3,000',
+    prize: 'CASH PRIZE',
     prizeValue: 3000,
     rules: [
       'Open to all college students.',
@@ -69,7 +69,7 @@ export const TECHNICAL_EVENTS = [
     icon: '🔧',
     poster: null,
     tag: 'DEBUGGING',
-    prize: '₹3,000',
+    prize: 'CASH PRIZE',
     prizeValue: 3000,
     rules: [
       'Each team can have a maximum of two members, or individual participation is allowed.',
@@ -103,7 +103,7 @@ export const TECHNICAL_EVENTS = [
     icon: '🧠',
     poster: null,
     tag: 'QUIZ',
-    prize: '₹3,000',
+    prize: 'CASH PRIZE',
     prizeValue: 3000,
     rules: [
       'First two rounds are online using a mobile web application.',
@@ -137,7 +137,7 @@ export const TECHNICAL_EVENTS = [
     icon: '🛡️',
     poster: null,
     tag: 'WEB SECURITY',
-    prize: '₹3,000',
+    prize: 'CASH PRIZE',
     prizeValue: 3000,
     rules: [
       'Participants may compete individually or in teams of 3 to 4.',
@@ -171,7 +171,7 @@ export const TECHNICAL_EVENTS = [
     icon: '💻',
     poster: null,
     tag: 'FUN CODING',
-    prize: '₹3,000',
+    prize: 'CASH PRIZE',
     prizeValue: 3000,
     rules: [
       'Each team must consist of exactly two members.',
@@ -208,7 +208,7 @@ export const NON_TECHNICAL_EVENTS = [
     icon: '🎮',
     poster: null,
     tag: 'ARENA',
-    prize: '₹3,000',
+    prize: 'CASH PRIZE',
     prizeValue: 3000,
     rules: [
       'Mobile only; PC players and Hack/Panel are strictly NOT allowed.',
@@ -242,7 +242,7 @@ export const NON_TECHNICAL_EVENTS = [
     icon: '🎮',
     poster: null,
     tag: 'BGMI',
-    prize: '₹3,000',
+    prize: 'CASH PRIZE',
     prizeValue: 3000,
     rules: [
       'Tournament is played in squad mode.',
@@ -340,7 +340,7 @@ export const NON_TECHNICAL_EVENTS = [
     icon: '🎬',
     poster: null,
     tag: 'FILMMAKING',
-    prize: '₹3,000',
+    prize: 'CASH PRIZE',
     prizeValue: 3000,
     rules: [
       'Open to students, individuals, or teams.',

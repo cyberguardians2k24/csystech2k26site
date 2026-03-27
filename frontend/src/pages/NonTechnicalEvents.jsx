@@ -62,7 +62,11 @@ function EventCard({ event, index }) {
 
         <div className="mt-4 flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-mono tracking-widest text-white/30 uppercase">Total Prize Pool</p>
+            {event.prize !== 'CASH PRIZE' && (
+              <p className="text-[10px] font-mono tracking-widest text-white/30 uppercase">
+                {event.prize.startsWith('₹') ? 'CASH PRIZE' : 'Total Prize Pool'}
+              </p>
+            )}
             <p className="text-2xl font-heading font-black text-vibranium">{event.prize}</p>
           </div>
           <button
@@ -113,7 +117,11 @@ function EventCard({ event, index }) {
 
           {/* Prize pool */}
           <div className="rounded-xl border border-[#C41E3A]/30 bg-[#C41E3A]/10 p-3 text-center">
-            <p className="text-[10px] tracking-[0.2em] font-mono uppercase text-[#FFD700]/90 mb-1">Total Prize Pool</p>
+            {event.prize !== 'CASH PRIZE' && (
+              <p className="text-[10px] tracking-[0.2em] font-mono uppercase text-[#FFD700]/90 mb-1">
+                {event.prize.startsWith('₹') ? 'CASH PRIZE' : 'Total Prize Pool'}
+              </p>
+            )}
             <p className="font-black font-heading text-lg text-white drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">{event.prize}</p>
           </div>
 

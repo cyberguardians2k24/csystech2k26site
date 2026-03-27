@@ -286,7 +286,6 @@ function FloatingData({ ready }) {
 export default function Hero() {
   const [videoReady, setVideoReady] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
-  const [spotlight, setSpotlight] = useState({ x: 0, y: 0 });
   const [btnHovered, setBtnHovered] = useState(false);
   const [participantCount, setParticipantCount] = useState(null);
   const navigate = useNavigate();
@@ -313,14 +312,20 @@ export default function Hero() {
 
   const handleMouseMove = useCallback((e) => {
     const rect = heroRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setSpotlight({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    if (!rect || !heroRef.current) return;
+    
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Update CSS variables for spotlight directly on the DOM
+    heroRef.current.style.setProperty('--spotlight-x', `${x}px`);
+    heroRef.current.style.setProperty('--spotlight-y', `${y}px`);
     
     // Calculate normalized 3D tilt coordinates (-1 to 1)
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    mouseX.set(x * 20); // max 10 degrees tilt
-    mouseY.set(y * -20);
+    const normX = x / rect.width - 0.5;
+    const normY = y / rect.height - 0.5;
+    mouseX.set(normX * 20); // max 10 degrees tilt
+    mouseY.set(normY * -20);
   }, [mouseX, mouseY]);
 
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
@@ -383,8 +388,8 @@ export default function Hero() {
           )}
         </AnimatePresence>
 
-        <HexagonGrid ready={videoReady} />
-        <RadarSweep ready={videoReady} />
+        {!isTouch && <HexagonGrid ready={videoReady} />}
+        {!isTouch && <RadarSweep ready={videoReady} />}
 
         {/* ── Cinematic light leaks ─────────────────────────────────────────── */}
         <motion.div
@@ -461,9 +466,7 @@ export default function Hero() {
           <div
             className="absolute inset-0 pointer-events-none z-[1]"
             style={{
-              background: spotlight.x
-                ? `radial-gradient(600px circle at ${spotlight.x}px ${spotlight.y}px, rgba(196,30,58,0.10), transparent 55%)`
-                : 'none',
+              background: `radial-gradient(600px circle at var(--spotlight-x, 0px) var(--spotlight-y, 0px), rgba(196,30,58,0.10), transparent 55%)`,
               transition: 'background 60ms linear',
             }}
           />
@@ -481,13 +484,13 @@ export default function Hero() {
 
         {/* ── Main content ─────────────────────────────────────────────────── */}
         <motion.div
-          style={{ y: contentY, x: parallaxX, translateY: parallaxY }}
+          style={{ y: contentY, x: parallaxX, translateY: parallaxY, willChange: 'transform' }}
           variants={stagger}
           initial="hidden"
           animate={videoReady ? 'visible' : 'hidden'}
           className="absolute inset-0 z-[4] flex flex-col items-center justify-center px-6 text-center"
         >
-          <EmojiBurst ready={videoReady} />
+          {!isTouch && <EmojiBurst ready={videoReady} />}
 
           {/* Badge */}
           <motion.div

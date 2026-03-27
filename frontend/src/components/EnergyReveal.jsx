@@ -69,13 +69,13 @@ export default function EnergyReveal() {
           <motion.path
             d="M -100,400 C 200,200 400,700 600,400 C 800,100 1000,600 1300,400"
             fill="none" stroke="#C41E3A" strokeWidth="3" strokeLinecap="round"
-            style={{ pathLength: pathLength1 }}
+            style={{ pathLength: pathLength1, willChange: 'transform' }}
             className="drop-shadow-[0_0_12px_rgba(196, 30, 58,0.9)]"
           />
           <motion.path
             d="M -100,500 C 300,300 500,700 700,450 C 900,200 1100,650 1300,500"
             fill="none" stroke="#FFD700" strokeWidth="1.5" strokeLinecap="round"
-            style={{ pathLength: pathLength2 }}
+            style={{ pathLength: pathLength2, willChange: 'transform' }}
             className="drop-shadow-[0_0_8px_rgba(255, 215, 0,0.8)]"
             opacity={0.7}
           />
@@ -83,14 +83,14 @@ export default function EnergyReveal() {
           <motion.path
             d="M 0,0 C 200,150 400,50 600,300 C 800,550 1000,200 1200,400"
             fill="none" stroke="#C41E3A" strokeWidth="1" strokeLinecap="round"
-            style={{ pathLength: pathLength3 }}
+            style={{ pathLength: pathLength3, willChange: 'transform' }}
             className="drop-shadow-[0_0_6px_rgba(196, 30, 58,0.6)]"
             opacity={0.4}
           />
           <motion.path
             d="M 1200,0 C 1000,200 800,100 600,350 C 400,600 200,250 0,450"
             fill="none" stroke="#8B0000" strokeWidth="1" strokeLinecap="round"
-            style={{ pathLength: pathLength4 }}
+            style={{ pathLength: pathLength4, willChange: 'transform' }}
             opacity={0.35}
           />
           {/* Grid intersection dots */}
@@ -111,7 +111,7 @@ export default function EnergyReveal() {
 
       {/* Content Panel */}
       <motion.div
-        style={{ opacity, y }}
+        style={{ opacity, y, willChange: 'transform' }}
         className="panel-sheen relative z-10 max-w-5xl mx-auto px-6 text-center holographic-panel p-12 md:p-16 border-vibranium/30 shadow-vibranium-glow"
       >
         <div className="absolute inset-0 mesh-fade opacity-30 pointer-events-none" />

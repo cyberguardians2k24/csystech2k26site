@@ -328,9 +328,12 @@ export default function EventRegistration() {
             ))}
           </div>
 
-          {/* Prize pool */}
           <div className="holographic-panel p-5 border-[#C41E3A]/30 bg-[#C41E3A]/5 text-center">
-            <p className="font-mono text-[10px] tracking-[0.25em] text-[#FFD700]/90 uppercase mb-2">🏆 Total Prize Pool</p>
+            {event.prize !== 'CASH PRIZE' && (
+              <p className="font-mono text-[10px] tracking-[0.25em] text-[#FFD700]/90 uppercase mb-2">
+                🏆 {event.prize.startsWith('₹') ? 'CASH PRIZE' : 'Total Prize Pool'}
+              </p>
+            )}
             <p className="font-black font-heading text-3xl text-white drop-shadow-[0_0_15px_rgba(255,215,0,0.4)]">{event.prize}</p>
           </div>
 
