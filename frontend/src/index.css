@@ -68,10 +68,11 @@ body {
     linear-gradient(180deg, #120400 0%, #0a0200 100%);
 }
 
-/* Admin dashboard uses normal cursor instead of the custom hidden cursor system. */
+/* Admin dashboard uses normal cursor and font instead of the custom hidden cursor and themed font system. */
 body.admin-route,
 body.admin-route * {
   cursor: auto !important;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
 }
 
 body.admin-route button,
