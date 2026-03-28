@@ -206,7 +206,7 @@ export class EventsService implements OnModuleInit {
         category: 'SKILL',
         maxTeamSize: 15,
         registrationFeeInr: 599,
-        prizeAmount: 'TBA',
+        prizeAmount: '₹ 5,000',
       },
       {
         name: 'Link Logic',

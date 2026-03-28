@@ -277,7 +277,7 @@ export const NON_TECHNICAL_EVENTS = [
     icon: '🤼',
     poster: null,
     tag: 'SPORT',
-    prize: '₹5,000',
+    prize: 'CASH PRIZE',
     prizeValue: 5000,
     rules: [
       'Participants must be present within campus by 9:00 AM.',
