@@ -39,7 +39,9 @@ export const TECHNICAL_EVENTS = [
     rules: [
       'Open to all college students.',
       'Each team can have 2 or 3 participants.',
+      'Each team member should pay the registration fee separately.',
       'Participants from different colleges can form a team.',
+      'Provide your Team Name during registration.',
       'Poster size should follow A1 or A0 format.',
       'Poster must include title, introduction, methodology, results, conclusion, and references.',
       'Presentation time is 3 to 5 minutes before the judges.',

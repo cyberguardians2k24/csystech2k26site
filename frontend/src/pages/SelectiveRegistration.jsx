@@ -49,7 +49,7 @@ export default function SelectiveRegistration() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', college: '', department: '', yearOfStudy: '', teamMembers: '', notes: '',
+    name: '', email: '', phone: '', college: '', department: '', yearOfStudy: '', teamMembers: '', teamName: '', notes: '',
   });
   const [selectedTechnicalEvents, setSelectedTechnicalEvents] = useState([]);
   const [selectedNonTechnicalEvents, setSelectedNonTechnicalEvents] = useState([]);
@@ -214,6 +214,7 @@ export default function SelectiveRegistration() {
           college: form.college,
           event: eventId,
           notes: [
+            eventId === 'cipher-vista' && form.teamName ? `Team Name: ${form.teamName}` : '',
             form.teamMembers ? `Team: ${form.teamMembers}` : '',
             form.department, 
             form.yearOfStudy ? `Year ${form.yearOfStudy}` : '', 
@@ -343,6 +344,10 @@ export default function SelectiveRegistration() {
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
                     <span><strong className="text-white/90">Separate Registrations:</strong> CINEATAKE, Kabaddi, BGMI, and Free Fire must be registered through their individual forms.</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm text-white/65">
+                    <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
+                    <span><strong className="text-white/90">Payment Rule:</strong> Each team member must pay separate amount and provide Team Name for Poster Presentation.</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
@@ -483,6 +488,9 @@ export default function SelectiveRegistration() {
                 ]}
               />
             </div>
+            {selectedTechnicalEvents.includes('cipher-vista') && (
+              <InputField label="Team Name (Poster Presentation)" id="reg-team-name" placeholder="Enter your team name" value={form.teamName} onChange={set('teamName')} required />
+            )}
             <InputField label="Additional Notes" id="reg-notes" placeholder="Anything we should know?" value={form.notes} onChange={set('notes')} />
           </div>
 

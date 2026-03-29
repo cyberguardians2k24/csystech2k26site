@@ -215,7 +215,7 @@ export default function EventRegistration() {
         email:    normalizedEmail,
         phone:    form.phone,
         college:  form.college,
-        teamName: isSeparateTeamEvent ? (form.teamName || undefined) : undefined,
+        teamName: (isSeparateTeamEvent || event.id === 'cipher-vista') ? (form.teamName || undefined) : undefined,
         event:    event.id,
         registrationType: isKabaddiEvent ? effectiveRegistrationType : undefined,
         teamMembers: isKabaddiEvent ? kabaddiTeamMembers : undefined,
@@ -576,10 +576,11 @@ export default function EventRegistration() {
                           <ul className="mt-3 space-y-2 text-sm leading-relaxed text-white/55">
                             <li>1. Scan the QR code and complete the payment.</li>
                             <li>2. Take a clear screenshot showing successful payment.</li>
-                            <li>3. Enter your UTR / payment reference number and upload the screenshot.</li>
-                            <li>4. Admin will verify the payment before confirming your registration.</li>
-                            <li>5. While coming to the event, you must show your payment proof (screenshot/receipt).</li>
-                            <li>6. Fake or edited payment proof will result in registration cancellation.</li>
+                            <li>3. <strong>Each team member should pay separate amount</strong> and provide Team Name if applicable.</li>
+                            <li>4. Enter your UTR / payment reference number and upload the screenshot.</li>
+                            <li>5. Admin will verify the payment before confirming your registration.</li>
+                            <li>6. While coming to the event, you must show your payment proof (screenshot/receipt).</li>
+                            <li>7. Fake or edited payment proof will result in registration cancellation.</li>
                           </ul>
                         </div>
                         <InputField label="Payment Reference / UTR" id="reg-payment-ref" placeholder="Enter UTR / payment reference" value={paymentRef} onChange={(e) => setPaymentRef(e.target.value)} required />
@@ -609,7 +610,7 @@ export default function EventRegistration() {
                     />
                   </div>
 
-                  {isSeparateTeamEvent && (
+                  {(isSeparateTeamEvent || event.id === 'cipher-vista') && (
                     <InputField
                       label="Team Name"
                       id="reg-team-name"
@@ -620,7 +621,7 @@ export default function EventRegistration() {
                     />
                   )}
 
-                  {isSeparateTeamEvent && (
+                  {(isSeparateTeamEvent || event.id === 'cipher-vista') && (
                     <InputField
                       label={`Team Members Count (${isKabaddiEvent ? '7–15' : `1–${event.teamSize ?? 1}`})`}
                       id="reg-team-size"
