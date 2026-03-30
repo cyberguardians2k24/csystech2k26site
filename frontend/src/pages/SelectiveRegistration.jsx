@@ -87,31 +87,51 @@ export default function SelectiveRegistration() {
 
   const toggleTechnicalEvent = (eventId) => {
     setError('');
-    setSelectedTechnicalEvents((current) => {
-      // Uncheck
-      if (current.includes(eventId)) return current.filter((id) => id !== eventId);
-      
-      // Enforce Slot/Cipher Vista Logic
-      const SLOT_1 = ['payload-paradise', 'neuro-byte', 'cipher-vista'];
-      const SLOT_2 = ['code-2-chaos', 'design-duel'];
-      const newEventSlot = SLOT_1.includes(eventId) ? 1 : 2;
-      
-      const hasSlotClash = current.some(id => {
-        const slot = SLOT_1.includes(id) ? 1 : 2;
-        return slot === newEventSlot;
+      setSelectedTechnicalEvents((current) => {
+        // Uncheck
+        if (current.includes(eventId)) return current.filter((id) => id !== eventId);
+        
+        const isPoster = eventId === 'cipher-vista';
+        const hasPoster = current.includes('cipher-vista');
+        const otherTechEvents = current.filter(id => id !== 'cipher-vista');
+
+        // Rule: If Poster is selected, only ONE more technical event is allowed.
+        if (isPoster) {
+          if (otherTechEvents.length > 1) {
+            setError('Poster Presentation allows only ONE other technical event. Please unselect one from Slot 1 or 2 first.');
+            return current;
+          }
+          return [...current, eventId];
+        }
+
+        // Rule: If already has Poster, only allow ONE more technical event.
+        if (hasPoster && otherTechEvents.length >= 1) {
+          setError('Because you picked Poster Presentation, you can only select ONE more technical event.');
+          return current;
+        }
+
+        // Slot Logic for non-poster events
+        const SLOT_1 = ['payload-paradise', 'neuro-byte'];
+        const SLOT_2 = ['code-2-chaos', 'design-duel'];
+        const newEventSlot = SLOT_1.includes(eventId) ? 1 : 2;
+        
+        const hasSlotClash = otherTechEvents.some(id => {
+          const slot = SLOT_1.includes(id) ? 1 : 2;
+          return slot === newEventSlot;
+        });
+
+        if (hasSlotClash) {
+          setError(`You can only select 1 technical event per slot. (Slot ${newEventSlot} clash)`);
+          return current;
+        }
+
+        if (current.length >= 2 && !hasPoster) {
+          setError('You can select a maximum of 2 technical events (1 per slot).');
+          return current;
+        }
+
+        return [...current, eventId];
       });
-
-      if (hasSlotClash) {
-        setError(`You can only select 1 technical event per slot. (Slot ${newEventSlot} clash)`);
-        return current;
-      }
-
-      if (current.length >= 2) {
-        setError('You can select a maximum of 2 technical events (1 per slot).');
-        return current;
-      }
-      return [...current, eventId];
-    });
   };
 
   const toggleNonTechnicalEvent = (eventId) => {
@@ -326,7 +346,7 @@ export default function SelectiveRegistration() {
                   </li>
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
-                    <span><strong className="text-white/90">Technical Event Rules:</strong> You can select <strong className="text-white/90">maximum 2 technical events</strong> (1 from Slot 1, 1 from Slot 2).</span>
+                    <span><strong className="text-white/90">Technical Event Rules:</strong> You can select <strong className="text-white/90">maximum 2 technical events</strong> (e.g., 2 Parallel events OR Poster + 1 Parallel event).</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
@@ -402,7 +422,7 @@ export default function SelectiveRegistration() {
           <div className="rounded-3xl border border-vibranium/20 bg-white/[0.02] p-6">
             <div className="flex flex-col mb-4">
                <p className="font-mono text-[10px] tracking-[0.22em] text-vibranium/80 uppercase mb-2">Choose Technical Events</p>
-               <p className="text-xs text-white/50">Pick up to <strong className="text-white">2 Technical Events</strong> (One from Slot 1, One from Slot 2). Poster Presentation is in Slot 1.</p>
+               <p className="text-xs text-white/50">Pick up to <strong className="text-white">2 Technical Events</strong>. If you pick <strong className="text-vibranium">Poster Presentation</strong>, you can pick ONLY <strong className="text-white">one more</strong> parallel event.</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {TECHNICAL_EVENTS.map((event) => {
@@ -418,8 +438,8 @@ export default function SelectiveRegistration() {
                     <div className="flex justify-between items-start gap-2">
                        <p className="font-heading text-white font-bold">{event.title}</p>
                        {event.id === 'cipher-vista' ? 
-                          <span className="font-mono text-[9px] px-2 py-0.5 rounded border border-vibranium/30 text-vibranium uppercase shrink-0">Slot 1</span> :
-                          <span className="font-mono text-[9px] px-2 py-0.5 rounded border border-white/20 text-white/60 uppercase shrink-0">Slot {['payload-paradise', 'neuro-byte', 'cipher-vista'].includes(event.id) ? 1 : 2}</span>
+                          <span className="font-mono text-[9px] px-2 py-0.5 rounded border border-vibranium/30 text-vibranium uppercase shrink-0">Full Morning</span> :
+                          <span className="font-mono text-[9px] px-2 py-0.5 rounded border border-white/20 text-white/60 uppercase shrink-0">Slot {['payload-paradise', 'neuro-byte'].includes(event.id) ? 1 : 2}</span>
                        }
                     </div>
                     <p className="text-xs text-white/45 mt-1">{event.tagline}</p>

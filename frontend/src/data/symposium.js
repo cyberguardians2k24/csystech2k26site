@@ -32,7 +32,7 @@ export const EVENT_DAY_SCHEDULE = {
       tag: 'COMPETITION',
     },
     {
-      time: '10:00 AM - 11:15 AM',
+      time: '10:00 AM - 12:45 PM',
       name: 'Poster Presentation',
       desc: 'Cipher Vista presentations to the judges.',
       tag: 'COMPETITION',
@@ -71,7 +71,7 @@ export const EVENT_DAY_SCHEDULE = {
 };
 
 export const TIMELINE_SLOTS = [
-  { event: 'Poster Presentation', slot1: '10:00am – 11:15am', slot2: '' },
+  { event: 'Poster Presentation', slot1: '10:00am – 12:45pm (if possible)', slot2: '' },
   { event: 'Bug Bash', slot1: '', slot2: '11:25am – 12:45pm' },
   { event: 'Payload Paradise', slot1: '10:00am – 11:15am', slot2: '' },
   { event: 'Technical Quiz (Neuro Byte)', slot1: '10:00am – 11:15am', slot2: '' },
