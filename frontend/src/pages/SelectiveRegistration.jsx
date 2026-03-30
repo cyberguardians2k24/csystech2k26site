@@ -92,20 +92,7 @@ export default function SelectiveRegistration() {
       if (current.includes(eventId)) return current.filter((id) => id !== eventId);
       
       // Enforce Slot/Cipher Vista Logic
-      if (eventId === 'cipher-vista') {
-        if (current.length > 0) {
-          setError('Cipher Vista (Poster Presentation) takes the entire morning block. You cannot select other technical events with it.');
-          return current;
-        }
-        return [eventId];
-      }
-      
-      if (current.includes('cipher-vista')) {
-        setError('You have already selected Cipher Vista, which runs through entire morning block.');
-        return current;
-      }
-
-      const SLOT_1 = ['payload-paradise', 'neuro-byte'];
+      const SLOT_1 = ['payload-paradise', 'neuro-byte', 'cipher-vista'];
       const SLOT_2 = ['code-2-chaos', 'design-duel'];
       const newEventSlot = SLOT_1.includes(eventId) ? 1 : 2;
       
@@ -339,7 +326,7 @@ export default function SelectiveRegistration() {
                   </li>
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
-                    <span><strong className="text-white/90">Technical Event Rules:</strong> You can choose <strong className="text-white/90">Cipher Vista (takes full morning)</strong> OR <strong className="text-white/90">pick 2 short events</strong> (1 from Slot 1, 1 from Slot 2).</span>
+                    <span><strong className="text-white/90">Technical Event Rules:</strong> You can select <strong className="text-white/90">maximum 2 technical events</strong> (1 from Slot 1, 1 from Slot 2).</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
@@ -415,7 +402,7 @@ export default function SelectiveRegistration() {
           <div className="rounded-3xl border border-vibranium/20 bg-white/[0.02] p-6">
             <div className="flex flex-col mb-4">
                <p className="font-mono text-[10px] tracking-[0.22em] text-vibranium/80 uppercase mb-2">Choose Technical Events</p>
-               <p className="text-xs text-white/50">Pick <strong className="text-vibranium">Cipher Vista</strong> OR up to <strong className="text-white">2 Parallel Events</strong> (One from Slot 1, One from Slot 2).</p>
+               <p className="text-xs text-white/50">Pick up to <strong className="text-white">2 Technical Events</strong> (One from Slot 1, One from Slot 2). Poster Presentation is in Slot 1.</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {TECHNICAL_EVENTS.map((event) => {
@@ -431,8 +418,8 @@ export default function SelectiveRegistration() {
                     <div className="flex justify-between items-start gap-2">
                        <p className="font-heading text-white font-bold">{event.title}</p>
                        {event.id === 'cipher-vista' ? 
-                          <span className="font-mono text-[9px] px-2 py-0.5 rounded border border-vibranium/30 text-vibranium uppercase shrink-0">Full Morning</span> :
-                          <span className="font-mono text-[9px] px-2 py-0.5 rounded border border-white/20 text-white/60 uppercase shrink-0">Slot {['payload-paradise', 'neuro-byte'].includes(event.id) ? 1 : 2}</span>
+                          <span className="font-mono text-[9px] px-2 py-0.5 rounded border border-vibranium/30 text-vibranium uppercase shrink-0">Slot 1</span> :
+                          <span className="font-mono text-[9px] px-2 py-0.5 rounded border border-white/20 text-white/60 uppercase shrink-0">Slot {['payload-paradise', 'neuro-byte', 'cipher-vista'].includes(event.id) ? 1 : 2}</span>
                        }
                     </div>
                     <p className="text-xs text-white/45 mt-1">{event.tagline}</p>

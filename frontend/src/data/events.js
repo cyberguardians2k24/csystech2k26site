@@ -53,8 +53,8 @@ export const TECHNICAL_EVENTS = [
     teamSize: '2–3',
     mode: 'Offline',
     venue: 'EEE Block Auditorium (1st Floor)',
-    duration: '10:00 AM to 12:45 PM',
-    date: `${SYMPOSIUM_INFO.dateDisplay} — 10:00 AM to 12:45 PM`,
+    duration: '10:00 AM to 11:15 AM',
+    date: `${SYMPOSIUM_INFO.dateDisplay} — 10:00 AM to 11:15 AM`,
     coordinators: [
       { name: 'Renuga (III Year)', phone: '8122516708' },
       { name: 'Yuvarani (II Year)', phone: '9080073357' },
