@@ -1,4 +1,5 @@
 import i2techLogo from '../../Assets/images/i2tech_solutions.png';
+import skillAcrossLogo from '../../Assets/images/SkillAcross logo new 1.jpg.jpeg';
 
 export const SPONSOR_TIERS = [
   {
@@ -18,12 +19,18 @@ export const SPONSOR_TIERS = [
     sponsors: [],
   },
   {
-    tier: 'Silver Sponsors',
+    tier: 'Silver Partner',
     color: 'from-vibranium-gold/10 to-vibranium-gold/5',
     border: 'border-vibranium-gold/20',
     glow: 'shadow-[0_0_20px_rgba(255, 215, 0,0.1)]',
     text: 'text-vibranium-gold',
-    sponsors: [],
+    sponsors: [
+      {
+        name: 'Skill Across',
+        abbr: 'SA',
+        image: skillAcrossLogo,
+      },
+    ],
   },
   {
     tier: 'Website Sponsor',
