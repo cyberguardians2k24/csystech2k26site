@@ -254,16 +254,32 @@ function EventCard({ ev, i }) {
           >
             <div className="mt-6 border-t border-[#C41E3A]/14 pt-5">
               <div className="grid gap-5 md:grid-cols-[1.5fr_0.9fr]">
-                <div>
-                  <p className="font-mono text-[10px] tracking-[0.28em] uppercase text-[#E8A000] mb-3">Rules / Storyline</p>
-                  <ul className="space-y-2.5">
-                    {ev.rules.slice(0, 4).map((rule, ri) => (
-                      <li key={ri} className="flex gap-2 text-white/58 text-sm leading-relaxed">
-                        <span className="text-[#FFD700] mt-0.5">▸</span>
-                        <span>{rule}</span>
-                      </li>
-                    ))}
-                  </ul>
+                <div className="space-y-6">
+                  <div>
+                    <p className="font-mono text-[10px] tracking-[0.28em] uppercase text-[#E8A000] mb-3">Rules / Storyline</p>
+                    <ul className="space-y-2.5">
+                      {ev.rules.slice(0, 4).map((rule, ri) => (
+                        <li key={ri} className="flex gap-2 text-white/58 text-sm leading-relaxed">
+                          <span className="text-[#FFD700] mt-0.5">▸</span>
+                          <span>{rule}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {ev.topics && (
+                    <div>
+                      <p className="font-mono text-[10px] tracking-[0.28em] uppercase text-[#E8A000] mb-3">Suggested Topics</p>
+                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+                        {ev.topics.map((topic, ti) => (
+                          <li key={ti} className="flex gap-2 text-white/58 text-xs leading-relaxed">
+                            <span className="text-[#FFD700]">◈</span>
+                            <span>{topic}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
 
                 <div className="rounded-[1.6rem] border border-[#C41E3A]/20 bg-black/25 px-4 py-4">

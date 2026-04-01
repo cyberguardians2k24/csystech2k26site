@@ -113,6 +113,21 @@ function EventCard({ event, index }) {
             </ul>
           </div>
 
+          {/* Topics list (if any) */}
+          {event.topics && (
+            <div>
+              <p className="text-[10px] font-mono tracking-widest text-white/50 uppercase mb-2">Suggested Topics</p>
+              <ul className="space-y-1.5 list-none">
+                {event.topics.map((t, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs text-white/60">
+                    <span className="text-vibranium-gold mt-0.5 shrink-0">◈</span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {/* Venue + date */}
           <div className="rounded-xl bg-white/5 border border-white/10 p-3 space-y-1 text-xs text-white/50">
             <p><span className="text-white/30">Venue:</span> {event.venue}</p>
