@@ -539,7 +539,7 @@ export default function SelectiveRegistration() {
                 <img src={paymentImage} alt="Payment QR" className="w-full rounded-xl object-cover" />
               </div>
               <div className="space-y-4">
-                <InputField label="Payment Reference / UTR" id="reg-payment-ref" placeholder="Enter UTR / payment reference" value={paymentRef} onChange={(e) => setPaymentRef(e.target.value)} required />
+                <InputField label="Payment Reference / UTR" id="reg-payment-ref" placeholder="Enter UTR / payment reference" value={paymentRef} onChange={(e) => setPaymentRef(e.target.value.replace(/\D/g, ''))} required />
                 <div className="flex flex-col gap-2">
                   <label htmlFor="reg-payment-screenshot" className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/40">Payment Screenshot<span className="ml-1 text-vibranium">*</span></label>
                   <input id="reg-payment-screenshot" type="file" accept="image/png,image/jpeg,image/jpg,image/webp" onChange={handlePaymentUpload} required className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-sm" />

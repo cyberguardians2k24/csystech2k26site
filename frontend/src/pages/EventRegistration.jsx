@@ -582,7 +582,7 @@ export default function EventRegistration() {
                             <li>7. Fake or edited payment proof will result in registration cancellation.</li>
                           </ul>
                         </div>
-                        <InputField label="Payment Reference / UTR" id="reg-payment-ref" placeholder="Enter UTR / payment reference" value={paymentRef} onChange={(e) => setPaymentRef(e.target.value)} required />
+                        <InputField label="Payment Reference / UTR" id="reg-payment-ref" placeholder="Enter UTR / payment reference" value={paymentRef} onChange={(e) => setPaymentRef(e.target.value.replace(/\D/g, ''))} required />
                       </div>
                     </div>
                   </div>
