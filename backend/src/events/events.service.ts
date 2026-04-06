@@ -8,7 +8,6 @@ const SEPARATE_EVENT_PRICES_INR: Record<string, number> = {
   kabaddi: 599,
   'arena-bgmi': 199,
   'arena-free-fire': 199,
-  'short-film': 300,
 };
 
 function normalizeSlug(value?: string) {
@@ -74,7 +73,7 @@ export class EventsService implements OnModuleInit {
       // Rename: code-2-chaos slug → Bug Bash, design-duel → Code 2 Chaos
       await this.prisma.event.updateMany({ where: { slug: 'code-2-chaos' }, data: { name: 'Bug Bash' } });
       await this.prisma.event.updateMany({ where: { slug: 'design-duel' }, data: { name: 'Code 2 Chaos' } });
-      await this.prisma.event.updateMany({ where: { slug: 'short-film', name: { in: ['Short Film', 'short film', 'SHORT FILM'] } }, data: { name: 'CINEATAKE' } });
+      await this.prisma.event.updateMany({ where: { slug: 'short-film' }, data: { name: 'Chess', slug: 'chess', registrationFeeInr: 149 } });
     } catch (err) {
       this.logger.warn(`Could not reconcile event fees on startup: ${String((err as any)?.message ?? err)}`);
     }
@@ -218,13 +217,13 @@ export class EventsService implements OnModuleInit {
         prizeAmount: 'TBA',
       },
       {
-        name: 'CINEATAKE',
-        slug: 'short-film',
-        description: 'Original short film screening competition.',
+        name: 'Chess',
+        slug: 'chess',
+        description: 'An individual board game tournament evaluating tactical depth and strategic patience.',
         category: 'SKILL',
-        maxTeamSize: 5,
-        registrationFeeInr: 300,
-        prizeAmount: 'TBA',
+        maxTeamSize: 1,
+        registrationFeeInr: BASIC_PASS_INR,
+        prizeAmount: '₹ 3,000',
       },
     ];
 

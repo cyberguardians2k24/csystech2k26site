@@ -19,7 +19,7 @@ const NON_TECHNICAL_EVENT_SLUGS = new Set([
   'kabaddi',
   'kabbadi',
   'link-logic',
-  'short-film',
+  'chess',
 ]);
 
 function classifyEventType(event: { slug?: string; category?: string }) {
