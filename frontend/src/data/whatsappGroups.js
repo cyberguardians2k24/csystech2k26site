@@ -11,7 +11,7 @@ export const WHATSAPP_GROUPS = {
   'code-2-chaos': 'https://chat.whatsapp.com/DoKlbMsZTMxB39DmAzubJR?mode=gi_t',
   'kabaddi': 'https://chat.whatsapp.com/LhE9Byp2YIiBTffJIioSlg?mode=gi_t',
   'link-logic': 'https://chat.whatsapp.com/DUHqjOXE7qY7Ksevpj6STd?mode=gi_t',
-  'short-film': 'https://chat.whatsapp.com/H5OYfQBOPhRC8VSGf2cnpY?mode=gi_t',
+  'chess': 'https://chat.whatsapp.com/H5OYfQBOPhRC8VSGf2cnpY?mode=gi_t',
 };
 
 export function getWhatsAppGroupLink(eventIdOrSlug) {

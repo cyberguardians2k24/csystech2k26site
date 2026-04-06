@@ -183,7 +183,7 @@ export default function NonTechnicalEvents() {
             Events
           </h1>
           <p className="text-white/50 text-lg max-w-xl mx-auto">
-            Arena (Free Fire), Arena (BGMI), Kabaddi, Link Logic, and CINEATAKE make up the non-technical track for {SYMPOSIUM_INFO.eventName}.
+            Arena (Free Fire), Arena (BGMI), Kabaddi, Link Logic, and Chess make up the non-technical track for {SYMPOSIUM_INFO.eventName}.
           </p>
         </motion.div>
 

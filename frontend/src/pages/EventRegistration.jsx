@@ -81,7 +81,6 @@ export default function EventRegistration() {
     kabaddi: 599,
     'arena-bgmi': 199,
     'arena-free-fire': 199,
-    'short-film': 300,
   };
 
   const [form, setForm] = useState({

@@ -66,7 +66,6 @@ export default function SelectiveRegistration() {
     'kabaddi': 599,
     'arena-bgmi': 199,
     'arena-free-fire': 199,
-    'short-film': 300,
   }), []);
   const PREMIUM_IDS = useMemo(() => Object.keys(PREMIUM_PRICES), [PREMIUM_PRICES]);
   const SEPARATE_EVENTS = useMemo(
@@ -138,8 +137,19 @@ export default function SelectiveRegistration() {
     setError('');
     setSelectedNonTechnicalEvents((current) => {
       if (current.includes(eventId)) return current.filter((id) => id !== eventId);
+      
+      const isLinkLogic = eventId === 'link-logic';
+      const isChess = eventId === 'chess';
+      const hasLinkLogic = current.includes('link-logic');
+      const hasChess = current.includes('chess');
+
+      // Allow combination of Link Logic + Chess
+      if ((isLinkLogic && hasChess) || (isChess && hasLinkLogic)) {
+        return [...current, eventId];
+      }
+
       if (current.length >= 1) {
-        setError('You can only select 1 general non-technical event per pass.');
+        setError('You can only select 1 general non-technical event per pass (unless picking Link Logic + Chess).');
         return current;
       }
       return [...current, eventId];
@@ -342,7 +352,7 @@ export default function SelectiveRegistration() {
                 <ul className="space-y-3 mb-5">
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
-                    <span><strong className="text-white/90">General Pass (₹149):</strong> Access to morning Technical Events + afternoon Link Logic.</span>
+                    <span><strong className="text-white/90">General Pass (₹149):</strong> Access to morning Technical Events + afternoon Link Logic + Chess.</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
@@ -350,7 +360,7 @@ export default function SelectiveRegistration() {
                   </li>
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
-                    <span><strong className="text-white/90">Separate Registrations:</strong> CINEATAKE, Kabaddi, BGMI, and Free Fire must be registered through their individual forms.</span>
+                    <span><strong className="text-white/90">Separate Registrations:</strong> Kabaddi, BGMI, and Free Fire must be registered through their individual forms.</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-white/65">
                     <span className="text-vibranium-gold shrink-0 mt-0.5">›</span>
@@ -454,7 +464,23 @@ export default function SelectiveRegistration() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {GENERAL_NON_TECH_EVENTS.map((event) => {
                 const checked = selectedNonTechnicalEvents.includes(event.id);
-                const disabled = !checked && selectedNonTechnicalEvents.length >= 1;
+                const isLinkLogic = event.id === 'link-logic';
+                const isChess = event.id === 'chess';
+                const hasLinkLogic = selectedNonTechnicalEvents.includes('link-logic');
+                const hasChess = selectedNonTechnicalEvents.includes('chess');
+
+                // Logic: A button is disabled if:
+                // 1. It's not already checked.
+                // 2. AND some other event is already selected.
+                // 3. EXCEPT if the selected event is link-logic and this is chess (or vice versa).
+                let disabled = !checked && selectedNonTechnicalEvents.length >= 1;
+                if ((isLinkLogic && hasChess) || (isChess && hasLinkLogic)) {
+                  disabled = false;
+                }
+                // Also prevent selecting a THIRD non-tech if both are selected.
+                if (selectedNonTechnicalEvents.length >= 2 && !checked) {
+                   disabled = true;
+                }
 
                 return (
                   <button
