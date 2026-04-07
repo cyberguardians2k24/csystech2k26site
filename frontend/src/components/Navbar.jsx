@@ -7,6 +7,7 @@ const NAV_LINKS = [
   { label: 'Events', href: '#events' },
   { label: 'Technical', href: '/technical' },
   { label: 'Non Tech', href: '/non-technical' },
+  { label: 'Bus Route', href: '/busroute' },
   { label: 'Speakers', href: '#speakers' },
   { label: 'Schedule', href: '#schedule' },
   { label: 'Admin', href: '/admin' },
@@ -16,6 +17,7 @@ const PAGE_LABELS = {
   '/': 'Symposium Interface',
   '/technical': 'Technical Arena',
   '/non-technical': 'Non Technical Arena',
+  '/busroute': 'Bus Route Information',
   '/admin': 'Admin Access',
   '/admin/dashboard': 'Admin Dashboard',
 }

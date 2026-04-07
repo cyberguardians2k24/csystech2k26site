@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { label: 'Speakers', href: '#speakers' },
   { label: 'Schedule', href: '#schedule' },
   { label: 'Sponsors', href: '#sponsors' },
+  { label: 'Bus Route', href: '/busroute' },
   { label: 'FAQ',      href: '#faq'      },
   { label: 'Admin',    href: '/admin'    },
 ];
@@ -17,6 +18,7 @@ const MOBILE_NAV_LINKS = [
   { label: 'Events',             href: '#events'        },
   { label: 'Technical Events',   href: '/technical'     },
   { label: 'Non-Technical',      href: '/non-technical' },
+  { label: 'Bus Route',          href: '/busroute'      },
   { label: 'Speakers',          href: '#speakers'       },
   { label: 'Schedule',          href: '#schedule'       },
   { label: 'Sponsors',          href: '#sponsors'       },
