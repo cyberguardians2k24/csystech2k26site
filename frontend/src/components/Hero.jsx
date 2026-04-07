@@ -4,10 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import heroVideo from '../../Assets/hero/cystek cdo 2 selected.mp4';
 import { EVENT_STATS } from '../data/events';
 import { SPEAKERS } from '../data/speakers';
-import { SPONSOR_TIERS, countSponsors } from '../data/sponsors';
+import { ALL_PARTNERS } from '../data/sponsors';
 import { api } from '../lib/api';
 const HeroParticles = lazy(() => import('./HeroParticles'));
-
 const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
 
 // ─── Event date ──────────────────────────────────────────────────────────────
@@ -341,15 +340,12 @@ export default function Hero() {
     { value: formatCount(EVENT_STATS.totalCount), label: 'Events', glyph: '⬢', tone: 'vibranium' },
     { value: formatCount(participantCount), label: 'Participants', glyph: '✦', tone: 'gold' },
     { value: formatCount(SPEAKERS.length), label: 'Speakers', glyph: '◈', tone: 'silver' },
-    (() => {
-      const sponsorCount = countSponsors(SPONSOR_TIERS);
-      return {
-        value: sponsorCount > 0 ? formatCount(sponsorCount) : 'TBA',
-        label: 'Sponsors',
-        glyph: '❖',
-        tone: 'vibranium',
-      };
-    })(),
+    {
+      value: ALL_PARTNERS.length > 0 ? formatCount(ALL_PARTNERS.length) : 'TBA',
+      label: 'Sponsors',
+      glyph: '❖',
+      tone: 'vibranium',
+    },
   ];
 
   return (

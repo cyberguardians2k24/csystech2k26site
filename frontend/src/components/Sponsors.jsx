@@ -1,90 +1,84 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { SPONSOR_TIERS } from '../data/sponsors';
+import { ALL_PARTNERS } from '../data/sponsors';
 
-function SponsorCard({ name, abbr, image, color, border, glow, text, delay }) {
+function SponsorCard({ name, role, image, color, border }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-30px' }}
-      transition={{ delay, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ scale: 1.04 }}
-      className={`group relative flex flex-col items-center justify-center ${image ? 'p-1' : 'gap-2 p-5'} rounded-2xl border bg-gradient-to-br ${color} ${border} ${glow} transition-all duration-300 cursor-pointer min-h-[110px] overflow-hidden`}
+    <div
+      className={`group relative flex flex-col items-center justify-center p-2 rounded-2xl border bg-gradient-to-br ${color} ${border} transition-all duration-300 w-48 h-32 flex-shrink-0 bg-white/5 backdrop-blur-sm overflow-hidden mx-3 hover:scale-105 hover:bg-white/10 hover:shadow-vibranium-glow`}
     >
-      {/* Logo or Abbr placeholder */}
+      {/* Logo */}
       {image ? (
         <img
           src={image}
           alt={name}
-          className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300 max-h-[100px]"
+          className="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-300 pointer-events-none"
         />
       ) : (
-        <>
-          <span className={`font-heading font-black text-xl tracking-wider ${text} group-hover:opacity-100 transition-all duration-300`}>
-            {abbr}
-          </span>
-          <span className="font-mono text-[10px] tracking-widest text-white/30 uppercase">{name}</span>
-        </>
+        <span className={`font-heading font-black text-xl tracking-wider text-white transition-all duration-300`}>
+          {name}
+        </span>
       )}
-    </motion.div>
+      {/* Overlay role label on hover */}
+      <div className="absolute inset-x-0 bottom-0 top-0 bg-black/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl p-2 text-center pointer-events-none z-10">
+         <span className="font-heading text-white font-bold text-sm mb-1">{name}</span>
+         <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-vibranium">{role}</span>
+      </div>
+    </div>
   );
 }
 
 export default function Sponsors() {
+  if (ALL_PARTNERS.length === 0) return null;
+
+  // We duplicate the partners to allow a seamless CSS infinite scroll loop
+  const duplicatedPartners = [...ALL_PARTNERS, ...ALL_PARTNERS];
+
   return (
-    <section id="sponsors" className="relative py-16 md:py-28 bg-wakanda-dark overflow-hidden">
+    <section id="sponsors" className="relative py-16 md:py-28 bg-wakanda-dark overflow-hidden border-t border-vibranium/10">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(196, 30, 58,0.05),transparent_70%)] pointer-events-none" />
 
-      <div className="container mx-auto px-6 max-w-5xl relative z-10">
+      <div className="container mx-auto px-6 max-w-5xl relative z-10 text-center mb-16">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-16 text-center"
         >
           <div className="flex items-center gap-4 mb-4 justify-center">
-            <div className="h-[2px] w-8 bg-vibranium shadow-vibranium-glow" />
-            <h2 className="text-sm font-mono tracking-[0.25em] uppercase font-bold bp-vibranium-text">Partners</h2>
-            <div className="h-[2px] w-8 bg-vibranium shadow-vibranium-glow" />
+            <div className="h-[2px] w-8 bg-vibranium shadow-[0_0_15px_rgba(196,30,58,0.7)]" />
+            <h2 className="text-sm font-mono tracking-[0.25em] uppercase font-bold text-vibranium-light">Partners</h2>
+            <div className="h-[2px] w-8 bg-vibranium shadow-[0_0_15px_rgba(196,30,58,0.7)]" />
           </div>
-          <h3 className="text-4xl md:text-6xl font-black font-heading tracking-tighter uppercase text-white">
-            Sponsors &amp;{' '}
-            <span className="bp-vibranium-text">Partners</span>
+          <h3 className="text-4xl md:text-5xl font-black font-heading tracking-tighter uppercase text-white">
+            Sponsors &amp; <span className="text-transparent bg-clip-text bg-gradient-to-r from-vibranium to-vibranium-light">Partners</span>
           </h3>
           <p className="mt-4 text-white/30 font-mono text-xs tracking-widest max-w-sm mx-auto">
             Powering innovation alongside the brightest in the industry.
           </p>
         </motion.div>
+      </div>
 
-        <div className="space-y-10">
-          {SPONSOR_TIERS.map((tier, ti) => (
-            <div key={ti}>
-              <p className={`font-mono text-[9px] tracking-[0.3em] uppercase mb-4 ${tier.text}`}>{tier.tier}</p>
-              {(() => {
-                const sponsors = (tier.sponsors?.length ?? 0) > 0
-                  ? tier.sponsors
-                  : [{ name: 'To be announced', abbr: 'TBA' }];
-                return (
-                  <div className={`grid gap-4 ${sponsors.length === 1 ? 'grid-cols-1 max-w-xs mx-auto' : sponsors.length === 2 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-4'}`}>
-                    {sponsors.map((sp, si) => (
-                  <SponsorCard
-                    key={si}
-                    {...sp}
-                    color={tier.color}
-                    border={tier.border}
-                    glow={tier.glow}
-                    text={tier.text}
-                    delay={si * 0.08}
-                  />
-                    ))}
-                  </div>
-                );
-              })()}
+      <div className="relative w-full max-w-7xl mx-auto overflow-hidden mt-10">
+         {/* Fade masks for the edges */}
+         <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-wakanda-dark to-transparent z-10 pointer-events-none hidden md:block" />
+         <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-wakanda-dark to-transparent z-10 pointer-events-none hidden md:block" />
+
+         {/* Scrolling container */}
+         <div className="flex w-[200%] sm:w-[150%] md:w-[200%] animate-scroll hover:[animation-play-state:paused]">
+            <div className="flex items-center justify-around w-1/2">
+                {ALL_PARTNERS.map((sp, idx) => (
+                    <SponsorCard key={`p1-${idx}`} {...sp} />
+                ))}
             </div>
-          ))}
-        </div>
+            <div className="flex items-center justify-around w-1/2">
+                {ALL_PARTNERS.map((sp, idx) => (
+                    <SponsorCard key={`p2-${idx}`} {...sp} />
+                ))}
+            </div>
+         </div>
+      </div>
 
+      <div className="container mx-auto px-6 max-w-5xl relative z-10">
         {/* Become a Sponsor CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -104,8 +98,7 @@ export default function Sponsors() {
             <div className="relative z-10">
               <p className="font-mono text-[10px] tracking-[0.35em] text-vibranium/60 uppercase mb-3">Partner with us</p>
               <h4 className="text-2xl md:text-3xl font-black font-heading text-white mb-3">
-                Become a{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-vibranium to-vibranium-light">Sponsor</span>
+                Become a <span className="text-transparent bg-clip-text bg-gradient-to-r from-vibranium to-vibranium-light">Sponsor</span>
               </h4>
               <p className="text-white/30 font-mono text-xs tracking-wide max-w-sm mx-auto mb-6 leading-relaxed">
                 Reach symposium participants, campus creators, and technical competitors at CYSTECH2K26.
@@ -113,19 +106,13 @@ export default function Sponsors() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <a
                   href="mailto:sponsors@cystech.edu"
-                  className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-vibranium text-black font-bold font-mono text-xs tracking-widest uppercase hover:shadow-[0_0_30px_rgba(196, 30, 58,0.5)] transition-all duration-300 hover:scale-105"
+                  className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-vibranium text-white font-bold font-mono text-[10px] sm:text-xs tracking-widest uppercase hover:shadow-[0_0_30px_rgba(196,30,58,0.8)] transition-all duration-300 hover:scale-105"
                 >
                   ✉ Contact Us
                 </a>
-                <a
-                  href="mailto:sponsors@cystech.edu"
-                  className="inline-flex items-center gap-2 px-8 py-3 rounded-full border border-vibranium/30 text-vibranium font-mono text-xs tracking-widest uppercase hover:bg-vibranium/10 hover:border-vibranium/60 transition-all duration-300"
-                >
-                  Download Brochure
-                </a>
               </div>
               <p className="mt-5 text-white/20 font-mono text-[9px] tracking-[0.3em] uppercase">
-                Packages from Title Sponsorship to Community Partnership
+                Various partnership packages available
               </p>
             </div>
           </div>
