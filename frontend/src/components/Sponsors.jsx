@@ -64,13 +64,13 @@ export default function Sponsors() {
          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-wakanda-dark to-transparent z-10 pointer-events-none hidden md:block" />
 
          {/* Scrolling container */}
-         <div className="flex w-[200%] sm:w-[150%] md:w-[200%] animate-scroll hover:[animation-play-state:paused]">
-            <div className="flex items-center justify-around w-1/2">
+         <div className="flex w-max animate-scroll hover:[animation-play-state:paused]">
+            <div className="flex items-center flex-shrink-0">
                 {ALL_PARTNERS.map((sp, idx) => (
                     <SponsorCard key={`p1-${idx}`} {...sp} />
                 ))}
             </div>
-            <div className="flex items-center justify-around w-1/2">
+            <div className="flex items-center flex-shrink-0">
                 {ALL_PARTNERS.map((sp, idx) => (
                     <SponsorCard key={`p2-${idx}`} {...sp} />
                 ))}
